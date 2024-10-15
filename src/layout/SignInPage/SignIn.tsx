@@ -1,3 +1,7 @@
 export const SignIn: React.FC = () => {
-  return <></>;
+  return (
+    <>
+      <h1>SignIn</h1>
+    </>
+  );
 };
