@@ -9,7 +9,7 @@ export const SignIn: React.FC = () => {
 
   return (
     <>
-      <div className="container mx-auto flex h-screen justify-center sm:my-8">
+      <div className="container mx-auto flex h-screen justify-center sm:my-8 sm:h-full">
         <div className="flex w-full flex-col items-center rounded-lg bg-gray300 px-5 pb-[60px] pt-[50px] text-white sm:w-[470px] sm:px-14">
           {/* Logo */}
           <img src="/cat.jpeg" alt="" className="mb-[60px] h-14 w-14" />
