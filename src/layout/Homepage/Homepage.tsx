@@ -1,11 +1,13 @@
 import { Navbar } from "../Nav&Footer/Navbar";
-import { SignIn } from "../SignInPage/SignIn";
+import {Registration} from "../RegisterPage/Registration";
+// import { SignIn } from "../SignInPage/SignIn";
 
 export const Homepage: React.FC = () => {
   return (
     <>
       <Navbar />
-      <SignIn />
+      {/* <SignIn /> */}
+      <Registration />
     </>
   );
 };
