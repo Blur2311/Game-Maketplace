@@ -9,34 +9,34 @@ export const SignIn: React.FC = () => {
 
   return (
     <>
-      <div className="container mx-auto flex h-screen justify-center sm:my-8 sm:h-full">
+      <div className="container flex items-center justify-center h-screen mx-auto">
         <div className="flex w-full flex-col items-center rounded-lg bg-gray300 px-5 pb-[60px] pt-[50px] text-white sm:w-[470px] sm:px-14">
           {/* Logo */}
           <img src="/cat.jpeg" alt="" className="mb-[60px] h-14 w-14" />
 
-          <h6 className="mb-5 text-xl font-bold">Sign In</h6>
+          {/* <h6 className="mb-5 text-xl font-bold">Sign In</h6> */}
           <div className="flex flex-col items-center gap-6">
-            <FloatLabel className="w-full">
+            <FloatLabel className="w-full text-sm">
               <InputText
                 id="Email"
-                className="border-grayBorder h-[60px] w-full border bg-transparent p-5 ps-[10px]"
+                className="border-grayBorder h-[50px] w-full border bg-transparent p-5 ps-[10px]"
                 // value={value}
                 // onChange={(e) => setValue(e.target.value)}
               />
               <label htmlFor="Email">Email Address</label>
             </FloatLabel>
-            <FloatLabel>
+            <FloatLabel className="text-sm">
               <Password
-                toggleMask
+                // toggleMask
                 inputId="Password"
-                inputClassName="border-grayBorder h-[60px] border bg-transparent p-5 ps-[10px] first:w-[360px]"
+                inputClassName="border-grayBorder h-[50px] border bg-transparent p-5 ps-[10px] first:w-[360px]"
                 // value={value}
                 // onChange={(e) => setValue(e.target.value)}
               />
               <label htmlFor="Password">Password</label>
             </FloatLabel>
-            <div className="w-full">
-              <a href="#" className="text-[15px] font-medium underline">
+            <div className="w-full text-slate-300">
+              <a href="#" className="text-sm font-medium underline hover:text-mainYello">
                 Forgot password?
               </a>
             </div>
@@ -44,11 +44,11 @@ export const SignIn: React.FC = () => {
             <Button
               label="SIGN IN"
               size="large"
-              className="h-[60px] w-full bg-mainYello text-xs"
+              className="w-full text-base font-bold h-14 bg-mainYello text-slate-900"
             />
 
-            <div className="mt-16">
-              <a href="#" className="text-[15px] font-medium underline">
+            <div className="mt-10 text-slate-300">
+              <a href="#" className="text-base font-medium underline hover:text-mainYello">
                 Create account
               </a>
             </div>
