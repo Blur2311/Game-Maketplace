@@ -8,3 +8,7 @@ body {
   @apply font-inter;
   background-color: #011627;
 }
+
+.p-password-panel {
+  display: none;
+}
