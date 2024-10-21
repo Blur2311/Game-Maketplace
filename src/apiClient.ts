@@ -1,11 +1,16 @@
 import axios, { AxiosResponse, AxiosError } from 'axios';
-import Swal from 'sweetalert2';
-import {env} from './env';
+import { env } from './env';
+import { handleLockedAccount, handleForbiddenAccess } from './utils/errorHandling';
+
+if (!env.API_URL) {
+  throw new Error('API_URL không được định nghĩa trong biến môi trường');
+}
 
 const apiClient = axios.create({
   baseURL: env.API_URL
 });
 
+// Request interceptor to add Authorization header
 apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -20,29 +25,16 @@ apiClient.interceptors.request.use(
   }
 );
 
+// Response interceptor to handle errors
 apiClient.interceptors.response.use(
   (response: AxiosResponse): AxiosResponse => {
     return response;
   },
   (error: AxiosError): Promise<AxiosError> => {
     if (error.response?.status === 423) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Tài khoản đang bị khóa',
-        text: (error.response.data as { message?: string })?.message
-      });
+      handleLockedAccount((error.response.data as { message?: string })?.message || 'Account is locked');
     } else if (error.response?.status === 403) {
-      // console.error('fix the api usage: ', error?.request?.responseURL);
-      // Swal.fire({
-      //   icon: 'error',
-      //   title: 'fix api usage now!!!'
-      // });
-    } else if (error?.response) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Lỗi',
-            text: (error.response.data as { message?: string })?.message
-        });
+      handleForbiddenAccess();
     }
     return Promise.reject(error);
   }
