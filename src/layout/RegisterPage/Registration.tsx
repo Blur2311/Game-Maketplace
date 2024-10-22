@@ -14,6 +14,7 @@ import {
 } from "../../utils/ErrorHandlingUtils";
 import { validateRegisForm } from "../../utils/RegistrationUtils";
 import { RegistrationErrors } from "../../model/RegistrationModel";
+import { Link } from "react-router-dom";
 
 export const Registration: React.FC = React.memo(() => {
   const [email, setEmail] = useState("");
@@ -89,11 +90,11 @@ export const Registration: React.FC = React.memo(() => {
   return (
     <>
       <Toast ref={toast} position="top-right" />
-      <div className="container flex justify-center h-screen mx-auto sm:my-8 sm:h-full">
-        <div className="flex w-full flex-col items-center rounded-lg bg-gray300 px-5 pb-[60px] pt-[50px] text-white sm:w-[470px] sm:px-14">
+      <div className="container mx-auto flex h-full justify-center sm:my-8">
+        <div className="flex h-full w-full flex-col items-center rounded-lg bg-gray300 px-5 pb-[60px] pt-[50px] text-white sm:h-fit sm:w-[470px] sm:px-14">
           <img src="/cat.jpeg" alt="" className="mb-[60px] h-14 w-14" />
           <h6 className="mb-5 text-xl font-bold">TẠO TÀI KHOẢN</h6>
-          <p className="text-mainYellow mb-6 text-justify text-[0.925rem] hover:text-white">
+          <p className="mb-6 max-w-[360px] text-justify text-[0.925rem] text-mainYellow hover:text-white">
             Đăng ký để theo dõi đơn hàng của bạn, lưu các trò chơi yêu thích và
             nhận các ưu đãi độc quyền
           </p>
@@ -133,7 +134,7 @@ export const Registration: React.FC = React.memo(() => {
               <label htmlFor="Password">Mật khẩu</label>
               <Button
                 icon={showPassword ? "pi pi-eye-slash" : "pi pi-eye"}
-                className="absolute top-0 right-0 h-full"
+                className="absolute right-0 top-0 h-full"
                 onClick={() => setShowPassword(!showPassword)}
               />
             </FloatLabel>
@@ -150,11 +151,11 @@ export const Registration: React.FC = React.memo(() => {
               <label htmlFor="ConfirmPassword">Xác nhận mật khẩu</label>
               <Button
                 icon={showConfirmPassword ? "pi pi-eye-slash" : "pi pi-eye"}
-                className="absolute top-0 right-0 h-full"
+                className="absolute right-0 top-0 h-full"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               />
             </FloatLabel>
-            <div className="flex w-full align-items-center">
+            <div className="align-items-center flex w-full">
               <Checkbox
                 inputId="Read"
                 name="ReadPolicy"
@@ -180,18 +181,18 @@ export const Registration: React.FC = React.memo(() => {
             <Button
               label="TẠO TÀI KHOẢN"
               size="large"
-              className="w-full text-base font-bold bg-mainYellow h-14 text-slate-900"
+              className="h-14 w-full bg-mainYellow text-base font-bold text-slate-900"
               onClick={handleSubmit}
               disabled={isSubmitting}
             />
-            <div className="text-sm mt-9">
+            <div className="mt-9 text-sm">
               {"Đã có tài khoản? "}
-              <a
-                href="/signin"
+              <Link
+                to="/sign-in"
                 className="font-medium underline hover:text-mainYellow"
               >
                 Đăng nhập
-              </a>
+              </Link>
             </div>
             <div className="text-sm">
               <a

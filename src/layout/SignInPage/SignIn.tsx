@@ -20,6 +20,7 @@ import {
   validateUsername,
   validatePassword,
 } from "../../utils/ValidationUtils";
+import { Link } from "react-router-dom";
 
 export const SignIn: React.FC = React.memo(() => {
   const [username, setUsername] = useState<string>(
@@ -106,8 +107,8 @@ export const SignIn: React.FC = React.memo(() => {
   return (
     <>
       <Toast ref={toast} position="top-right" />
-      <div className="container flex items-center justify-center h-screen mx-auto">
-        <div className="flex w-full flex-col items-center rounded-lg bg-gray300 px-5 pb-[60px] pt-[50px] text-white sm:w-[470px] sm:px-14">
+      <div className="container mx-auto flex h-screen items-center justify-center">
+        <div className="flex h-full w-full flex-col items-center rounded-lg bg-gray300 px-5 pb-[60px] pt-[50px] text-white sm:h-fit sm:w-[470px] sm:px-14">
           {/* Logo */}
           <img src="/cat.jpeg" alt="" className="mb-[60px] h-14 w-14" />
 
@@ -147,17 +148,17 @@ export const SignIn: React.FC = React.memo(() => {
             <Button
               label="ĐĂNG NHẬP"
               size="large"
-              className="w-full text-base font-bold h-14 bg-mainYellow text-slate-900"
+              className="h-14 w-full bg-mainYellow text-base font-bold text-slate-900"
               onClick={handleLogin}
               disabled={isLockedOut}
             />
             <div className="mt-10 text-slate-300">
-              <a
-                href="/register"
+              <Link
+                to="/register"
                 className="text-base font-medium underline hover:text-mainYellow"
               >
                 Tạo tài khoản mới
-              </a>
+              </Link>
             </div>
           </div>
         </div>
