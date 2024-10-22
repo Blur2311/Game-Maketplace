@@ -1,23 +1,26 @@
 import { Toast } from "primereact/toast";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 
 export const handleLockedAccount = (message: string) => {
   Swal.fire({
-    icon: 'error',
-    title: 'Tài khoản đang bị khóa',
-    text: message
+    icon: "error",
+    title: "Tài khoản đang bị khóa",
+    text: message,
   });
   setTimeout(() => {
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
     window.location.reload();
   }, 3000);
 };
 
 export const handleForbiddenAccess = () => {
-  window.location.href = '/signin';
+  window.location.href = "/signin";
 };
 
-export const showErrorToast = (toast: React.RefObject<Toast>, error: string) => {
+export const showErrorToast = (
+  toast: React.RefObject<Toast>,
+  error: string,
+) => {
   toast.current?.show({
     severity: "error",
     summary: "Lỗi",
@@ -26,7 +29,10 @@ export const showErrorToast = (toast: React.RefObject<Toast>, error: string) => 
   });
 };
 
-export const showSuccessToast = (toast: React.RefObject<Toast>, message: string) => {
+export const showSuccessToast = (
+  toast: React.RefObject<Toast>,
+  message: string,
+) => {
   toast.current?.show({
     severity: "success",
     summary: "Thành công",
@@ -35,7 +41,10 @@ export const showSuccessToast = (toast: React.RefObject<Toast>, message: string)
   });
 };
 
-export const showInfoToast = (toast: React.RefObject<Toast>, message: string) => {
+export const showInfoToast = (
+  toast: React.RefObject<Toast>,
+  message: string,
+) => {
   toast.current?.show({
     severity: "info",
     summary: "Lưu ý",
