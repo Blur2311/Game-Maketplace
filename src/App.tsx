@@ -1,7 +1,7 @@
 import "primeicons/primeicons.css";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { NavFooterPage } from "./layout/Nav&Footer/Nav&FooterPage";
-import { BrowserPage } from "./layout/BrowserPage/BrowserPage";
+import { BrowserPage } from "./layout/BrowserPage/Browser";
 import { Homepage } from "./layout/Homepage/Homepage";
 import { SignIn } from "./layout/SignInPage/SignIn";
 import { Registration } from "./layout/RegisterPage/Registration";
@@ -20,10 +20,11 @@ function App() {
               <Route path="browser" element={<BrowserPage />} />
             </Route>
 
-            {/* Chuyển hướng tất cả các route không hợp lệ về "home" */}
             <Route path="/sign-in" element={<SignIn />} />
-        <Route path="/register" element={<Registration />} />
-        <Route path="/verify-otp" element={<VerifyOTP />} />
+            <Route path="/register" element={<Registration />} />
+            <Route path="/verify-otp" element={<VerifyOTP />} />
+
+            {/* Chuyển hướng tất cả các route không hợp lệ về "home" */}
             <Route path="*" element={<Navigate to="/home" />} />
           </Routes>
         </BrowserRouter>

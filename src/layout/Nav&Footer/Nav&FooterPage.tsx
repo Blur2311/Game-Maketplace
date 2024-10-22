@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
-import { Footer } from "../Nav&Footer/Footer";
-import { Navbar } from "../Nav&Footer/Navbar";
+import { Footer } from "./components/Footer";
+import { Navbar } from "./components/Navbar";
 
 export const NavFooterPage: React.FC = () => {
   return (

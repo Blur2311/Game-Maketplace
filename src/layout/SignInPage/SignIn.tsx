@@ -5,20 +5,26 @@ import { Password } from "primereact/password";
 import { Toast } from "primereact/toast";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "../../utils/api";
-import { showErrorToast, showInfoToast } from "../../utils/errorHandling";
+import { showErrorToast, showInfoToast } from "../../utils/ErrorHandlingUtils";
 import {
   getLastFailedLoginTime,
   getLoginAttempts,
   LOCKOUT_DURATION,
   LOCKOUT_THRESHOLD,
+  loginUser,
   setLastFailedLoginTime,
   setLoginAttempts,
 } from "../../utils/SignInUtils";
-import { validateEmail, validatePassword, validateUsername } from "../../utils/validation";
+import {
+  validateEmail,
+  validateUsername,
+  validatePassword,
+} from "../../utils/ValidationUtils";
 
 export const SignIn: React.FC = React.memo(() => {
-  const [username, setUsername] = useState<string>(localStorage.getItem("email") ?? "");
+  const [username, setUsername] = useState<string>(
+    localStorage.getItem("email") ?? "",
+  );
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [isLockedOut, setIsLockedOut] = useState<boolean>(false);
@@ -40,7 +46,10 @@ export const SignIn: React.FC = React.memo(() => {
     }
 
     // Show info toast on component mount
-    showInfoToast(toast, "Chức năng đăng nhập sẽ bị tạm khóa 30 phút nếu liên tục đăng nhập sai 5 lần liên tiếp");
+    showInfoToast(
+      toast,
+      "Chức năng đăng nhập sẽ bị tạm khóa 30 phút nếu liên tục đăng nhập sai 5 lần liên tiếp",
+    );
   }, []);
 
   useEffect(() => {
@@ -56,7 +65,9 @@ export const SignIn: React.FC = React.memo(() => {
     }
 
     if (!validateEmail(username) && !validateUsername(username)) {
-      setError("Tên người dùng không hợp lệ. Vui lòng nhập tên người dùng hợp lệ.");
+      setError(
+        "Tên người dùng không hợp lệ. Vui lòng nhập tên người dùng hợp lệ.",
+      );
       return;
     }
 
@@ -74,7 +85,7 @@ export const SignIn: React.FC = React.memo(() => {
       localStorage.removeItem("email");
 
       setTimeout(() => {
-        navigate('/');
+        navigate("/");
       }, 3000);
     } catch (error) {
       const attempts = getLoginAttempts() + 1;
@@ -83,7 +94,9 @@ export const SignIn: React.FC = React.memo(() => {
 
       if (attempts >= LOCKOUT_THRESHOLD) {
         setIsLockedOut(true);
-        setError("Bạn đã nhập sai quá nhiều lần. Vui lòng thử lại sau 30 phút.");
+        setError(
+          "Bạn đã nhập sai quá nhiều lần. Vui lòng thử lại sau 30 phút.",
+        );
       } else {
         setError(`Số lần đăng nhập sai: ${attempts}`);
       }
@@ -93,7 +106,7 @@ export const SignIn: React.FC = React.memo(() => {
   return (
     <>
       <Toast ref={toast} position="top-right" />
-      <div className="container flex items-center justify-center h-screen mx-auto">
+      <div className="container mx-auto flex h-screen items-center justify-center">
         <div className="flex w-full flex-col items-center rounded-lg bg-gray300 px-5 pb-[60px] pt-[50px] text-white sm:w-[470px] sm:px-14">
           {/* Logo */}
           <img src="/cat.jpeg" alt="" className="mb-[60px] h-14 w-14" />
@@ -126,7 +139,7 @@ export const SignIn: React.FC = React.memo(() => {
             <div className="w-full text-slate-300">
               <a
                 href="/forgot-password"
-                className="text-sm font-medium underline hover:text-mainYello"
+                className="hover:text-mainYello text-sm font-medium underline"
               >
                 Quên mật khẩu?
               </a>
@@ -134,14 +147,14 @@ export const SignIn: React.FC = React.memo(() => {
             <Button
               label="ĐĂNG NHẬP"
               size="large"
-              className="w-full text-base font-bold h-14 bg-mainYellow text-slate-900"
+              className="h-14 w-full bg-mainYellow text-base font-bold text-slate-900"
               onClick={handleLogin}
               disabled={isLockedOut}
             />
             <div className="mt-10 text-slate-300">
               <a
                 href="/register"
-                className="text-base font-medium underline hover:text-mainYello"
+                className="hover:text-mainYello text-base font-medium underline"
               >
                 Tạo tài khoản mới
               </a>

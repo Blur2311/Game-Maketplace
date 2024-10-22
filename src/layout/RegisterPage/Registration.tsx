@@ -6,9 +6,14 @@ import { InputText } from "primereact/inputtext";
 import { Toast } from "primereact/toast";
 import React, { useCallback, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import apiClient from "../../apiClient";
-import { showErrorToast, showInfoToast, showSuccessToast } from "../../utils/errorHandling";
-import { validateForm } from "../../utils/formValidation";
+import apiClient from "../../config/apiClient";
+import {
+  showErrorToast,
+  showInfoToast,
+  showSuccessToast,
+} from "../../utils/ErrorHandlingUtils";
+import { validateRegisForm } from "../../utils/RegistrationUtils";
+import { RegistrationErrors } from "../../model/RegistrationModel";
 
 export const Registration: React.FC = React.memo(() => {
   const [email, setEmail] = useState("");
@@ -19,21 +24,18 @@ export const Registration: React.FC = React.memo(() => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  interface Errors {
-    email?: string;
-    username?: string;
-    password?: string;
-    confirmPassword?: string;
-    isChecked?: string;
-  }
-
-  const [errors, setErrors] = useState<Errors>({});
+  const [errors, setErrors] = useState<RegistrationErrors>({});
   const toast = useRef<Toast>(null);
   const navigate = useNavigate();
 
   const isFormValid = useCallback(() => {
-    const newErrors = validateForm(email, username, password, confirmPassword, isChecked);
+    const newErrors = validateRegisForm(
+      email,
+      username,
+      password,
+      confirmPassword,
+      isChecked,
+    );
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
@@ -54,7 +56,10 @@ export const Registration: React.FC = React.memo(() => {
 
     setIsSubmitting(true);
 
-    showInfoToast(toast, "Vui lòng chờ trong khi chúng tôi gửi email xác nhận.");
+    showInfoToast(
+      toast,
+      "Vui lòng chờ trong khi chúng tôi gửi email xác nhận.",
+    );
 
     try {
       const response = await apiClient.post("/api/accounts/register", {
@@ -67,12 +72,16 @@ export const Registration: React.FC = React.memo(() => {
 
       if (response.status === 200) {
         localStorage.setItem("email", email);
-        navigate('/verify-otp');
+        navigate("/verify-otp");
       } else {
         setIsSubmitting(false);
       }
     } catch (error) {
-      showErrorToast(toast, (error as any)?.response?.data?.message ?? "Đã xảy ra lỗi khi đăng ký. Vui lòng thử lại.");
+      showErrorToast(
+        toast,
+        (error as any)?.response?.data?.message ??
+          "Đã xảy ra lỗi khi đăng ký. Vui lòng thử lại.",
+      );
       setIsSubmitting(false);
     }
   }, [email, username, password, isFormValid, navigate]);
@@ -80,12 +89,13 @@ export const Registration: React.FC = React.memo(() => {
   return (
     <>
       <Toast ref={toast} position="top-right" />
-      <div className="container flex justify-center h-screen mx-auto sm:my-8 sm:h-full">
+      <div className="container mx-auto flex h-screen justify-center sm:my-8 sm:h-full">
         <div className="flex w-full flex-col items-center rounded-lg bg-gray300 px-5 pb-[60px] pt-[50px] text-white sm:w-[470px] sm:px-14">
           <img src="/cat.jpeg" alt="" className="mb-[60px] h-14 w-14" />
           <h6 className="mb-5 text-xl font-bold">TẠO TÀI KHOẢN</h6>
-          <p className="mb-6 text-justify text-[0.925rem] text-mainYello hover:text-white">
-            Đăng ký để theo dõi đơn hàng của bạn, lưu các trò chơi yêu thích và nhận các ưu đãi độc quyền
+          <p className="text-mainYello mb-6 text-justify text-[0.925rem] hover:text-white">
+            Đăng ký để theo dõi đơn hàng của bạn, lưu các trò chơi yêu thích và
+            nhận các ưu đãi độc quyền
           </p>
           <div className="flex flex-col items-center gap-6">
             <FloatLabel className="w-full text-sm">
@@ -123,7 +133,7 @@ export const Registration: React.FC = React.memo(() => {
               <label htmlFor="Password">Mật khẩu</label>
               <Button
                 icon={showPassword ? "pi pi-eye-slash" : "pi pi-eye"}
-                className="absolute top-0 right-0 h-full"
+                className="absolute right-0 top-0 h-full"
                 onClick={() => setShowPassword(!showPassword)}
               />
             </FloatLabel>
@@ -140,11 +150,11 @@ export const Registration: React.FC = React.memo(() => {
               <label htmlFor="ConfirmPassword">Xác nhận mật khẩu</label>
               <Button
                 icon={showConfirmPassword ? "pi pi-eye-slash" : "pi pi-eye"}
-                className="absolute top-0 right-0 h-full"
+                className="absolute right-0 top-0 h-full"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               />
             </FloatLabel>
-            <div className="flex w-full align-items-center">
+            <div className="align-items-center flex w-full">
               <Checkbox
                 inputId="Read"
                 name="ReadPolicy"
@@ -154,9 +164,15 @@ export const Registration: React.FC = React.memo(() => {
                 aria-invalid={!!errors.isChecked}
                 aria-describedby="isChecked-error"
               />
-              <label htmlFor="ReadPolicy" className="ml-2 text-sm text-slate-300">
+              <label
+                htmlFor="ReadPolicy"
+                className="ml-2 text-sm text-slate-300"
+              >
                 {"Tôi đã đọc và đồng ý với "}
-                <a href="#" className="font-medium underline hover:text-mainYello">
+                <a
+                  href="#"
+                  className="hover:text-mainYello font-medium underline"
+                >
                   điều khoản dịch vụ
                 </a>
               </label>
@@ -164,18 +180,24 @@ export const Registration: React.FC = React.memo(() => {
             <Button
               label="TẠO TÀI KHOẢN"
               size="large"
-              className="w-full text-base font-bold h-14 bg-mainYello text-slate-900"
+              className="bg-mainYello h-14 w-full text-base font-bold text-slate-900"
               onClick={handleSubmit}
               disabled={isSubmitting}
             />
-            <div className="text-sm mt-9">
+            <div className="mt-9 text-sm">
               {"Đã có tài khoản? "}
-              <a href="/signin" className="font-medium underline hover:text-mainYello">
+              <a
+                href="/signin"
+                className="hover:text-mainYello font-medium underline"
+              >
                 Đăng nhập
               </a>
             </div>
             <div className="text-sm">
-              <a href="#" className="font-medium underline hover:text-mainYello">
+              <a
+                href="#"
+                className="hover:text-mainYello font-medium underline"
+              >
                 Chính sách bảo mật
               </a>
             </div>

@@ -1,21 +1,21 @@
 .p-inputotp-input {
-    width: calc(100% / 6 - 0.125rem);
-    font-size: 1.5rem;
-    height: 3.6rem;
-    font-weight: 500;
-    appearance: none;
-    text-align: center;
-    transition: all 0.2s;
-    background: transparent;
-    border: 1.5px solid var(--surface-500);
-    margin-right: 0.1rem;
+  width: calc(100% / 6 - 0.125rem);
+  font-size: 1.5rem;
+  height: 3.6rem;
+  font-weight: 500;
+  appearance: none;
+  text-align: center;
+  transition: all 0.2s;
+  background: transparent;
+  border: 1.5px solid var(--surface-500);
+  margin-right: 0.1rem;
 }
 
 .p-inputotp-input:last-child {
-    margin-right: 0;
+  margin-right: 0;
 }
 
 .p-inputotp-input:focus {
-    outline: 0 none;
-    border-bottom-color: var(--primary-color);
+  outline: 0 none;
+  border-bottom-color: var(--primary-color);
 }

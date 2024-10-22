@@ -1,45 +1,19 @@
 // src/utils/api.ts
-import apiClient from "../apiClient";
+import apiClient from "../config/apiClient";
 import { Toast } from "primereact/toast";
 
-export const loginUser = async (
-  username: string,
-  password: string,
-  toast: React.RefObject<Toast>
+// API
+export const resendOtp = async (
+  email: string,
+  toast: React.RefObject<Toast>,
 ) => {
-  try {
-    const requestBody = { username, password };
-    const response = await apiClient.post(`/api/auth/login`, requestBody);
-
-    toast.current?.show({
-      severity: "success",
-      summary: "Đăng nhập thành công!",
-      detail: "Chào mừng bạn quay trở lại!",
-      life: 3000,
-    });
-
-    return response.data.data.token;
-  } catch (error) {
-    toast.current?.show({
-      severity: "error",
-      summary: "Lỗi",
-      detail:
-        (error as any)?.response?.data?.message ??
-        "Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại.",
-      life: 3000,
-    });
-    throw error;
-  }
-};
-
-export const resendOtp = async (email: string, toast: React.RefObject<Toast>) => {
   try {
     const response = await apiClient.post(
       `/api/accounts/resend-registration-otp`,
       null,
       {
         params: { email },
-      }
+      },
     );
 
     toast.current?.show({
@@ -66,7 +40,7 @@ export const verifyOtp = async (
   token: string | number | undefined,
   email: string,
   toast: React.RefObject<Toast>,
-  navigate: any
+  navigate: any,
 ) => {
   try {
     const response = await apiClient.post(
@@ -74,7 +48,7 @@ export const verifyOtp = async (
       null,
       {
         params: { otp: token, email },
-      }
+      },
     );
 
     toast.current?.show({
@@ -95,7 +69,7 @@ export const verifyOtp = async (
       });
 
       setTimeout(() => {
-        navigate('/signin');
+        navigate("/signin");
       }, 3000);
     }
   } catch (error) {
