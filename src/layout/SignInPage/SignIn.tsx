@@ -134,7 +134,7 @@ export const SignIn: React.FC = React.memo(() => {
             <Button
               label="ĐĂNG NHẬP"
               size="large"
-              className="w-full text-base font-bold h-14 bg-mainYello text-slate-900"
+              className="w-full text-base font-bold h-14 bg-mainYellow text-slate-900"
               onClick={handleLogin}
               disabled={isLockedOut}
             />
