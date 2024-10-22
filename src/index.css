@@ -89,3 +89,6 @@ body {
 .p-slider .p-slider-handle {
   background-color: #9f9fa0;
 }
+.p-password-panel {
+  display: none;
+}

@@ -1,11 +1,11 @@
-import { Homepage } from "./layout/Homepage/Homepage";
-import "primereact/resources/themes/saga-blue/theme.css";
-import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { NavFooterPage } from "./layout/Nav&Footer/Nav&FooterPage";
 import { BrowserPage } from "./layout/BrowserPage/BrowserPage";
+import { Homepage } from "./layout/Homepage/Homepage";
 import { SignIn } from "./layout/SignInPage/SignIn";
+import { Registration } from "./layout/RegisterPage/Registration";
+import { VerifyOTP } from "./layout/RegisterPage/VerifyOTP";
 
 function App() {
   return (
@@ -22,6 +22,8 @@ function App() {
 
             {/* Chuyển hướng tất cả các route không hợp lệ về "home" */}
             <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/register" element={<Registration />} />
+        <Route path="/verify-otp" element={<VerifyOTP />} />
             <Route path="*" element={<Navigate to="/home" />} />
           </Routes>
         </BrowserRouter>
