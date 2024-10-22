@@ -1,4 +1,6 @@
 import "primeicons/primeicons.css";
+import "primereact/resources/themes/saga-blue/theme.css";
+import "primereact/resources/primereact.min.css";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { NavFooterPage } from "./layout/Nav&Footer/Nav&FooterPage";
 import { BrowserPage } from "./layout/BrowserPage/Browser";

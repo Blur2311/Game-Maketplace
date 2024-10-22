@@ -106,7 +106,7 @@ export const SignIn: React.FC = React.memo(() => {
   return (
     <>
       <Toast ref={toast} position="top-right" />
-      <div className="container mx-auto flex h-screen items-center justify-center">
+      <div className="container flex items-center justify-center h-screen mx-auto">
         <div className="flex w-full flex-col items-center rounded-lg bg-gray300 px-5 pb-[60px] pt-[50px] text-white sm:w-[470px] sm:px-14">
           {/* Logo */}
           <img src="/cat.jpeg" alt="" className="mb-[60px] h-14 w-14" />
@@ -139,7 +139,7 @@ export const SignIn: React.FC = React.memo(() => {
             <div className="w-full text-slate-300">
               <a
                 href="/forgot-password"
-                className="hover:text-mainYello text-sm font-medium underline"
+                className="text-sm font-medium underline hover:text-mainYellow"
               >
                 Quên mật khẩu?
               </a>
@@ -147,14 +147,14 @@ export const SignIn: React.FC = React.memo(() => {
             <Button
               label="ĐĂNG NHẬP"
               size="large"
-              className="h-14 w-full bg-mainYellow text-base font-bold text-slate-900"
+              className="w-full text-base font-bold h-14 bg-mainYellow text-slate-900"
               onClick={handleLogin}
               disabled={isLockedOut}
             />
             <div className="mt-10 text-slate-300">
               <a
                 href="/register"
-                className="hover:text-mainYello text-base font-medium underline"
+                className="text-base font-medium underline hover:text-mainYellow"
               >
                 Tạo tài khoản mới
               </a>

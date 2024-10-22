@@ -89,11 +89,11 @@ export const Registration: React.FC = React.memo(() => {
   return (
     <>
       <Toast ref={toast} position="top-right" />
-      <div className="container mx-auto flex h-screen justify-center sm:my-8 sm:h-full">
+      <div className="container flex justify-center h-screen mx-auto sm:my-8 sm:h-full">
         <div className="flex w-full flex-col items-center rounded-lg bg-gray300 px-5 pb-[60px] pt-[50px] text-white sm:w-[470px] sm:px-14">
           <img src="/cat.jpeg" alt="" className="mb-[60px] h-14 w-14" />
           <h6 className="mb-5 text-xl font-bold">TẠO TÀI KHOẢN</h6>
-          <p className="text-mainYello mb-6 text-justify text-[0.925rem] hover:text-white">
+          <p className="text-mainYellow mb-6 text-justify text-[0.925rem] hover:text-white">
             Đăng ký để theo dõi đơn hàng của bạn, lưu các trò chơi yêu thích và
             nhận các ưu đãi độc quyền
           </p>
@@ -133,7 +133,7 @@ export const Registration: React.FC = React.memo(() => {
               <label htmlFor="Password">Mật khẩu</label>
               <Button
                 icon={showPassword ? "pi pi-eye-slash" : "pi pi-eye"}
-                className="absolute right-0 top-0 h-full"
+                className="absolute top-0 right-0 h-full"
                 onClick={() => setShowPassword(!showPassword)}
               />
             </FloatLabel>
@@ -150,11 +150,11 @@ export const Registration: React.FC = React.memo(() => {
               <label htmlFor="ConfirmPassword">Xác nhận mật khẩu</label>
               <Button
                 icon={showConfirmPassword ? "pi pi-eye-slash" : "pi pi-eye"}
-                className="absolute right-0 top-0 h-full"
+                className="absolute top-0 right-0 h-full"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               />
             </FloatLabel>
-            <div className="align-items-center flex w-full">
+            <div className="flex w-full align-items-center">
               <Checkbox
                 inputId="Read"
                 name="ReadPolicy"
@@ -171,7 +171,7 @@ export const Registration: React.FC = React.memo(() => {
                 {"Tôi đã đọc và đồng ý với "}
                 <a
                   href="#"
-                  className="hover:text-mainYello font-medium underline"
+                  className="font-medium underline hover:text-mainYellow"
                 >
                   điều khoản dịch vụ
                 </a>
@@ -180,15 +180,15 @@ export const Registration: React.FC = React.memo(() => {
             <Button
               label="TẠO TÀI KHOẢN"
               size="large"
-              className="bg-mainYello h-14 w-full text-base font-bold text-slate-900"
+              className="w-full text-base font-bold bg-mainYellow h-14 text-slate-900"
               onClick={handleSubmit}
               disabled={isSubmitting}
             />
-            <div className="mt-9 text-sm">
+            <div className="text-sm mt-9">
               {"Đã có tài khoản? "}
               <a
                 href="/signin"
-                className="hover:text-mainYello font-medium underline"
+                className="font-medium underline hover:text-mainYellow"
               >
                 Đăng nhập
               </a>
@@ -196,7 +196,7 @@ export const Registration: React.FC = React.memo(() => {
             <div className="text-sm">
               <a
                 href="#"
-                className="hover:text-mainYello font-medium underline"
+                className="font-medium underline hover:text-mainYellow"
               >
                 Chính sách bảo mật
               </a>
