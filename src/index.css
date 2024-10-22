@@ -8,3 +8,84 @@ body {
   @apply font-inter;
   background-color: #011627;
 }
+
+.custom-dropdown .p-dropdown-label,
+.p-dropdown-trigger {
+  color: white;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+}
+
+.custom-dropdown .p-dropdown-items,
+.p-dropdown-item {
+  background-color: #18181c;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  padding: 10px 20px;
+  padding-right: 50px;
+  color: #b1b1b3;
+}
+.custom-dropdown,
+.p-highlight {
+  color: white !important;
+}
+.custom-galleria .p-galleria-content {
+  justify-content: space-between;
+}
+.custom-galleria .p-galleria-thumbnail-items-container {
+  height: 100% !important; /* Chiếm toàn bộ chiều cao của container */
+}
+.custom-galleria .p-galleria-thumbnail-container {
+  background: transparent;
+  padding: 0;
+}
+.custom-galleria .p-galleria-thumbnail-prev,
+.p-galleria-thumbnail-next {
+  display: none;
+}
+.custom-galleria .p-galleria-thumbnail-item-current {
+  background-color: rgba(73, 73, 73, 0.5);
+  border-radius: 12px;
+}
+.p-galleria-item-container,
+.p-galleria-item-wrapper {
+  width: 100%;
+  margin-right: 10px;
+}
+
+.p-paginator .p-paginator-pages button:hover {
+  color: white;
+}
+.p-paginator .p-paginator-first:hover,
+.p-paginator .p-paginator-prev:hover,
+.p-paginator .p-paginator-next:hover,
+.p-paginator .p-paginator-last:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  transition: background-color 0.3s ease;
+}
+.p-paginator .p-paginator-first,
+.p-paginator .p-paginator-prev,
+.p-paginator .p-paginator-next,
+.p-paginator .p-paginator-last {
+  color: white;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  padding: 10px;
+  margin: 0 2px;
+}
+.p-accordion .p-accordion-header .p-accordion-toggle-icon {
+  display: none;
+}
+.p-accordion-header-link,
+.p-accordion-content {
+  background-color: transparent;
+}
+.p-accordion-content {
+  padding: 0;
+}
+.p-slider .p-slider-range {
+  background: #20bec6;
+}
+.p-slider .p-slider-handle {
+  background-color: #9f9fa0;
+}

@@ -44,7 +44,7 @@ export const SignIn: React.FC = () => {
             <Button
               label="SIGN IN"
               size="large"
-              className="h-[60px] w-full bg-mainYello text-xs"
+              className="bg-mainYellow h-[60px] w-full text-xs"
             />
 
             <div className="mt-16">
