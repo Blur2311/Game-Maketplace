@@ -2,6 +2,7 @@ import { Button } from "primereact/button";
 import { OverlayPanel } from "primereact/overlaypanel";
 import { useRef } from "react";
 import { FaRegBell, FaRegPlusSquare } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export const Navbar = () => {
   const op = useRef<OverlayPanel>(null);
@@ -10,15 +11,11 @@ export const Navbar = () => {
     // Trang này nó responsive làm nhớ để ý kỹ ko rõ thì liên hệ Huy
     <>
       <div className="mx-4 my-5 sm:mx-6">
-        <div className="flex items-center justify-between">
+        <div className="flex items-end justify-between">
           <div className="flex items-center gap-3 sm:gap-7">
-            <img src="/cat.jpeg" alt="" className="h-8 w-8" />
-            <a
-              href="#"
-              className="text-2xl font-extrabold text-white hover:opacity-80"
-            >
-              STORE
-            </a>
+            <Link to={"/"}>
+              <img src="/logo.png" alt="" className="h-8" />
+            </Link>
           </div>
           {/* Chưa đăg nhập thì cho nó hiển thị cái này xoá hidden đê là đc */}
           <div className="flex hidden items-center gap-4">
@@ -61,7 +58,7 @@ export const Navbar = () => {
                   </div>
                 </li>
                 <li className="cursor-pointer rounded-lg px-4 py-2 hover:bg-gray200 hover:bg-opacity-50">
-                  Account Info
+                  <Link to={"/setting/user-info"}>Account Info</Link>
                 </li>
                 <li className="cursor-pointer rounded-lg px-4 py-2 hover:bg-gray200 hover:bg-opacity-50">
                   Transactions

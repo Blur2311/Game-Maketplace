@@ -134,6 +134,7 @@ export const BrowserPage = () => {
               price={100000}
               sale={20}
               wrapper={"mb-10 flex-1"}
+              url={"/product"}
             />
             <Item
               name={"Darksoul"}
@@ -142,6 +143,7 @@ export const BrowserPage = () => {
               price={100000}
               sale={20}
               wrapper={"mb-10 flex-1"}
+              url={""}
             />
             <Item
               name={"Darksoul"}
@@ -150,6 +152,7 @@ export const BrowserPage = () => {
               price={100000}
               sale={20}
               wrapper={"mb-10 flex-1"}
+              url={""}
             />
             <Item
               name={"Darksoul"}
@@ -158,6 +161,7 @@ export const BrowserPage = () => {
               price={100000}
               sale={20}
               wrapper={"mb-10 flex-1"}
+              url={""}
             />
             <Item
               name={"Darksoul"}
@@ -166,6 +170,7 @@ export const BrowserPage = () => {
               price={100000}
               sale={20}
               wrapper={"mb-10 flex-1"}
+              url={""}
             />
             <Item
               name={"Darksoul"}
@@ -174,6 +179,7 @@ export const BrowserPage = () => {
               price={100000}
               sale={20}
               wrapper={"mb-10 flex-1"}
+              url={""}
             />
             <Item
               name={"Darksoul"}
@@ -182,6 +188,7 @@ export const BrowserPage = () => {
               price={100000}
               sale={20}
               wrapper={"mb-10 flex-1"}
+              url={""}
             />
             <Item
               name={"Darksoul"}
@@ -190,6 +197,7 @@ export const BrowserPage = () => {
               price={100000}
               sale={20}
               wrapper={"mb-10 flex-1"}
+              url={""}
             />
             <Item
               name={"Darksoul"}
@@ -198,6 +206,7 @@ export const BrowserPage = () => {
               price={100000}
               sale={20}
               wrapper={"mb-10 flex-1"}
+              url={""}
             />
             <Item
               name={"Darksoul"}
@@ -206,6 +215,7 @@ export const BrowserPage = () => {
               price={100000}
               sale={20}
               wrapper={"mb-10 flex-1"}
+              url={""}
             />
             <Item
               name={"Darksoul"}
@@ -214,6 +224,7 @@ export const BrowserPage = () => {
               price={100000}
               sale={20}
               wrapper={"mb-10 flex-1"}
+              url={""}
             />
             <Item
               name={"Darksoul"}
@@ -222,6 +233,7 @@ export const BrowserPage = () => {
               price={100000}
               sale={20}
               wrapper={"mb-10 flex-1"}
+              url={""}
             />
           </div>
           <div className="">

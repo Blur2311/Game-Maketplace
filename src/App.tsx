@@ -16,7 +16,7 @@ import { UserProfile } from "./layout/UserProfilePage/UserProfile";
 import { AdminLayout } from "./layout/AdminPage/AdminLayout";
 import { CategoryList } from "./layout/AdminPage/CategoryManagePage/CategoryList";
 import { CategoryCU } from "./layout/AdminPage/CategoryManagePage/CategoryCU";
-import { ChangePW } from "./layout/ChangePWPage.tsx/ChangePW";
+import { ChangePW } from "./layout/ChangePWPage/ChangePW";
 
 function App() {
   return (
