@@ -35,9 +35,6 @@ export const loginUser = async (
       life: 3000,
     });
 
-    // Handle decoded token (e.g., store user info in state or context)
-    console.log("Decoded Token:", decodedToken);
-
     return decodedToken;
   } catch (error) {
     toast.current?.show({
