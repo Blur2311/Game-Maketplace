@@ -17,6 +17,8 @@ import { AdminLayout } from "./layout/AdminPage/AdminLayout";
 import { CategoryList } from "./layout/AdminPage/CategoryManagePage/CategoryList";
 import { CategoryCU } from "./layout/AdminPage/CategoryManagePage/CategoryCU";
 import { ChangePW } from "./layout/ChangePWPage/ChangePW";
+import { AdminSignIn } from "./layout/SignInPage/AdminSignIn";
+import CartPage from "./layout/CartPage/CartPage";
 
 function App() {
   return (
@@ -36,6 +38,7 @@ function App() {
               <Route path="home" element={<Homepage />} />
               <Route path="browser" element={<BrowserPage />} />
               <Route path="product" element={<ProductDetai />} />
+              <Route path="cart" element={<CartPage />} />
             </Route>
 
             <Route path="/setting" element={<NavSidebarPage />}>
@@ -46,6 +49,7 @@ function App() {
             <Route path="/sign-in" element={<SignIn />} />
             <Route path="/register" element={<Registration />} />
             <Route path="/verify-otp" element={<VerifyOTP />} />
+            <Route path="/admin/sign-in" element={<AdminSignIn />} />
 
             {/* Chuyển hướng tất cả các route không hợp lệ về "home" */}
             <Route path="*" element={<Navigate to="/home" />} />
