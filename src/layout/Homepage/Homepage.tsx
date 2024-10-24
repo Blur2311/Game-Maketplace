@@ -1,4 +1,5 @@
 import { CarouselHome } from "./components/CarouselHome";
+import { ChatSupport } from "./components/ChatSupport";
 import { Hero } from "./components/Hero";
 import { LastChance } from "./components/LastChance";
 import { NewsHome } from "./components/NewsHome";
@@ -46,6 +47,7 @@ export const Homepage: React.FC = () => {
           url={""}
         />
       </div>
+      <ChatSupport />
     </>
   );
 };

@@ -9,6 +9,7 @@ export default {
       // Thêm style customize
       colors: {
         bgMainColor: "#011627",
+        bgProfile: "#F9F9F9",
         bgMainBlur: "#344552",
         bgMainHover: "#52616C",
         hoverYellow: "#FFD253",
@@ -23,6 +24,7 @@ export default {
         gray400: "#353539",
         grayBorder: "#444444",
         textType: "rgba(255, 255, 255, 0.65)",
+        textSidebar: "rgba(20, 20, 20, 0.72)",
         bgCheckBox: "rgba(255, 255, 255, 0.15)",
         borderSubdued: "rgba(255, 255, 255, 0.1)",
       },

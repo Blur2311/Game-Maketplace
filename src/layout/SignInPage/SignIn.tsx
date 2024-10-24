@@ -20,6 +20,7 @@ import {
   validateUsername,
   validatePassword,
 } from "../../utils/ValidationUtils";
+import { Link } from "react-router-dom";
 
 export const SignIn: React.FC = React.memo(() => {
   const [username, setUsername] = useState<string>(
@@ -151,12 +152,12 @@ export const SignIn: React.FC = React.memo(() => {
               disabled={isLockedOut}
             />
             <div className="mt-10 text-slate-300">
-              <a
-                href="/register"
+              <Link
+                to="/register"
                 className="text-base font-medium underline hover:text-mainYellow"
               >
                 Tạo tài khoản mới
-              </a>
+              </Link>
             </div>
           </div>
         </div>

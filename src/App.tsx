@@ -2,7 +2,10 @@ import "primeicons/primeicons.css";
 import "primereact/resources/themes/saga-blue/theme.css";
 import "primereact/resources/primereact.min.css";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { NavFooterPage } from "./layout/Nav&Footer/Nav&FooterPage";
+import {
+  NavFooterPage,
+  NavSidebarPage,
+} from "./layout/Nav&Footer/Nav&FooterPage";
 import { BrowserPage } from "./layout/BrowserPage/Browser";
 import { Homepage } from "./layout/Homepage/Homepage";
 import { SignIn } from "./layout/SignInPage/SignIn";
@@ -23,6 +26,11 @@ function App() {
               <Route index element={<Homepage />} />
               <Route path="home" element={<Homepage />} />
               <Route path="browser" element={<BrowserPage />} />
+              <Route path="product" element={<ProductDetai />} />
+            </Route>
+
+            <Route path="/setting" element={<NavSidebarPage />}>
+              <Route path="user-info" element={<UserProfile />} />
             </Route>
 
             <Route path="/sign-in" element={<SignIn />} />
