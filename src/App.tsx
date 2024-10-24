@@ -14,6 +14,7 @@ import { VerifyOTP } from "./layout/RegisterPage/VerifyOTP";
 import { ProductDetai } from "./layout/ProductDetailPage/ProductDetail";
 import { UserProfile } from "./layout/UserProfilePage/UserProfile";
 import { AdminSignIn } from "./layout/SignInPage/AdminSignIn";
+import CartPage from "./layout/CartPage/CartPage";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
               <Route path="home" element={<Homepage />} />
               <Route path="browser" element={<BrowserPage />} />
               <Route path="product" element={<ProductDetai />} />
+              <Route path="cart" element={<CartPage />} />
             </Route>
 
             <Route path="/setting" element={<NavSidebarPage />}>
