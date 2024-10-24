@@ -1,0 +1,19 @@
+.p-card-content {
+  @apply px-2;
+}
+
+.p-card {
+  @apply border-none bg-[#202024] rounded-lg text-white;
+}
+
+.p-badge {
+  @apply mb-1 text-sm font-normal rounded-md bg-slate-700;
+}
+
+.custom-accept-button {
+  @apply px-4 py-2 font-bold text-black rounded bg-mainYellow ms-3;
+}
+
+.custom-reject-button {
+  @apply px-4 py-2 font-bold rounded text-slate-700;
+}

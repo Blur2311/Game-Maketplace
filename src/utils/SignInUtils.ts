@@ -1,5 +1,15 @@
 import { Toast } from "primereact/toast";
 import apiClient from "../config/apiClient";
+import { jwtDecode } from "jwt-decode";
+
+interface DecodedToken {
+  // Define the properties of the decoded token here
+  sub: string;
+  role: string;
+  iat: number;
+  exp: number;
+  // Add other properties as needed
+}
 
 export const LOCKOUT_THRESHOLD = 5;
 export const LOCKOUT_DURATION = 30 * 60 * 1000;
@@ -14,6 +24,10 @@ export const loginUser = async (
     const requestBody = { username, password };
     const response = await apiClient.post(`/api/auth/login`, requestBody);
 
+    const token = response.data.data.token;
+    localStorage.setItem("token", token);
+    const decodedToken: DecodedToken = jwtDecode(token);
+
     toast.current?.show({
       severity: "success",
       summary: "Đăng nhập thành công!",
@@ -21,7 +35,7 @@ export const loginUser = async (
       life: 3000,
     });
 
-    return response.data.data.token;
+    return decodedToken;
   } catch (error) {
     toast.current?.show({
       severity: "error",
