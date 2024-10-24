@@ -5,15 +5,36 @@ import { CategoryRow } from "./components/CategoryRow";
 import { Paginator } from "primereact/paginator";
 import { useState } from "react";
 import "./Category.css";
+import apiClient from "../../../config/apiClient";
+import { useEffect } from "react";
 
 export const CategoryList = () => {
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(10);
+  interface Category {
+    sysIdCategory: number;
+    categoryName: string;
+    description: string;
+  }
+  const [categories, setCategories] = useState<Category[]>([]);
 
   const onPageChange = (event: any) => {
     setFirst(event.first);
     setRows(event.rows);
   };
+
+  useEffect(() => {
+    apiClient
+      .get("/api/categories")
+      .then((response) => {
+        setCategories(response.data.data);
+        console.log(response.data.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching categories:", error);
+      });
+  }, []);
+
   return (
     <>
       <div className="">
@@ -43,57 +64,15 @@ export const CategoryList = () => {
                     <th className=""></th>
                   </tr>
                 </thead>
-                <tbody className="">
-                  <CategoryRow
-                    id={"hi"}
-                    name={"Advance"}
-                    describe={"I dont know"}
-                  />
-                  <CategoryRow
-                    id={"hi"}
-                    name={"Advance"}
-                    describe={"I dont know"}
-                  />
-                  <CategoryRow
-                    id={"hi"}
-                    name={"Advance"}
-                    describe={"I dont know"}
-                  />
-                  <CategoryRow
-                    id={"hi"}
-                    name={"Advance"}
-                    describe={"I dont know"}
-                  />
-                  <CategoryRow
-                    id={"hi"}
-                    name={"Advance"}
-                    describe={"I dont know"}
-                  />
-                  <CategoryRow
-                    id={"hi"}
-                    name={"Advance"}
-                    describe={"I dont know"}
-                  />
-                  <CategoryRow
-                    id={"hi"}
-                    name={"Advance"}
-                    describe={"I dont know"}
-                  />
-                  <CategoryRow
-                    id={"hi"}
-                    name={"Advance"}
-                    describe={"I dont know"}
-                  />
-                  <CategoryRow
-                    id={"hi"}
-                    name={"Advance"}
-                    describe={"I dont know"}
-                  />
-                  <CategoryRow
-                    id={"hi"}
-                    name={"Advance"}
-                    describe={"I dont know"}
-                  />
+                <tbody>
+                  {categories.map((category) => (
+                    <CategoryRow
+                      key={category.sysIdCategory}
+                      sysIdCategory={category.sysIdCategory}
+                      categoryName={category.categoryName}
+                      description={category.description}
+                    />
+                  ))}
                 </tbody>
               </table>
               <div className="mt-3">
