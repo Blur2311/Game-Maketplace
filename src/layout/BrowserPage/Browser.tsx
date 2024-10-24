@@ -7,6 +7,7 @@ import { Accordion, AccordionTab } from "primereact/accordion";
 import { CustomCheckbox } from "./components/CheckboxCus";
 import { Slider } from "primereact/slider";
 import { formatCurrency } from "../../utils/OtherUtils";
+import "./Browser.css";
 
 export const BrowserPage = () => {
   const [price, setPrice] = useState<number | [number, number]>([0, 0]);
@@ -104,7 +105,7 @@ export const BrowserPage = () => {
 
   const headerTemplate = (title: string, isActive: boolean) => (
     <div
-      className={`text-textType tran flex w-full items-center justify-between font-inter transition duration-300 hover:text-white ${isActive && "text-white"}`}
+      className={`tran flex w-full items-center justify-between font-inter text-textType transition duration-300 hover:text-white ${isActive && "text-white"}`}
     >
       <span className="text-sm font-light">{title}</span>
       <i className={`pi ${isActive ? "pi-chevron-up" : "pi-chevron-down"}`} />
@@ -116,7 +117,7 @@ export const BrowserPage = () => {
       <div className="mt-2 flex items-start">
         <div className="w-3/4 pr-4">
           <div className="mb-4 flex items-center gap-2">
-            <h6 className="text-gray150 text-sm font-normal">Show:</h6>
+            <h6 className="text-sm font-normal text-gray150">Show:</h6>
             <Dropdown
               value={selectedItem}
               options={options}
@@ -241,7 +242,7 @@ export const BrowserPage = () => {
               <button className="text-xs text-mainCyan">Reset</button>
             </div>
             <div className="relative mt-3 rounded-[4px] bg-gray300">
-              <i className="pi pi-search text-gray100 absolute left-3 top-1/2 -translate-y-1/2 transform"></i>
+              <i className="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 transform text-gray100"></i>
               <InputText
                 placeholder="Keywords"
                 className="w-full bg-transparent p-3 pl-10 text-xs text-white focus:ring-0"
@@ -249,7 +250,7 @@ export const BrowserPage = () => {
             </div>
           </div>
           <div className="px-3">
-            <div className="bg-bgCheckBox my-4 h-[1px] w-full" />
+            <div className="my-4 h-[1px] w-full bg-bgCheckBox" />
           </div>
           <Accordion
             activeIndex={activeAccorGenre}
@@ -271,7 +272,7 @@ export const BrowserPage = () => {
             </AccordionTab>
           </Accordion>
           <div className="px-3">
-            <div className="bg-bgCheckBox my-4 h-[1px] w-full" />
+            <div className="my-4 h-[1px] w-full bg-bgCheckBox" />
           </div>
           <Accordion
             activeIndex={activeAccorType}
@@ -294,7 +295,7 @@ export const BrowserPage = () => {
           </Accordion>
 
           <div className="px-3">
-            <div className="bg-bgCheckBox my-4 h-[1px] w-full" />
+            <div className="my-4 h-[1px] w-full bg-bgCheckBox" />
           </div>
           <Accordion
             activeIndex={activeAccorPrice}
@@ -325,7 +326,7 @@ export const BrowserPage = () => {
             </AccordionTab>
           </Accordion>
           <div className="px-3">
-            <div className="bg-bgCheckBox my-4 h-[1px] w-full" />
+            <div className="my-4 h-[1px] w-full bg-bgCheckBox" />
           </div>
         </div>
       </div>

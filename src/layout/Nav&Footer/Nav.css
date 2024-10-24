@@ -1,0 +1,19 @@
+.custom-dropdown .p-dropdown-label,
+.p-dropdown-trigger {
+  color: white;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+}
+
+.custom-dropdown .p-dropdown-items,
+.p-dropdown-item {
+  background-color: #18181c;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  padding: 10px 20px;
+  padding-right: 50px;
+  color: #b1b1b3;
+}
+.custom-dropdown .p-highlight {
+  color: white;
+}

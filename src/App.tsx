@@ -13,6 +13,9 @@ import { Registration } from "./layout/RegisterPage/Registration";
 import { VerifyOTP } from "./layout/RegisterPage/VerifyOTP";
 import { ProductDetai } from "./layout/ProductDetailPage/ProductDetail";
 import { UserProfile } from "./layout/UserProfilePage/UserProfile";
+import { AdminLayout } from "./layout/AdminPage/AdminLayout";
+import { CategoryList } from "./layout/AdminPage/CategoryManagePage/CategoryList";
+import { CategoryCU } from "./layout/AdminPage/CategoryManagePage/CategoryCU";
 
 function App() {
   return (
@@ -20,6 +23,12 @@ function App() {
       <div className="mx-auto max-w-[1440px]">
         <BrowserRouter>
           <Routes>
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route path="category-list" element={<CategoryList />} />
+              <Route path="category-list/create" element={<CategoryCU />} />
+              <Route path="category-list/update/:id" element={<CategoryCU />} />
+            </Route>
+
             <Route path="/" element={<NavFooterPage />}>
               {/* Route mặc định là "home" */}
               <Route index element={<Homepage />} />
