@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { CartItem, GameDTO } from '../../../utils/cartUtils';
+import { CartItem, GameDTO, addToCart } from '../../../utils/CartUtils';
 import apiClient from '../../../config/apiClient';
-import { addToCart } from '../../../utils/cartUtils';
 
 export const useCart = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);

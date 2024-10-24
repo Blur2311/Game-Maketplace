@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Card } from "primereact/card";
 import { Button } from "primereact/button";
 import { formatCurrency } from "../../../utils/OtherUtils";
-import type { CartItem, GameDTO } from "../../../utils/cartUtils";
+import type { CartItem, GameDTO } from "../../../utils/CartUtils";
 import { useCart } from "../hooks/useCart";
 
 interface CartItemProps {
