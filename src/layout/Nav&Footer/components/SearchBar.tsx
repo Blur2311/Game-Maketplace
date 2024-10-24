@@ -1,25 +1,32 @@
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { CartItem } from "../../../utils/cartUtils";
+import { Link, NavLink } from "react-router-dom";
 import { Button } from "primereact/button";
-import { addToCart } from "../../../utils/cartUtils";
+import { addToCart, CartItem } from "../../../utils/CartUtils";
 
 export const SearchBar = () => {
-  const [selectedItem, setSelectedItem] = useState<string | null>();
+  const [selectedItem, setSelectedItem] = useState<string | null>("1");
   const onOptionChange = (e: any) => {
     setSelectedItem(e.value);
   };
+
+  const options = [
+    { label: "Discover", value: "1", link: "/" },
+    { label: "Browse", value: "2", link: "/browser" },
+    { label: "News", value: "3", link: "/news" },
+  ];
   const handleAddToCart = () => {
     const item: CartItem = { slug: 'dying-light-2-stay-human', quantity: 3 };
     addToCart(item);
   };
-  const options: any[] = [
-    { label: "Discover", value: "1" },
-    { label: "Browse", value: "2" },
-    { label: "News", value: "3" },
-  ];
+  const optionTemplate = (option: any) => {
+    return (
+      <Link to={option.link} className="dropdown-item">
+        {option.label}
+      </Link>
+    );
+  };
   return (
     <>
       <div className="sticky top-0 z-50 mx-auto h-[100px] w-11/12 bg-bgMainColor md:w-3/4">
@@ -34,10 +41,48 @@ export const SearchBar = () => {
             </div>
             <div className="hidden ml-5 lg:block">
               <ul className="flex items-center gap-8 text-sm font-normal text-gray150">
-                <li className="text-white">Discover</li>
-                <li className="hover:text-white">Browse</li>
-                <li className="hover:text-white">News</li>
+                <li className="">
+                  <NavLink
+                    to={`/`}
+                    className={({ isActive }) => {
+                      return isActive ? "text-white" : "hover:text-white";
+                    }}
+                  >
+                    Discover
+                  </NavLink>
+                </li>
+                <li className="">
+                  <NavLink
+                    to={`/browser`}
+                    className={({ isActive }) => {
+                      return isActive ? "text-white" : "hover:text-white";
+                    }}
+                  >
+                    Browse
+                  </NavLink>
+                </li>
+                <li className="">
+                  <NavLink
+                    to={`/news`}
+                    className={({ isActive }) => {
+                      return isActive ? "text-white" : "hover:text-white";
+                    }}
+                  >
+                    News
+                  </NavLink>
+                </li>
               </ul>
+            </div>
+            <div className="block ml-5 lg:hidden">
+              <Dropdown
+                value={selectedItem}
+                options={options}
+                onChange={onOptionChange}
+                optionLabel="label"
+                valueTemplate={optionTemplate}
+                itemTemplate={optionTemplate}
+                className="custom-dropdown bg-transparent !font-inter focus:outline-none focus:ring-0"
+              />
             </div>
           </div>
           <div className="hidden lg:block">
@@ -53,22 +98,13 @@ export const SearchBar = () => {
             </ul>
           </div>
           {/* Cái này cũg thế kô rõ thì lên trên epic game xem */}
-          <div className="hidden lg:block">
+          <div className="">
             <ul className="flex items-center gap-8 text-sm font-normal text-gray150">
               <li className="text-white">Wishlist</li>
               <li className="hover:text-white">
                 <Link to="/cart">Cart</Link>
               </li>
             </ul>
-          </div>
-          <div className="block lg:hidden">
-            <Dropdown
-              value={selectedItem}
-              options={options}
-              defaultValue={"1"}
-              onChange={onOptionChange}
-              className="custom-dropdown bg-transparent !font-inter focus:outline-none focus:ring-0"
-            />
           </div>
         </div>
       </div>

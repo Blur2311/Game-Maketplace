@@ -3,6 +3,7 @@ import { Footer } from "./components/Footer";
 import { Navbar } from "./components/Navbar";
 import { SearchBar } from "./components/SearchBar";
 import { SideBar } from "./components/SideBar";
+import "./Nav.css";
 
 export const NavFooterPage: React.FC = () => {
   return (

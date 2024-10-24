@@ -13,6 +13,10 @@ import { Registration } from "./layout/RegisterPage/Registration";
 import { VerifyOTP } from "./layout/RegisterPage/VerifyOTP";
 import { ProductDetai } from "./layout/ProductDetailPage/ProductDetail";
 import { UserProfile } from "./layout/UserProfilePage/UserProfile";
+import { AdminLayout } from "./layout/AdminPage/AdminLayout";
+import { CategoryList } from "./layout/AdminPage/CategoryManagePage/CategoryList";
+import { CategoryCU } from "./layout/AdminPage/CategoryManagePage/CategoryCU";
+import { ChangePW } from "./layout/ChangePWPage/ChangePW";
 import { AdminSignIn } from "./layout/SignInPage/AdminSignIn";
 import CartPage from "./layout/CartPage/CartPage";
 
@@ -22,6 +26,12 @@ function App() {
       <div className="mx-auto max-w-[1440px]">
         <BrowserRouter>
           <Routes>
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route path="category-list" element={<CategoryList />} />
+              <Route path="category-list/create" element={<CategoryCU />} />
+              <Route path="category-list/update/:id" element={<CategoryCU />} />
+            </Route>
+
             <Route path="/" element={<NavFooterPage />}>
               {/* Route mặc định là "home" */}
               <Route index element={<Homepage />} />
@@ -33,6 +43,7 @@ function App() {
 
             <Route path="/setting" element={<NavSidebarPage />}>
               <Route path="user-info" element={<UserProfile />} />
+              <Route path="security" element={<ChangePW />} />
             </Route>
 
             <Route path="/sign-in" element={<SignIn />} />
