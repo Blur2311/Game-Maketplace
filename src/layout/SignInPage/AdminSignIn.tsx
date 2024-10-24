@@ -20,8 +20,9 @@ import {
   validateUsername,
   validatePassword,
 } from "../../utils/ValidationUtils";
+import { Link } from "react-router-dom";
 
-export const SignIn: React.FC = React.memo(() => {
+export const AdminSignIn: React.FC = React.memo(() => {
   const [username, setUsername] = useState<string>(
     localStorage.getItem("email") ?? "",
   );
@@ -77,14 +78,14 @@ export const SignIn: React.FC = React.memo(() => {
     }
 
     try {
-      await loginUser(username, password, toast);
+      const decodeToken = await loginUser(username, password, toast);
       setLoginAttempts(0);
       setLastFailedLoginTime(0);
       setError(null);
       localStorage.removeItem("email");
 
       setTimeout(() => {
-        navigate("/");
+        navigate(decodeToken.role === "CUSTOMER" ? "/" : "/admin");
       }, 3000);
     } catch (error) {
       const attempts = getLoginAttempts() + 1;
@@ -151,12 +152,12 @@ export const SignIn: React.FC = React.memo(() => {
               disabled={isLockedOut}
             />
             <div className="mt-10 text-slate-300">
-              <a
-                href="/register"
+              <Link
+                to="/register"
                 className="text-base font-medium underline hover:text-mainYellow"
               >
                 Tạo tài khoản mới
-              </a>
+              </Link>
             </div>
           </div>
         </div>

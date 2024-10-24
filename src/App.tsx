@@ -8,6 +8,9 @@ import { Homepage } from "./layout/Homepage/Homepage";
 import { SignIn } from "./layout/SignInPage/SignIn";
 import { Registration } from "./layout/RegisterPage/Registration";
 import { VerifyOTP } from "./layout/RegisterPage/VerifyOTP";
+import { ProductDetai } from "./layout/ProductDetailPage/ProductDetail";
+import { UserProfile } from "./layout/UserProfilePage/UserProfile";
+import { AdminSignIn } from "./layout/SignInPage/AdminSignIn";
 
 function App() {
   return (
@@ -25,6 +28,7 @@ function App() {
             <Route path="/sign-in" element={<SignIn />} />
             <Route path="/register" element={<Registration />} />
             <Route path="/verify-otp" element={<VerifyOTP />} />
+            <Route path="/admin/sign-in" element={<AdminSignIn />} />
 
             {/* Chuyển hướng tất cả các route không hợp lệ về "home" */}
             <Route path="*" element={<Navigate to="/home" />} />
