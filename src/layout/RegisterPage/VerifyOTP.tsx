@@ -17,25 +17,25 @@ export const VerifyOTP: React.FC = React.memo(() => {
   const toast = useRef<Toast>(null);
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (!email) {
-  //     navigate("/register");
-  //   }
-  //   let timer: ReturnType<typeof setInterval>;
-  //   if (isLinkDisabled) {
-  //     timer = setInterval(() => {
-  //       setCountdown((prevCountdown) => {
-  //         if (prevCountdown <= 1) {
-  //           clearInterval(timer);
-  //           setIsLinkDisabled(false);
-  //           return 60;
-  //         }
-  //         return prevCountdown - 1;
-  //       });
-  //     }, 1000);
-  //   }
-  //   return () => clearInterval(timer);
-  // }, [isLinkDisabled, email, navigate]);
+  useEffect(() => {
+    if (!email) {
+      navigate("/register");
+    }
+    let timer: ReturnType<typeof setInterval>;
+    if (isLinkDisabled) {
+      timer = setInterval(() => {
+        setCountdown((prevCountdown) => {
+          if (prevCountdown <= 1) {
+            clearInterval(timer);
+            setIsLinkDisabled(false);
+            return 60;
+          }
+          return prevCountdown - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [isLinkDisabled, email, navigate]);
 
   useEffect(() => {
     setIsTokenValid(token?.toString().length === 6);
@@ -60,7 +60,7 @@ export const VerifyOTP: React.FC = React.memo(() => {
   return (
     <>
       <Toast ref={toast} position="top-right" />
-      <div className="container mx-auto flex h-screen items-center justify-center">
+      <div className="container flex items-center justify-center h-screen mx-auto">
         <div className="flex h-full w-full flex-col items-center rounded-lg bg-gray300 px-5 pb-[60px] pt-[50px] text-white sm:h-fit sm:w-[470px] sm:px-14">
           <img src="/cat.jpeg" alt="" className="mb-[60px] h-14 w-14" />
           <h6 className="mb-5 text-xl font-bold">XÁC THỰC EMAIL</h6>
@@ -76,7 +76,7 @@ export const VerifyOTP: React.FC = React.memo(() => {
               length={6}
             />
 
-            <div className="mt-5 flex w-full items-center justify-between">
+            <div className="flex items-center justify-between w-full mt-5">
               <a
                 href="#"
                 className={`px-5 text-base font-bold hover:underline ${isLinkDisabled ? "cursor-not-allowed text-gray-500" : "hover:text-mainYellow"}`}
@@ -95,7 +95,7 @@ export const VerifyOTP: React.FC = React.memo(() => {
               <Button
                 label="XÁC NHẬN"
                 size="large"
-                className="h-14 bg-mainYellow px-5 text-base font-bold text-slate-900"
+                className="px-5 text-base font-bold h-14 bg-mainYellow text-slate-900"
                 onClick={handleSubmit}
                 disabled={!isTokenValid || isSubmitDisabled}
               />

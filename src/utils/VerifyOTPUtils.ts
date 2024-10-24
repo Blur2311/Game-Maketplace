@@ -69,7 +69,7 @@ export const verifyOtp = async (
       });
 
       setTimeout(() => {
-        navigate("/signin");
+        navigate("/sign-in");
       }, 3000);
     }
   } catch (error) {
