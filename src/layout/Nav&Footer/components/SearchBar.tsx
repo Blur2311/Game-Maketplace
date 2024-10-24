@@ -23,7 +23,7 @@ export const SearchBar = () => {
   };
   return (
     <>
-      <div className="sticky top-0 z-50 mx-auto h-[100px] w-11/12 bg-bgMainColor md:w-3/4">
+      <div className="sticky top-0 z-50 mx-auto h-[100px] w-11/12 bg-bgMainColor lg:w-3/4">
         <div className="flex h-full items-center justify-between">
           <div className="flex items-center">
             <div className="relative rounded-full bg-gray300">
