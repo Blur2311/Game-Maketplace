@@ -16,6 +16,7 @@ import { UserProfile } from "./layout/UserProfilePage/UserProfile";
 import { AdminLayout } from "./layout/AdminPage/AdminLayout";
 import { CategoryList } from "./layout/AdminPage/CategoryManagePage/CategoryList";
 import { CategoryCU } from "./layout/AdminPage/CategoryManagePage/CategoryCU";
+import { ChangePW } from "./layout/ChangePWPage.tsx/ChangePW";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
 
             <Route path="/setting" element={<NavSidebarPage />}>
               <Route path="user-info" element={<UserProfile />} />
+              <Route path="security" element={<ChangePW />} />
             </Route>
 
             <Route path="/sign-in" element={<SignIn />} />
