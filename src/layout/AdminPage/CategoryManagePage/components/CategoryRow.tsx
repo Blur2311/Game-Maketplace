@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 type CategoryRowProps = {
   sysIdCategory: number;
   categoryName: string;
-  description: string;
+  description: string | null;
 };
 
 export const CategoryRow: React.FC<CategoryRowProps> = ({
@@ -11,6 +11,15 @@ export const CategoryRow: React.FC<CategoryRowProps> = ({
   categoryName,
   description,
 }) => {
+  const handleDetailClick = () => {
+    const categoryData = {
+      sysIdCategory,
+      categoryName,
+      description,
+    };
+    localStorage.setItem("selectedCategory", JSON.stringify(categoryData));
+  };
+
   return (
     <>
       <tr className="border-b border-borderRow bg-white text-xs font-light">
@@ -18,8 +27,9 @@ export const CategoryRow: React.FC<CategoryRowProps> = ({
         <td className="px-5 py-[25px]">{description}</td>
         <td className={`px-5 py-[25px]`}>
           <Link
-            to={`admin/category-list/update/${sysIdCategory}`}
+            to={`/admin/category-list/update/${sysIdCategory}`}
             className="text-black underline"
+            onClick={handleDetailClick}
           >
             Detail
           </Link>

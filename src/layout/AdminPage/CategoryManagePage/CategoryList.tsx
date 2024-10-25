@@ -3,37 +3,66 @@ import { RightSideButton } from "../../../components/RightSideButton";
 import { MdAddBox } from "react-icons/md";
 import { CategoryRow } from "./components/CategoryRow";
 import { Paginator } from "primereact/paginator";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./Category.css";
 import apiClient from "../../../config/apiClient";
-import { useEffect } from "react";
 
 export const CategoryList = () => {
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(10);
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [searchTerm, setSearchTerm] = useState(""); // Thêm state để lưu trữ giá trị tìm kiếm
+
   interface Category {
     sysIdCategory: number;
     categoryName: string;
-    description: string;
+    description: string | null;
+    categoryDetails: any | null;
   }
+
   const [categories, setCategories] = useState<Category[]>([]);
 
   const onPageChange = (event: any) => {
     setFirst(event.first);
     setRows(event.rows);
+    fetchCategories(event.first, event.rows, searchTerm);
   };
 
-  useEffect(() => {
+  const fetchCategories = (first: number, rows: number, searchTerm: string) => {
     apiClient
       .get("/api/categories")
       .then((response) => {
-        setCategories(response.data.data);
-        console.log(response.data.data);
+        const allCategories = response.data.data;
+        if (Array.isArray(allCategories)) {
+          const filteredCategories = allCategories.filter(
+            (category: Category) =>
+              category.categoryName
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()),
+          );
+          setTotalRecords(allCategories.length);
+          const paginatedCategories = filteredCategories.slice(
+            first,
+            first + rows,
+          );
+          setCategories(paginatedCategories);
+        } else {
+          console.error("API response is not an array:", allCategories);
+        }
       })
       .catch((error) => {
         console.error("Error fetching categories:", error);
       });
-  }, []);
+  };
+
+  useEffect(() => {
+    fetchCategories(first, rows, searchTerm);
+  }, [first, rows, searchTerm]);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+    setFirst(0); // trở lại trang đầu tiên khi tìm kiếm
+  };
 
   return (
     <>
@@ -47,6 +76,8 @@ export const CategoryList = () => {
                 <InputText
                   placeholder="Search"
                   className="w-[230px] bg-transparent p-3 pl-10 text-xs text-black focus:ring-0"
+                  value={searchTerm}
+                  onChange={handleSearchChange}
                 />
               </div>
             </div>
@@ -79,7 +110,7 @@ export const CategoryList = () => {
                 <Paginator
                   first={first} // bắt đầu từ đâu
                   rows={rows} // bao nhiêu cột hiển thị
-                  totalRecords={100} // Độ dài dữ liệu
+                  totalRecords={totalRecords} // Độ dài dữ liệu
                   template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
                   onPageChange={onPageChange}
                   className="bg-transparent text-gray150"
