@@ -15,9 +15,11 @@ export const SearchBar = () => {
     { label: "Discover", value: "1", link: "/" },
     { label: "Browse", value: "2", link: "/browser" },
     { label: "News", value: "3", link: "/news" },
+    { label: "Wishlist", value: "4", link: "/wishlist" },
+    { label: "Cart", value: "5", link: "/cart" },
   ];
   const handleAddToCart = () => {
-    const item: CartItem = { slug: 'dying-light-2-stay-human', quantity: 3 };
+    const item: CartItem = { slug: "dying-light-2-stay-human", quantity: 3 };
     addToCart(item);
   };
   const optionTemplate = (option: any) => {
@@ -29,7 +31,7 @@ export const SearchBar = () => {
   };
   return (
     <>
-      <div className="sticky top-0 z-50 mx-auto h-[100px] w-11/12 bg-bgMainColor md:w-3/4">
+      <div className="sticky top-0 z-50 mx-auto h-[100px] w-11/12 bg-bgMainColor lg:w-3/4">
         <div className="flex items-center justify-between h-full">
           <div className="flex items-center">
             <div className="relative rounded-full bg-gray300">
@@ -98,7 +100,7 @@ export const SearchBar = () => {
             </ul>
           </div>
           {/* Cái này cũg thế kô rõ thì lên trên epic game xem */}
-          <div className="">
+          <div className="hidden lg:block">
             <ul className="flex items-center gap-8 text-sm font-normal text-gray150">
               <li className="text-white">Wishlist</li>
               <li className="hover:text-white">

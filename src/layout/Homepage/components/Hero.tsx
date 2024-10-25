@@ -61,10 +61,10 @@ export const Hero = () => {
         className={`h-full w-full rounded-3xl bg-cover bg-center font-inter shadow-navBoxshadow`}
         style={{ backgroundImage: `url("${item.image}")` }}
       >
-        <div className="flex h-full w-full flex-col items-start justify-end gap-11 p-5">
+        <div className="flex flex-col items-start justify-end w-full h-full p-5 gap-11">
           <div className="text-white">
             <h6 className="mb-3 font-medium">{item.name}</h6>
-            <p className="max-w-80 text-base font-light">{item.content}</p>
+            <p className="text-base font-light max-w-80">{item.content}</p>
           </div>
           <div className="flex gap-4">
             <Button
@@ -74,7 +74,7 @@ export const Hero = () => {
             <Button
               label="Add to Wishlist"
               icon="pi pi-plus-circle"
-              className="rounded-lg bg-transparent px-3 py-3 text-sm text-white hover:bg-gray200 hover:bg-opacity-50"
+              className="px-3 py-3 text-sm text-white bg-transparent rounded-lg hover:bg-gray200 hover:bg-opacity-50"
             />
           </div>
         </div>
@@ -84,7 +84,7 @@ export const Hero = () => {
 
   const thumbnailTemplate = (item: Hero) => {
     return (
-      <div className="w-[160px] rounded-xl font-inter hover:bg-gray200 hover:bg-opacity-50 xl:w-[180px]">
+      <div className="w-[160px] rounded-xl font-inter hover:bg-gray200 hover:bg-opacity-50 xl:w-[180px] overflow-auto">
         <div className="flex gap-4 p-[10px]">
           <img
             src={item.imageThumbnail}
@@ -99,7 +99,7 @@ export const Hero = () => {
   return (
     <>
       <div className="">
-        <div className="mb-10 flex flex-col items-center gap-5 md:flex-row">
+        <div className="flex flex-col items-center gap-5 mb-10 md:flex-row">
           <a
             href="#"
             className="flex-1 transition duration-300 hover:brightness-125"
