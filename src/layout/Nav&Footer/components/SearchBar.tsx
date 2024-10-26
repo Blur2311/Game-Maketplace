@@ -12,7 +12,7 @@ export const SearchBar = () => {
   };
 
   const options = [
-    { label: "Discover", value: "1", link: "/" },
+    { label: "Discover", value: "1", link: "/home" },
     { label: "Browse", value: "2", link: "/browser" },
     { label: "News", value: "3", link: "/news" },
     { label: "Wishlist", value: "4", link: "/wishlist" },
@@ -31,21 +31,21 @@ export const SearchBar = () => {
   };
   return (
     <>
-      <div className="sticky top-0 z-50 mx-auto h-[100px] w-11/12 bg-bgMainColor lg:w-3/4">
-        <div className="flex items-center justify-between h-full">
+      <div className="sticky top-0 z-50 h-[100px] bg-bgMainColor">
+        <div className="mx-auto flex h-full w-11/12 items-center justify-between lg:w-3/4">
           <div className="flex items-center">
             <div className="relative rounded-full bg-gray300">
-              <i className="absolute transform -translate-y-1/2 pi pi-search left-3 top-1/2 text-gray100"></i>
+              <i className="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 transform text-gray100"></i>
               <InputText
                 placeholder="Search store"
-                className="w-[230px] bg-transparent p-3 pl-10 text-xs text-white focus:ring-0"
+                className="bg-transparent p-3 pl-10 text-xs text-white focus:ring-0 md:w-[230px]"
               />
             </div>
-            <div className="hidden ml-5 lg:block">
+            <div className="ml-5 hidden lg:block">
               <ul className="flex items-center gap-8 text-sm font-normal text-gray150">
                 <li className="">
                   <NavLink
-                    to={`/`}
+                    to={`/home`}
                     className={({ isActive }) => {
                       return isActive ? "text-white" : "hover:text-white";
                     }}
@@ -75,7 +75,7 @@ export const SearchBar = () => {
                 </li>
               </ul>
             </div>
-            <div className="block ml-5 lg:hidden">
+            <div className="ml-5 block lg:hidden">
               <Dropdown
                 value={selectedItem}
                 options={options}
@@ -102,9 +102,25 @@ export const SearchBar = () => {
           {/* Cái này cũg thế kô rõ thì lên trên epic game xem */}
           <div className="hidden lg:block">
             <ul className="flex items-center gap-8 text-sm font-normal text-gray150">
-              <li className="text-white">Wishlist</li>
-              <li className="hover:text-white">
-                <Link to="/cart">Cart</Link>
+              <li className="">
+                <NavLink
+                  to={`/wishlist`}
+                  className={({ isActive }) => {
+                    return isActive ? "text-white" : "hover:text-white";
+                  }}
+                >
+                  Wishlist
+                </NavLink>
+              </li>
+              <li className="">
+                <NavLink
+                  to={`/cart`}
+                  className={({ isActive }) => {
+                    return isActive ? "text-white" : "hover:text-white";
+                  }}
+                >
+                  Cart
+                </NavLink>
               </li>
             </ul>
           </div>

@@ -1,7 +1,7 @@
 import { Rating } from "primereact/rating";
 import { ImageGallery } from "./components/ImageGallery";
 import "./ProductDetail.css";
-import { LinkType } from "./components/LinkType";
+import { LinkType } from "../../components/LinkType";
 import { formatCurrency, calculateSalePrice } from "../../utils/OtherUtils";
 import { Button } from "primereact/button";
 import { IoChevronDownOutline } from "react-icons/io5";

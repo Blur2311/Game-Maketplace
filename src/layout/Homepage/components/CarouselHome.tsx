@@ -142,6 +142,7 @@ export const CarouselHome: React.FC<CarouselHomeProps> = ({ name }) => {
         price={item.price}
         sale={item.sale}
         wrapper={`mr-4 flex h-[397px] min-w-[190px] flex-col justify-center font-inter text-white sm:max-w-[200px]`}
+        url={""}
       />
     );
   };
@@ -156,14 +157,14 @@ export const CarouselHome: React.FC<CarouselHomeProps> = ({ name }) => {
         <div className="hidden text-white sm:block">
           <Button
             icon="pi pi-chevron-left"
-            className="bg-gray400 mr-[10px] h-7 w-7 rounded-full bg-opacity-50"
+            className="mr-[10px] h-7 w-7 rounded-full bg-gray400 bg-opacity-50"
             onClick={prev}
             disabled={page === 0}
           />
 
           <Button
             icon="pi pi-chevron-right"
-            className="bg-gray400 h-7 w-7 rounded-full bg-opacity-50"
+            className="h-7 w-7 rounded-full bg-gray400 bg-opacity-50"
             onClick={next}
             disabled={page === totalPages - 1}
           />

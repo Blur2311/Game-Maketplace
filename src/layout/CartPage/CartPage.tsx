@@ -6,14 +6,15 @@ import CartSummary from "./components/CartSummary";
 import LoadingSpinner from "./components/LoadingSpinner";
 import "./CartPage.css";
 
-const CartPage: React.FC = () => {
+export const CartPage: React.FC = () => {
   const { cartItems, games, loading, error, removeItem } = useCart();
 
   const calculateSubtotal = () => {
     return cartItems.reduce((total, item) => {
       const game = games.get(item.slug);
       if (game) {
-        const discountedPrice = game.price * (1 - (game.discountPercent || 0) / 100);
+        const discountedPrice =
+          game.price * (1 - (game.discountPercent || 0) / 100);
         return total + discountedPrice * item.quantity;
       }
       return total;
@@ -44,7 +45,7 @@ const CartPage: React.FC = () => {
   const subtotal = calculateSubtotal();
 
   return (
-    <div className="container px-4 py-8 mx-auto">
+    <div className="container mx-auto px-4 py-8">
       <h1 className="mb-8 text-3xl font-bold text-white">My Cart</h1>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
@@ -71,5 +72,3 @@ const CartPage: React.FC = () => {
     </div>
   );
 };
-
-export default CartPage;

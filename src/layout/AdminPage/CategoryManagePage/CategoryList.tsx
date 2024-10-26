@@ -114,7 +114,7 @@ export const CategoryList = () => {
                   totalRecords={totalRecords} // Độ dài dữ liệu
                   template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
                   onPageChange={onPageChange}
-                  className="bg-transparent text-gray150"
+                  className="custom-pagi-cate bg-transparent text-gray150"
                 />
               </div>
             </div>

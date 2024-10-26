@@ -106,10 +106,12 @@ export const SignIn: React.FC = React.memo(() => {
   return (
     <>
       <Toast ref={toast} position="top-right" />
-      <div className="container flex items-center justify-center h-screen mx-auto">
+      <div className="container mx-auto flex h-dvh justify-center sm:my-8">
         <div className="flex h-full w-full flex-col items-center rounded-lg bg-gray300 px-5 pb-[60px] pt-[50px] text-white sm:h-fit sm:w-[470px] sm:px-14">
           {/* Logo */}
-          <img src="/cat.jpeg" alt="" className="mb-[60px] h-14 w-14" />
+          <Link to={"/"}>
+            <img src="/logo.png" alt="" className="mb-[60px] h-14" />
+          </Link>
 
           <h6 className="mb-5 text-xl font-bold">ĐĂNG NHẬP</h6>
           <div className="flex flex-col items-center gap-6">
@@ -147,7 +149,7 @@ export const SignIn: React.FC = React.memo(() => {
             <Button
               label="ĐĂNG NHẬP"
               size="large"
-              className="w-full text-base font-bold h-14 bg-mainYellow text-slate-900"
+              className="h-14 w-full bg-mainYellow text-base font-bold text-slate-900"
               onClick={handleLogin}
               disabled={isLockedOut}
             />

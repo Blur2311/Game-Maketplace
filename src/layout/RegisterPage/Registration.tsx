@@ -92,7 +92,9 @@ export const Registration: React.FC = React.memo(() => {
       <Toast ref={toast} position="top-right" />
       <div className="container mx-auto flex h-full justify-center sm:my-8">
         <div className="flex h-full w-full flex-col items-center rounded-lg bg-gray300 px-5 pb-[60px] pt-[50px] text-white sm:h-fit sm:w-[470px] sm:px-14">
-          <img src="/cat.jpeg" alt="" className="mb-[60px] h-14 w-14" />
+          <Link to={"/"}>
+            <img src="/logo.png" alt="" className="mb-[60px] h-14" />
+          </Link>
           <h6 className="mb-5 text-xl font-bold">TẠO TÀI KHOẢN</h6>
           <p className="mb-6 max-w-[360px] text-justify text-[0.925rem] text-mainYellow hover:text-white">
             Đăng ký để theo dõi đơn hàng của bạn, lưu các trò chơi yêu thích và

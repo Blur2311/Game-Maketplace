@@ -20,12 +20,14 @@ import { GameList } from "./layout/AdminPage/GameManagePage/GameList";
 import { GameCU } from "./layout/AdminPage/GameManagePage/GameCU";
 import { ChangePW } from "./layout/ChangePWPage/ChangePW";
 import { AdminSignIn } from "./layout/SignInPage/AdminSignIn";
-import CartPage from "./layout/CartPage/CartPage";
+import { Checkout } from "./layout/CartPage/Checkout";
+import { CartPage } from "./layout/CartPage/CartPage";
+import { QRscan } from "./layout/CartPage/QRscan";
 
 function App() {
   return (
     <>
-      <div className="mx-auto max-w-[1440px]">
+      <div className="">
         <BrowserRouter>
           <Routes>
             <Route path="/admin" element={<AdminLayout />}>
@@ -44,6 +46,8 @@ function App() {
               <Route path="browser" element={<BrowserPage />} />
               <Route path="product" element={<ProductDetai />} />
               <Route path="cart" element={<CartPage />} />
+              <Route path="checkout" element={<Checkout />} />
+              <Route path="qr-scan" element={<QRscan />} />
             </Route>
 
             <Route path="/setting" element={<NavSidebarPage />}>

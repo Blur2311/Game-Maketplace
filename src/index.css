@@ -39,6 +39,6 @@ body {
 
 [data-pc-section="thumbnailitems"][pr_id_7] {
   [data-pc-section="thumbnailitem"] {
-      flex: none!important;
+    flex: none !important;
   }
 }

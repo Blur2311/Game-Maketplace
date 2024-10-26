@@ -1,17 +1,20 @@
-.p-paginator .p-paginator-pages button:hover {
+.custom-pagi-browser .p-paginator-pages button:hover {
   color: white;
 }
-.p-paginator .p-paginator-first:hover,
-.p-paginator .p-paginator-prev:hover,
-.p-paginator .p-paginator-next:hover,
-.p-paginator .p-paginator-last:hover {
+.custom-pagi-browser .p-paginator-pages .p-highlight {
+  color: white;
+}
+.custom-pagi-browser .p-paginator-first:hover,
+.custom-pagi-browser .p-paginator-prev:hover,
+.custom-pagi-browser .p-paginator-next:hover,
+.custom-pagi-browser .p-paginator-last:hover {
   background-color: rgba(255, 255, 255, 0.3);
   transition: background-color 0.3s ease;
 }
-.p-paginator .p-paginator-first,
-.p-paginator .p-paginator-prev,
-.p-paginator .p-paginator-next,
-.p-paginator .p-paginator-last {
+.custom-pagi-browser .p-paginator-first,
+.custom-pagi-browser .p-paginator-prev,
+.custom-pagi-browser .p-paginator-next,
+.custom-pagi-browser .p-paginator-last {
   color: white;
   background-color: rgba(255, 255, 255, 0.15);
   border-radius: 50%;
