@@ -3,7 +3,7 @@ import { Button } from "primereact/button";
 import { InputOtp } from "primereact/inputotp";
 import { Toast } from "primereact/toast";
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { resendOtp, verifyOtp } from "../../utils/VerifyOTPUtils";
 import "./VerifyOTP.css";
 
@@ -60,9 +60,11 @@ export const VerifyOTP: React.FC = React.memo(() => {
   return (
     <>
       <Toast ref={toast} position="top-right" />
-      <div className="container flex items-center justify-center h-screen mx-auto">
+      <div className="container mx-auto flex h-dvh items-center justify-center">
         <div className="flex h-full w-full flex-col items-center rounded-lg bg-gray300 px-5 pb-[60px] pt-[50px] text-white sm:h-fit sm:w-[470px] sm:px-14">
-          <img src="/cat.jpeg" alt="" className="mb-[60px] h-14 w-14" />
+          <Link to={"/"}>
+            <img src="/logo.png" alt="" className="mb-[60px] h-14" />
+          </Link>
           <h6 className="mb-5 text-xl font-bold">XÁC THỰC EMAIL</h6>
           <div className="mb-6 text-center text-[0.925rem] text-slate-400">
             <p>Mã xác thực đã được gửi đến email của bạn</p>
@@ -76,7 +78,7 @@ export const VerifyOTP: React.FC = React.memo(() => {
               length={6}
             />
 
-            <div className="flex items-center justify-between w-full mt-5">
+            <div className="mt-5 flex w-full items-center justify-between">
               <a
                 href="#"
                 className={`px-5 text-base font-bold hover:underline ${isLinkDisabled ? "cursor-not-allowed text-gray-500" : "hover:text-mainYellow"}`}
@@ -95,7 +97,7 @@ export const VerifyOTP: React.FC = React.memo(() => {
               <Button
                 label="XÁC NHẬN"
                 size="large"
-                className="px-5 text-base font-bold h-14 bg-mainYellow text-slate-900"
+                className="h-14 bg-mainYellow px-5 text-base font-bold text-slate-900"
                 onClick={handleSubmit}
                 disabled={!isTokenValid || isSubmitDisabled}
               />
