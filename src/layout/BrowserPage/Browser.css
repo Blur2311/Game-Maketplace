@@ -1,6 +1,9 @@
 .custom-pagi-browser .p-paginator-pages button:hover {
   color: white;
 }
+.custom-pagi-browser .p-paginator-pages .p-highlight {
+  color: white;
+}
 .custom-pagi-browser .p-paginator-first:hover,
 .custom-pagi-browser .p-paginator-prev:hover,
 .custom-pagi-browser .p-paginator-next:hover,
