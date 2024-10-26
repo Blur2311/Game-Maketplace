@@ -19,6 +19,7 @@ import { CategoryCU } from "./layout/AdminPage/CategoryManagePage/CategoryCU";
 import { ChangePW } from "./layout/ChangePWPage/ChangePW";
 import { AdminSignIn } from "./layout/SignInPage/AdminSignIn";
 import CartPage from "./layout/CartPage/CartPage";
+import Forbidden from "./layout/ErrorPage/Forbidden";
 
 function App() {
   return (
@@ -40,6 +41,8 @@ function App() {
               <Route path="product" element={<ProductDetai />} />
               <Route path="cart" element={<CartPage />} />
             </Route>
+            
+            <Route path="/403" element={<Forbidden />} />
 
             <Route path="/setting" element={<NavSidebarPage />}>
               <Route path="user-info" element={<UserProfile />} />

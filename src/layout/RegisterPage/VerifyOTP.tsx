@@ -63,10 +63,10 @@ export const VerifyOTP: React.FC = React.memo(() => {
       <div className="container flex items-center justify-center h-screen mx-auto">
         <div className="flex h-full w-full flex-col items-center rounded-lg bg-gray300 px-5 pb-[60px] pt-[50px] text-white sm:h-fit sm:w-[470px] sm:px-14">
           <img src="/cat.jpeg" alt="" className="mb-[60px] h-14 w-14" />
-          <h6 className="mb-5 text-xl font-bold">XÁC THỰC EMAIL</h6>
+          <h6 className="mb-5 text-xl font-bold">VERIFY EMAIL</h6>
           <div className="mb-6 text-center text-[0.925rem] text-slate-400">
-            <p>Mã xác thực đã được gửi đến email của bạn</p>
-            <p>Vui lòng điền mã OTP vào các ô bên dưới</p>
+            <p>We sent a code to your email</p>
+            <p>Please enter the OTP below</p>
           </div>
           <div className="max-w-[360px]">
             <InputOtp
@@ -89,11 +89,11 @@ export const VerifyOTP: React.FC = React.memo(() => {
                 }}
               >
                 {isLinkDisabled
-                  ? `Gửi lại mã OTP (${countdown}s)`
-                  : "Gửi lại mã OTP"}
+                  ? `Resend OTP (${countdown}s)`
+                  : "Resend OTP"}
               </a>
               <Button
-                label="XÁC NHẬN"
+                label="CONFIRM"
                 size="large"
                 className="px-5 text-base font-bold h-14 bg-mainYellow text-slate-900"
                 onClick={handleSubmit}

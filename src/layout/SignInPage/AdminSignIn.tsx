@@ -49,7 +49,7 @@ export const AdminSignIn: React.FC = React.memo(() => {
     // Show info toast on component mount
     showInfoToast(
       toast,
-      "Chức năng đăng nhập sẽ bị tạm khóa 30 phút nếu liên tục đăng nhập sai 5 lần liên tiếp",
+      "If you mess up 5 times, login will be locked for 30 mins.",
     );
   }, []);
 
@@ -61,19 +61,17 @@ export const AdminSignIn: React.FC = React.memo(() => {
 
   const handleLogin = useCallback(async () => {
     if (isLockedOut) {
-      setError("Bạn đã nhập sai quá nhiều lần. Vui lòng thử lại sau 30 phút.");
+      setError("Too many wrong tries. Wait 30 mins.");
       return;
     }
 
     if (!validateEmail(username) && !validateUsername(username)) {
-      setError(
-        "Tên người dùng không hợp lệ. Vui lòng nhập tên người dùng hợp lệ.",
-      );
+      setError("Invalid username. Enter a valid one.");
       return;
     }
 
     if (!validatePassword(password)) {
-      setError("Mật khẩu không hợp lệ. Vui lòng nhập mật khẩu hợp lệ.");
+      setError("Invalid password. Enter a valid one.");
       return;
     }
 
@@ -94,11 +92,9 @@ export const AdminSignIn: React.FC = React.memo(() => {
 
       if (attempts >= LOCKOUT_THRESHOLD) {
         setIsLockedOut(true);
-        setError(
-          "Bạn đã nhập sai quá nhiều lần. Vui lòng thử lại sau 30 phút.",
-        );
+        setError("Too many wrong tries. Wait 30 mins.");
       } else {
-        setError(`Số lần đăng nhập sai: ${attempts}`);
+        setError(`Wrong tries: ${attempts}`);
       }
     }
   }, [isLockedOut, username, password, navigate]);
@@ -111,7 +107,7 @@ export const AdminSignIn: React.FC = React.memo(() => {
           {/* Logo */}
           <img src="/cat.jpeg" alt="" className="mb-[60px] h-14 w-14" />
 
-          <h6 className="mb-5 text-xl font-bold">ĐĂNG NHẬP</h6>
+          <h6 className="mb-5 text-xl font-bold">SIGN IN</h6>
           <div className="flex flex-col items-center gap-6">
             <FloatLabel className="w-full text-sm">
               <InputText
@@ -122,7 +118,7 @@ export const AdminSignIn: React.FC = React.memo(() => {
                 aria-invalid={!!error}
                 aria-describedby="username-error"
               />
-              <label htmlFor="Email">Tên người dùng hoặc email</label>
+              <label htmlFor="Email">Username or Email</label>
             </FloatLabel>
             <FloatLabel className="text-sm">
               <Password
@@ -134,31 +130,23 @@ export const AdminSignIn: React.FC = React.memo(() => {
                 aria-invalid={!!error}
                 aria-describedby="password-error"
               />
-              <label htmlFor="Password">Mật khẩu</label>
+              <label htmlFor="Password">Password</label>
             </FloatLabel>
             <div className="w-full text-slate-300">
-              <a
-                href="/forgot-password"
+              <Link
+                to="/forgot-password"
                 className="text-sm font-medium underline hover:text-mainYellow"
               >
-                Quên mật khẩu?
-              </a>
+                Forgot password?
+              </Link>
             </div>
             <Button
-              label="ĐĂNG NHẬP"
+              label="SIGN IN"
               size="large"
               className="w-full text-base font-bold h-14 bg-mainYellow text-slate-900"
               onClick={handleLogin}
               disabled={isLockedOut}
             />
-            <div className="mt-10 text-slate-300">
-              <Link
-                to="/register"
-                className="text-base font-medium underline hover:text-mainYellow"
-              >
-                Tạo tài khoản mới
-              </Link>
-            </div>
           </div>
         </div>
       </div>
