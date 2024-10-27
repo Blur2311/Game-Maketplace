@@ -7,8 +7,42 @@ import { Button } from "primereact/button";
 import { IoChevronDownOutline } from "react-icons/io5";
 import { FiShare2 } from "react-icons/fi";
 import { TbFlag3 } from "react-icons/tb";
+import ProductCard from "./components/ProductCard";
+import { Paginator } from "primereact/paginator";
+import { useState } from "react";
+import { Review } from "./components/Review";
+import { ReviewCard } from "./components/ReviewCard";
+import { ReadMore } from "./components/ReadMore";
 
 export const ProductDetai = () => {
+  const [first, setFirst] = useState(0);
+  const [rows, setRows] = useState(3);
+
+  const onPageChange = (event: any) => {
+    setFirst(event.first);
+    setRows(event.rows);
+  };
+
+  const reviews = [
+    {
+      username: "TheGamer",
+      date: "20-11-2024",
+      rating: 3,
+      text: "It's beautiful, frantic, challenging, and a delight to play.",
+    },
+    {
+      username: "IGN",
+      date: "20-11-2024",
+      rating: 4,
+      text: "Despite some frustrating technical issues, Black Myth: Wukong is a great action game with fantastic combat, exciting bosses, tantalizing secrets, and a beautiful world.",
+    },
+    {
+      username: "PC Gamer",
+      date: "20-11-2024",
+      rating: 5,
+      text: "Black Myth: Wukong blossoms with an eccentric cast of characters and expressive combat all wrapped up in the rich world of its source material.",
+    },
+  ];
   return (
     <>
       <div className="mt-2 text-white">
@@ -57,6 +91,61 @@ export const ProductDetai = () => {
                   <LinkType text={"Steam Games"} url={""} />
                   <LinkType text={"Entertainment"} url={""} />
                 </div>
+              </div>
+            </div>
+          </div>
+          <div className="my-12">
+            <ReadMore
+              text={
+                "Black Myth: Wukong is an action RPG rooted in Chinese mythology. You shall set out as the Destined One to venture into the challenges and marvels ahead, to uncover the obscured truth beneath the veil of a glorious legend from the past. Black Myth: Wukong is an action RPG rooted in Chinese mythology. The story is based on Journey to the West, one of the Four Great Classical Novels of Chinese literature. You shall set out as the Destined One to venture into the challenges and marvels ahead, to uncover the obscured truth beneath the veil of a glorious legend from the past."
+              }
+              maxLength={200}
+            />
+          </div>
+          <div className="">
+            <div className="mb-6 flex items-center justify-between">
+              <h6 className="text-xl font-semibold">
+                Black Myth: Wukong Related Products & Add-Ons
+              </h6>
+              <Paginator
+                first={first} // bắt đầu từ đâu
+                rows={rows} // bao nhiêu cột hiển thị
+                totalRecords={100} // Độ dài dữ liệu
+                template=" PrevPageLink  NextPageLink"
+                onPageChange={onPageChange}
+                className="custom-pagi-browser bg-bgMainColor px-0"
+              />
+            </div>
+            <div className="flex items-start justify-between">
+              <ProductCard />
+              <ProductCard />
+              <ProductCard />
+            </div>
+          </div>
+          <div className="mt-12">
+            <Review />
+          </div>
+          <div className="my-12">
+            <div className="w-full rounded-lg text-white">
+              <div className="mb-6 flex items-center justify-between">
+                <h2 className="text-xl font-semibold">
+                  Black Myth: Wukong Ratings & Reviews
+                </h2>
+                <a href="#" className="flex items-center font-light">
+                  See All Reviews <i className="pi pi-external-link ml-2"></i>
+                </a>
+              </div>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                {reviews.map((review, index) => (
+                  <ReviewCard
+                    key={index}
+                    username={review.username}
+                    date={review.date}
+                    rating={review.rating}
+                    text={review.text}
+                    // img={""}
+                  />
+                ))}
               </div>
             </div>
           </div>
