@@ -29,7 +29,7 @@ export const Top5 = () => {
 
   useEffect(() => {
     fetchTop("quantitySold", 5).then((result) => setTopSeller(result));
-    fetchTop("voucher.discountPercent", 5).then((result) =>
+    fetchTop("discountPercent", 5).then((result) =>
       setTopTrending(result),
     );
     fetchTop("rating", 5).then((result) => setTopRated(result));
