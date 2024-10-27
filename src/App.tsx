@@ -23,6 +23,10 @@ import { AdminSignIn } from "./layout/SignInPage/AdminSignIn";
 import { Checkout } from "./layout/CartPage/Checkout";
 import { CartPage } from "./layout/CartPage/CartPage";
 import { QRscan } from "./layout/CartPage/QRscan";
+import { TransactionList } from "./layout/TransactionPage/TransactionList";
+import { ReviewHistory } from "./layout/ReviewHistoryPage/ReviewHistory";
+import { OrderHistory } from "./layout/OrderHistoryPage/OrderHistory";
+import { OrderHistoryDetail } from "./layout/OrderHistoryPage/OrderHistoryDetail";
 
 function App() {
   return (
@@ -52,7 +56,15 @@ function App() {
 
             <Route path="/setting" element={<NavSidebarPage />}>
               <Route path="user-info" element={<UserProfile />} />
+              <Route path="order-history" element={<OrderHistory />} />
+              <Route
+                path="order-history/detail/:id"
+                element={<OrderHistoryDetail />}
+              />
+
+              <Route path="transaction" element={<TransactionList />} />
               <Route path="security" element={<ChangePW />} />
+              <Route path="review-history" element={<ReviewHistory />} />
             </Route>
 
             <Route path="/sign-in" element={<SignIn />} />

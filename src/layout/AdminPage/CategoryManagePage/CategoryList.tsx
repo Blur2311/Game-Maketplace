@@ -90,7 +90,7 @@ export const CategoryList = () => {
               <table className="w-full rounded-xl shadow-sm">
                 <thead>
                   <tr className="text-left">
-                    <th className="p-5 text-xs font-light">Id</th>
+                    <th className="p-5 text-xs font-light">ID</th>
                     <th className="p-5 text-xs font-light">Category Name</th>
                     <th className="p-5 text-xs font-light">Describe</th>
                     <th className=""></th>
