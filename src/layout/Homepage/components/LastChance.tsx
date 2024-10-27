@@ -67,7 +67,7 @@ export const LastChance = () => {
 
   return (
     <>
-      <div className="mt-16 rounded-xl bg-gray300 px-10 py-[30px]">
+      <div className="mt-16 rounded-xl bg-gray300 px-5 py-[30px] md:px-10">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-[14px] text-white">
             <TbExclamationCircle className="text-4xl" />

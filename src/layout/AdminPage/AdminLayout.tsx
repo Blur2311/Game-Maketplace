@@ -1,11 +1,10 @@
-import { BreadCrumb } from "primereact/breadcrumb";
 import { OverlayPanel } from "primereact/overlaypanel";
 import { useRef } from "react";
 import { BsBellFill } from "react-icons/bs";
-import { FaRegPlusSquare } from "react-icons/fa";
+import { FaGamepad, FaRegPlusSquare } from "react-icons/fa";
 import { FiPercent, FiTag, FiUser } from "react-icons/fi";
 import { HiOutlineChartPie } from "react-icons/hi";
-import { LuBarChart4, LuShoppingCart } from "react-icons/lu";
+import { LuBarChart4 } from "react-icons/lu";
 import { Link, NavLink, Outlet } from "react-router-dom";
 import {
   getUsernameFromToken,
@@ -17,18 +16,18 @@ export const AdminLayout = () => {
   const op = useRef<OverlayPanel>(null);
   const username = getUsernameFromToken();
   useAuthCheck(["ADMIN"]);
-  const items = [
-    {
-      template: () => (
-        <Link to={"/"} className="font-semibold text-textAdminGray">
-          Categories
-        </Link>
-      ),
-    },
-    {
-      template: () => <span className="font-bold text-black">List</span>,
-    },
-  ];
+  // const items = [
+  //   {
+  //     template: () => (
+  //       <Link to={"/"} className="font-semibold text-textAdminGray">
+  //         Categories
+  //       </Link>
+  //     ),
+  //   },
+  //   {
+  //     template: () => <span className="font-bold text-black">List</span>,
+  //   },
+  // ];
   return (
     <>
       <div className="flex h-full">
@@ -57,7 +56,7 @@ export const AdminLayout = () => {
             </li>
             <li>
               <NavLink
-                to={`/setting/user-info`}
+                to={`/admin/game-list`}
                 className={({ isActive }) => {
                   return isActive
                     ? "flex items-center rounded bg-mainYellow px-5 py-1 text-white"
@@ -65,9 +64,9 @@ export const AdminLayout = () => {
                 }}
               >
                 <div className="flex items-center justify-center w-10 h-10">
-                  <LuShoppingCart className="text-2xl" />
+                  <FaGamepad className="text-2xl" />
                 </div>
-                <p className="p-[10px] text-xs font-bold uppercase">Products</p>
+                <p className="p-[10px] text-xs font-bold uppercase">Game</p>
               </NavLink>
             </li>
             <li>
@@ -139,8 +138,8 @@ export const AdminLayout = () => {
           </ul>
         </div>
         <div className="flex-1 bg-white">
-          <div className="flex items-center justify-between w-full p-5 border-b-2 shadow-sm border-borderSubdued">
-            <BreadCrumb model={items} />
+          <div className="flex items-center justify-end w-full p-5 border-b-2 shadow-sm border-borderSubdued">
+            {/* <BreadCrumb model={items} /> */}
             <div className="flex items-center gap-6 cursor-pointer">
               <BsBellFill className="text-xl" />
               <div

@@ -16,21 +16,28 @@ import { UserProfile } from "./layout/UserProfilePage/UserProfile";
 import { AdminLayout } from "./layout/AdminPage/AdminLayout";
 import { CategoryList } from "./layout/AdminPage/CategoryManagePage/CategoryList";
 import { CategoryCU } from "./layout/AdminPage/CategoryManagePage/CategoryCU";
+import { GameList } from "./layout/AdminPage/GameManagePage/GameList";
+import { GameCU } from "./layout/AdminPage/GameManagePage/GameCU";
 import { ChangePW } from "./layout/ChangePWPage/ChangePW";
 import { AdminSignIn } from "./layout/SignInPage/AdminSignIn";
-import CartPage from "./layout/CartPage/CartPage";
 import Forbidden from "./layout/ErrorPage/Forbidden";
+import { Checkout } from "./layout/CartPage/Checkout";
+import { CartPage } from "./layout/CartPage/CartPage";
+import { QRscan } from "./layout/CartPage/QRscan";
 
 function App() {
   return (
     <>
-      <div className="mx-auto max-w-[1440px]">
+      <div className="">
         <BrowserRouter>
           <Routes>
             <Route path="/admin" element={<AdminLayout />}>
               <Route path="category-list" element={<CategoryList />} />
               <Route path="category-list/create" element={<CategoryCU />} />
               <Route path="category-list/update/:id" element={<CategoryCU />} />
+              <Route path="game-list" element={<GameList />} />
+              <Route path="game-list/create" element={<GameCU />} />
+              <Route path="game-list/update/:id" element={<GameCU />} />
             </Route>
 
             <Route path="/" element={<NavFooterPage />}>
@@ -40,6 +47,8 @@ function App() {
               <Route path="browser" element={<BrowserPage />} />
               <Route path="product" element={<ProductDetai />} />
               <Route path="cart" element={<CartPage />} />
+              <Route path="checkout" element={<Checkout />} />
+              <Route path="qr-scan" element={<QRscan />} />
             </Route>
             
             <Route path="/403" element={<Forbidden />} />
