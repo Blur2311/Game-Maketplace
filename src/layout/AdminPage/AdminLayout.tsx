@@ -2,7 +2,7 @@ import { BreadCrumb } from "primereact/breadcrumb";
 import { OverlayPanel } from "primereact/overlaypanel";
 import { useRef } from "react";
 import { BsBellFill } from "react-icons/bs";
-import { FaRegPlusSquare } from "react-icons/fa";
+import { FaRegPlusSquare, FaGamepad } from "react-icons/fa";
 import { FiTag, FiUser, FiPercent } from "react-icons/fi";
 import { HiOutlineChartPie } from "react-icons/hi";
 import { LuShoppingCart, LuBarChart4 } from "react-icons/lu";
@@ -11,18 +11,18 @@ import { NavLink, Outlet } from "react-router-dom";
 
 export const AdminLayout = () => {
   const op = useRef<OverlayPanel>(null);
-  const items = [
-    {
-      template: () => (
-        <Link to={"/"} className="text-textAdminGray font-semibold">
-          Categories
-        </Link>
-      ),
-    },
-    {
-      template: () => <span className="font-bold text-black">List</span>,
-    },
-  ];
+  // const items = [
+  //   {
+  //     template: () => (
+  //       <Link to={"/"} className="font-semibold text-textAdminGray">
+  //         Categories
+  //       </Link>
+  //     ),
+  //   },
+  //   {
+  //     template: () => <span className="font-bold text-black">List</span>,
+  //   },
+  // ];
   return (
     <>
       <div className="flex h-full">
@@ -40,7 +40,7 @@ export const AdminLayout = () => {
                 className={({ isActive }) => {
                   return isActive
                     ? "flex items-center rounded bg-mainYellow px-5 py-1 text-white"
-                    : "text-textAdminGray flex items-center rounded bg-transparent px-5 py-1 transition duration-300 ease-in-out hover:bg-mainYellow hover:text-white";
+                    : "flex items-center rounded bg-transparent px-5 py-1 text-textAdminGray transition duration-300 ease-in-out hover:bg-mainYellow hover:text-white";
                 }}
               >
                 <div className="flex h-10 w-10 items-center justify-center">
@@ -51,17 +51,17 @@ export const AdminLayout = () => {
             </li>
             <li>
               <NavLink
-                to={`/setting/user-info`}
+                to={`/admin/game-list`}
                 className={({ isActive }) => {
                   return isActive
                     ? "flex items-center rounded bg-mainYellow px-5 py-1 text-white"
-                    : "text-textAdminGray flex items-center rounded bg-transparent px-5 py-1 transition duration-300 ease-in-out hover:bg-mainYellow hover:text-white";
+                    : "flex items-center rounded bg-transparent px-5 py-1 text-textAdminGray transition duration-300 ease-in-out hover:bg-mainYellow hover:text-white";
                 }}
               >
                 <div className="flex h-10 w-10 items-center justify-center">
-                  <LuShoppingCart className="text-2xl" />
+                  <FaGamepad className="text-2xl" />
                 </div>
-                <p className="p-[10px] text-xs font-bold uppercase">Products</p>
+                <p className="p-[10px] text-xs font-bold uppercase">Game</p>
               </NavLink>
             </li>
             <li>
@@ -70,7 +70,7 @@ export const AdminLayout = () => {
                 className={({ isActive }) => {
                   return isActive
                     ? "flex items-center rounded bg-mainYellow px-5 py-1 text-white"
-                    : "text-textAdminGray flex items-center rounded bg-transparent px-5 py-1 transition duration-300 ease-in-out hover:bg-mainYellow hover:text-white";
+                    : "flex items-center rounded bg-transparent px-5 py-1 text-textAdminGray transition duration-300 ease-in-out hover:bg-mainYellow hover:text-white";
                 }}
               >
                 <div className="flex h-10 w-10 items-center justify-center">
@@ -87,7 +87,7 @@ export const AdminLayout = () => {
                 className={({ isActive }) => {
                   return isActive
                     ? "flex items-center rounded bg-mainYellow px-5 py-1 text-white"
-                    : "text-textAdminGray flex items-center rounded bg-transparent px-5 py-1 transition duration-300 ease-in-out hover:bg-mainYellow hover:text-white";
+                    : "flex items-center rounded bg-transparent px-5 py-1 text-textAdminGray transition duration-300 ease-in-out hover:bg-mainYellow hover:text-white";
                 }}
               >
                 <div className="flex h-10 w-10 items-center justify-center">
@@ -102,7 +102,7 @@ export const AdminLayout = () => {
                 className={({ isActive }) => {
                   return isActive
                     ? "flex items-center rounded bg-mainYellow px-5 py-1 text-white"
-                    : "text-textAdminGray flex items-center rounded bg-transparent px-5 py-1 transition duration-300 ease-in-out hover:bg-mainYellow hover:text-white";
+                    : "flex items-center rounded bg-transparent px-5 py-1 text-textAdminGray transition duration-300 ease-in-out hover:bg-mainYellow hover:text-white";
                 }}
               >
                 <div className="flex h-10 w-10 items-center justify-center">
@@ -119,7 +119,7 @@ export const AdminLayout = () => {
                 className={({ isActive }) => {
                   return isActive
                     ? "flex items-center rounded bg-mainYellow px-5 py-1 text-white"
-                    : "text-textAdminGray flex items-center rounded bg-transparent px-5 py-1 transition duration-300 ease-in-out hover:bg-mainYellow hover:text-white";
+                    : "flex items-center rounded bg-transparent px-5 py-1 text-textAdminGray transition duration-300 ease-in-out hover:bg-mainYellow hover:text-white";
                 }}
               >
                 <div className="flex h-10 w-10 items-center justify-center">
@@ -133,8 +133,8 @@ export const AdminLayout = () => {
           </ul>
         </div>
         <div className="flex-1 bg-white">
-          <div className="flex w-full items-center justify-between border-b-2 border-borderSubdued p-5 shadow-sm">
-            <BreadCrumb model={items} />
+          <div className="flex w-full items-center justify-end border-b-2 border-borderSubdued p-5 shadow-sm">
+            {/* <BreadCrumb model={items} /> */}
             <div className="flex cursor-pointer items-center gap-6">
               <BsBellFill className="text-xl" />
               <div

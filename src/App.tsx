@@ -16,6 +16,8 @@ import { UserProfile } from "./layout/UserProfilePage/UserProfile";
 import { AdminLayout } from "./layout/AdminPage/AdminLayout";
 import { CategoryList } from "./layout/AdminPage/CategoryManagePage/CategoryList";
 import { CategoryCU } from "./layout/AdminPage/CategoryManagePage/CategoryCU";
+import { GameList } from "./layout/AdminPage/GameManagePage/GameList";
+import { GameCU } from "./layout/AdminPage/GameManagePage/GameCU";
 import { ChangePW } from "./layout/ChangePWPage/ChangePW";
 import { AdminSignIn } from "./layout/SignInPage/AdminSignIn";
 import { Checkout } from "./layout/CartPage/Checkout";
@@ -32,6 +34,9 @@ function App() {
               <Route path="category-list" element={<CategoryList />} />
               <Route path="category-list/create" element={<CategoryCU />} />
               <Route path="category-list/update/:id" element={<CategoryCU />} />
+              <Route path="game-list" element={<GameList />} />
+              <Route path="game-list/create" element={<GameCU />} />
+              <Route path="game-list/update/:id" element={<GameCU />} />
             </Route>
 
             <Route path="/" element={<NavFooterPage />}>

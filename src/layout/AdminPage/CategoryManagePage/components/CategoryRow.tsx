@@ -23,6 +23,7 @@ export const CategoryRow: React.FC<CategoryRowProps> = ({
   return (
     <>
       <tr className="border-b border-borderRow bg-white text-xs font-light">
+        <td className={`px-5 py-[25px]`}>{sysIdCategory}</td>
         <td className={`px-5 py-[25px]`}>{categoryName}</td>
         <td className="px-5 py-[25px]">{description}</td>
         <td className={`px-5 py-[25px]`}>

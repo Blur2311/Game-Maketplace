@@ -1,62 +1,68 @@
 import { InputText } from "primereact/inputtext";
 import { RightSideButton } from "../../../components/RightSideButton";
 import { MdAddBox } from "react-icons/md";
-import { CategoryRow } from "./components/CategoryRow";
+import { GameRow } from "./components/GameRow";
 import { Paginator } from "primereact/paginator";
 import { useState, useEffect } from "react";
-import "./Category.css";
+import "./Game.css";
 import apiClient from "../../../config/apiClient";
 
-export const CategoryList = () => {
+interface CategoryDetail {
+  sysIdCategoryDetail: number;
+  sysIdGame: number;
+  sysIdCategory: number ;
+  categoryName: string;
+}
+
+interface Game {
+  sysIdGame: number;
+  gameName: string;
+  price: number;
+  discountPercent: number | null;
+  categoryDetails: CategoryDetail[];
+  gameImage: string;
+  description: string;
+  isActive: boolean;
+  quantity: number;
+}
+
+export const GameList = () => {
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(10);
   const [totalRecords, setTotalRecords] = useState(0);
   const [searchTerm, setSearchTerm] = useState(""); // Thêm state để lưu trữ giá trị tìm kiếm
-
-  interface Category {
-    sysIdCategory: number;
-    categoryName: string;
-    description: string | null;
-    categoryDetails: any | null;
-  }
-
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [games, setGames] = useState<Game[]>([]);
 
   const onPageChange = (event: any) => {
     setFirst(event.first);
     setRows(event.rows);
-    fetchCategories(event.first, event.rows, searchTerm);
+    fetchGames(event.first, event.rows, searchTerm);
   };
 
-  const fetchCategories = (first: number, rows: number, searchTerm: string) => {
+  const fetchGames = (first: number, rows: number, searchTerm: string) => {
     apiClient
-      .get("/api/categories")
+      .get("/api/games")
       .then((response) => {
-        const allCategories = response.data.data;
-        if (Array.isArray(allCategories)) {
-          const filteredCategories = allCategories.filter(
-            (category: Category) =>
-              category.categoryName
-                .toLowerCase()
-                .includes(searchTerm.toLowerCase()),
+        const allGames = response.data.data;
+        // console.log("All games:", allGames);
+        if (Array.isArray(allGames)) {
+          const filteredGames = allGames.filter((game: Game) =>
+            game.gameName.toLowerCase().includes(searchTerm.toLowerCase()),
           );
-          setTotalRecords(filteredCategories.length);
-          const paginatedCategories = filteredCategories.slice(
-            first,
-            first + rows,
-          );
-          setCategories(paginatedCategories);
+          setTotalRecords(filteredGames.length);
+          const paginatedGames = filteredGames.slice(first, first + rows);
+          setGames(paginatedGames);
         } else {
-          console.error("API response is not an array:", allCategories);
+          console.error("API response is not an array:", allGames);
         }
       })
       .catch((error) => {
-        console.error("Error fetching categories:", error);
+        console.error("Error fetching games:", error);
       });
   };
 
   useEffect(() => {
-    fetchCategories(first, rows, searchTerm);
+    fetchGames(first, rows, searchTerm);
   }, [first, rows, searchTerm]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,7 +73,7 @@ export const CategoryList = () => {
   return (
     <>
       <div className="">
-        <h3 className="text-[32px] font-semibold">Category List</h3>
+        <h3 className="text-[32px] font-semibold">Game List</h3>
         <div className="mt-2 flex gap-9">
           <div className="flex-1">
             <div className="flex rounded-md border border-black p-5">
@@ -91,18 +97,26 @@ export const CategoryList = () => {
                 <thead>
                   <tr className="text-left">
                     <th className="p-5 text-xs font-light">Id</th>
-                    <th className="p-5 text-xs font-light">Category Name</th>
-                    <th className="p-5 text-xs font-light">Describe</th>
+                    <th className="p-5 text-xs font-light">Game Name</th>
+                    <th className="p-5 text-xs font-light">Price</th>
+                    <th className="p-5 text-xs font-light">Discount Percent</th>
+                    <th className="p-5 text-xs font-light">Category</th>
                     <th className=""></th>
                   </tr>
                 </thead>
                 <tbody>
-                  {categories.map((category) => (
-                    <CategoryRow
-                      key={category.sysIdCategory}
-                      sysIdCategory={category.sysIdCategory}
-                      categoryName={category.categoryName}
-                      description={category.description}
+                  {games.map((game) => (
+                    <GameRow
+                      key={game.sysIdGame}
+                      sysIdGame={game.sysIdGame}
+                      gameName={game.gameName}
+                      price={game.price}
+                      discountPercent={game.discountPercent}
+                      categoryDetails={game.categoryDetails}
+                      gameImage={game.gameImage}
+                      description={game.description}
+                      isActive={game.isActive}
+                      quantity={game.quantity}
                     />
                   ))}
                 </tbody>
@@ -114,15 +128,15 @@ export const CategoryList = () => {
                   totalRecords={totalRecords} // Độ dài dữ liệu
                   template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
                   onPageChange={onPageChange}
-                  className="custom-pagi-cate bg-transparent text-gray150"
+                  className="bg-transparent text-gray150"
                 />
               </div>
             </div>
           </div>
           <RightSideButton
-            text={"Add Category"}
+            text={"Add Game"}
             Icon={MdAddBox}
-            link={"/admin/category-list/create"}
+            link={"/admin/game-list/create"}
           />
         </div>
       </div>
