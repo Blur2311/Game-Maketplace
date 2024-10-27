@@ -1,5 +1,33 @@
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import apiClient from '../config/apiClient';
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+
+export const useAuthCheck = (
+  requireRoles: string[] = [],
+) => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        await apiClient.get('/api/auth/is-login');
+        const token = localStorage.getItem("token");
+        if (token) {
+          const decodedToken: DecodedToken = jwtDecode(token);
+          if (!requireRoles.includes(decodedToken.role)) {
+            navigate('/403');
+          }
+        } else {
+          throw new Error('Token is null');
+        }
+      } catch (error) {
+        console.error('Failed to check login status:', error);      
+      }
+    };
+    checkLoginStatus();
+  }, []);
+};
 
 export const signOut = async () => {
   try {

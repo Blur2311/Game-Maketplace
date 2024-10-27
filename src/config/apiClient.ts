@@ -6,7 +6,7 @@ import {
 } from "../utils/ErrorHandlingUtils";
 
 if (!env.API_URL) {
-  throw new Error("API_URL không được định nghĩa trong biến môi trường");
+  throw new Error("API_URL is missing in the environment variables");
 }
 
 const apiClient = axios.create({

@@ -3,18 +3,15 @@ import apiClient from "../config/apiClient";
 import { jwtDecode } from "jwt-decode";
 
 interface DecodedToken {
-  // Define the properties of the decoded token here
   sub: string;
   role: string;
   iat: number;
   exp: number;
-  // Add other properties as needed
 }
 
 export const LOCKOUT_THRESHOLD = 5;
 export const LOCKOUT_DURATION = 30 * 60 * 1000;
 
-//API CRUD
 export const loginUser = async (
   username: string,
   password: string,
@@ -30,8 +27,8 @@ export const loginUser = async (
 
     toast.current?.show({
       severity: "success",
-      summary: "Đăng nhập thành công!",
-      detail: "Chào mừng bạn quay trở lại!",
+      summary: "Login successful!",
+      detail: "Welcome back!",
       life: 3000,
     });
 
@@ -39,17 +36,15 @@ export const loginUser = async (
   } catch (error) {
     toast.current?.show({
       severity: "error",
-      summary: "Lỗi",
+      summary: "Error",
       detail:
-        (error as any)?.response?.data?.message ??
-        "Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại.",
+        (error as any)?.response?.data?.message ?? "Login failed. Try again.",
       life: 3000,
     });
     throw error;
   }
 };
 
-// OTHERS
 export const getLoginAttempts = () => {
   return parseInt(localStorage.getItem("loginAttempts") || "0", 10);
 };
