@@ -40,7 +40,7 @@ export const Registration: React.FC = React.memo(() => {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      showSuccessToast(toast, "Đăng ký thành công");
+      showSuccessToast(toast, "Sign up successful!");
       return true;
     } else {
       Object.values(newErrors).forEach((error) => {
@@ -59,7 +59,7 @@ export const Registration: React.FC = React.memo(() => {
 
     showInfoToast(
       toast,
-      "Vui lòng chờ trong khi chúng tôi gửi email xác nhận.",
+      "Hang tight while we send a confirmation email.",
     );
 
     try {
@@ -69,7 +69,7 @@ export const Registration: React.FC = React.memo(() => {
         hashPassword: password,
       });
 
-      showSuccessToast(toast, response.data.message || "Đăng ký thành công");
+      showSuccessToast(toast, response.data.message || "Sign up successful!");
 
       if (response.status === 200) {
         localStorage.setItem("email", email);
@@ -81,7 +81,7 @@ export const Registration: React.FC = React.memo(() => {
       showErrorToast(
         toast,
         (error as any)?.response?.data?.message ??
-          "Đã xảy ra lỗi khi đăng ký. Vui lòng thử lại.",
+          "Something went wrong. Try again.",
       );
       setIsSubmitting(false);
     }
@@ -90,15 +90,14 @@ export const Registration: React.FC = React.memo(() => {
   return (
     <>
       <Toast ref={toast} position="top-right" />
-      <div className="container mx-auto flex h-full justify-center sm:my-8">
+      <div className="container flex justify-center h-full mx-auto sm:my-8">
         <div className="flex h-full w-full flex-col items-center rounded-lg bg-gray300 px-5 pb-[60px] pt-[50px] text-white sm:h-fit sm:w-[470px] sm:px-14">
           <Link to={"/"}>
             <img src="/logo.png" alt="" className="mb-[60px] h-14" />
           </Link>
-          <h6 className="mb-5 text-xl font-bold">TẠO TÀI KHOẢN</h6>
+          <h6 className="mb-5 text-xl font-bold">CREATE ACCOUNT</h6>
           <p className="mb-6 max-w-[360px] text-justify text-[0.925rem] text-mainYellow hover:text-white">
-            Đăng ký để theo dõi đơn hàng của bạn, lưu các trò chơi yêu thích và
-            nhận các ưu đãi độc quyền
+            Sign up to track your orders, save favorite games, and get exclusive deals.
           </p>
           <div className="flex flex-col items-center gap-6">
             <FloatLabel className="w-full text-sm">
@@ -110,7 +109,7 @@ export const Registration: React.FC = React.memo(() => {
                 aria-invalid={!!errors.email}
                 aria-describedby="email-error"
               />
-              <label htmlFor="Email">Địa chỉ Email</label>
+              <label htmlFor="Email">Email Address</label>
             </FloatLabel>
             <FloatLabel className="w-full text-sm">
               <InputText
@@ -121,7 +120,7 @@ export const Registration: React.FC = React.memo(() => {
                 aria-invalid={!!errors.username}
                 aria-describedby="username-error"
               />
-              <label htmlFor="Username">Tên người dùng</label>
+              <label htmlFor="Username">Username</label>
             </FloatLabel>
             <FloatLabel className="text-sm">
               <InputText
@@ -133,10 +132,10 @@ export const Registration: React.FC = React.memo(() => {
                 aria-invalid={!!errors.password}
                 aria-describedby="password-error"
               />
-              <label htmlFor="Password">Mật khẩu</label>
+              <label htmlFor="Password">Password</label>
               <Button
                 icon={showPassword ? "pi pi-eye-slash" : "pi pi-eye"}
-                className="absolute right-0 top-0 h-full"
+                className="absolute top-0 right-0 h-full"
                 onClick={() => setShowPassword(!showPassword)}
               />
             </FloatLabel>
@@ -150,14 +149,14 @@ export const Registration: React.FC = React.memo(() => {
                 aria-invalid={!!errors.confirmPassword}
                 aria-describedby="confirm-password-error"
               />
-              <label htmlFor="ConfirmPassword">Xác nhận mật khẩu</label>
+              <label htmlFor="ConfirmPassword">Confirm Password</label>
               <Button
                 icon={showConfirmPassword ? "pi pi-eye-slash" : "pi pi-eye"}
-                className="absolute right-0 top-0 h-full"
+                className="absolute top-0 right-0 h-full"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               />
             </FloatLabel>
-            <div className="align-items-center flex w-full">
+            <div className="flex w-full align-items-center">
               <Checkbox
                 inputId="Read"
                 name="ReadPolicy"
@@ -171,29 +170,29 @@ export const Registration: React.FC = React.memo(() => {
                 htmlFor="ReadPolicy"
                 className="ml-2 text-sm text-slate-300"
               >
-                {"Tôi đã đọc và đồng ý với "}
+                {"I have read and agree to the "}
                 <a
                   href="#"
                   className="font-medium underline hover:text-mainYellow"
                 >
-                  điều khoản dịch vụ
+                  terms of service
                 </a>
               </label>
             </div>
             <Button
-              label="TẠO TÀI KHOẢN"
+              label="CREATE ACCOUNT"
               size="large"
-              className="h-14 w-full bg-mainYellow text-base font-bold text-slate-900"
+              className="w-full text-base font-bold h-14 bg-mainYellow text-slate-900"
               onClick={handleSubmit}
               disabled={isSubmitting}
             />
-            <div className="mt-9 text-sm">
-              {"Đã có tài khoản? "}
+            <div className="text-sm mt-9">
+              {"Already have an account? "}
               <Link
                 to="/sign-in"
                 className="font-medium underline hover:text-mainYellow"
               >
-                Đăng nhập
+                Sign in
               </Link>
             </div>
             <div className="text-sm">
@@ -201,7 +200,7 @@ export const Registration: React.FC = React.memo(() => {
                 href="#"
                 className="font-medium underline hover:text-mainYellow"
               >
-                Chính sách bảo mật
+                Privacy policy
               </a>
             </div>
           </div>

@@ -1,16 +1,20 @@
 import { Button } from "primereact/button";
 import { Galleria } from "primereact/galleria";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import apiClient from "../../../config/apiClient";
+import { getImage } from "../../../utils/ProductUtils";
 
 type Hero = {
   content: string;
   name: string;
   image: string;
   imageThumbnail: string;
+  slug?: string;
 };
 
 export const Hero = () => {
-  const [items] = useState<Hero[]>([
+  const [items, setItems] = useState<Hero[]>([
     {
       content:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
@@ -55,6 +59,41 @@ export const Hero = () => {
     },
   ]);
 
+  useEffect(() => {
+    loadTop6Items();
+  }, []);
+
+  const loadTop6Items = async () => {
+    let requestParams = {
+      field: "quantitySold",
+      page: 0,
+      size: 6,
+    };
+    const result = await apiClient
+      .get(`/api/games/p/sort`, {
+        params: requestParams,
+      })
+      .then((response) => {
+        return response.data.data;
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    const newItems: Hero[] = [];
+    await result.forEach((item: any) => {
+      let image = getImage(item, "p1");
+      let thumbnail = getImage(item, "thumbnail");
+      newItems.push({
+        content: item.description,
+        name: item.gameName,
+        image: image ?? "/image1.png",
+        imageThumbnail: thumbnail ?? "/image1.2.jpg",
+        slug: `/product/${item.slug}`,
+      });
+    });
+    setItems(newItems);
+  };
+
   const itemTemplate = (item: Hero) => {
     return (
       <div
@@ -67,10 +106,12 @@ export const Hero = () => {
             <p className="text-base font-light max-w-80">{item.content}</p>
           </div>
           <div className="flex gap-4">
-            <Button
-              label="More Info"
-              className="hidden w-[180px] rounded-lg bg-mainYellow px-3 py-3 text-sm hover:bg-hoverYellow sm:block"
-            />
+            <Link to={item.slug ?? "/"}>
+              <Button
+                label="More Info"
+                className="hidden w-[180px] rounded-lg bg-mainYellow px-3 py-3 text-sm hover:bg-hoverYellow sm:block"
+              />
+            </Link>
             <Button
               label="Add to Wishlist"
               icon="pi pi-plus-circle"
@@ -84,14 +125,14 @@ export const Hero = () => {
 
   const thumbnailTemplate = (item: Hero) => {
     return (
-      <div className="w-[160px] rounded-xl font-inter hover:bg-gray200 hover:bg-opacity-50 xl:w-[180px] overflow-auto">
+      <div className="w-[160px] overflow-auto rounded-xl font-inter hover:bg-gray200 hover:bg-opacity-50 xl:w-[180px]">
         <div className="flex gap-4 p-[10px]">
           <img
             src={item.imageThumbnail}
             alt=""
-            className="w-8 rounded-lg xl:w-10"
+            className="rounded-lg hero-thumbnail-img xl:w-10"
           />
-          <p className="flex-1 text-sm font-light text-white">{item.name}</p>
+          <p className="flex-1 hero-mini-game-description">{item.name}</p>
         </div>
       </div>
     );
@@ -125,7 +166,7 @@ export const Hero = () => {
           transitionInterval={5000}
           showIndicators={false}
           showItemNavigators={false}
-          className="custom-galleria hidden h-[495px] w-full md:block"
+          className="hidden w-full custom-galleria md:block"
         />
       </div>
     </>

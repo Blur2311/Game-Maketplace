@@ -20,6 +20,7 @@ import { GameList } from "./layout/AdminPage/GameManagePage/GameList";
 import { GameCU } from "./layout/AdminPage/GameManagePage/GameCU";
 import { ChangePW } from "./layout/ChangePWPage/ChangePW";
 import { AdminSignIn } from "./layout/SignInPage/AdminSignIn";
+import Forbidden from "./layout/ErrorPage/Forbidden";
 import { Checkout } from "./layout/CartPage/Checkout";
 import { CartPage } from "./layout/CartPage/CartPage";
 import { QRscan } from "./layout/CartPage/QRscan";
@@ -49,6 +50,8 @@ function App() {
               <Route path="checkout" element={<Checkout />} />
               <Route path="qr-scan" element={<QRscan />} />
             </Route>
+            
+            <Route path="/403" element={<Forbidden />} />
 
             <Route path="/setting" element={<NavSidebarPage />}>
               <Route path="user-info" element={<UserProfile />} />
