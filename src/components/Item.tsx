@@ -20,12 +20,12 @@ export const Item: React.FC<ItemProps> = (item) => {
           <img
             src={item.image}
             alt=""
-            className="mb-[10px] h-[266px] w-full rounded-lg transition duration-300 hover:brightness-125"
+            className="mb-[10px] h-[254px] w-[190px] rounded-lg transition duration-300 hover:brightness-125 object-cover"
           />
         </Link>
         <p className="text-xs text-textType">{item.type}</p>
         <Link to={item.url}>
-          <h6 className="text-overflow-ellipsis-1-line my-[5px] text-base font-bold">
+          <h6 className="my-[5px] text-base font-bold line-clamp-2 max-w-[190px]">
             {item.name}
           </h6>
         </Link>

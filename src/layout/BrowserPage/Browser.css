@@ -37,3 +37,15 @@
 .p-slider .p-slider-handle {
   background-color: #9f9fa0;
 }
+
+.game-image-container {
+  width: 100%;
+  height: 200px; /* Điều chỉnh chiều cao theo nhu cầu của bạn */
+  overflow: hidden;
+}
+
+.game-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
