@@ -192,7 +192,7 @@ export const GameCU = () => {
     }
   };
 
-  const handleUpdae = async () => {
+  const handleUpdate = async () => {
     if (!gameName || !price || !quantity) {
       setError("Please fill in all required fields.");
       return;
@@ -200,8 +200,9 @@ export const GameCU = () => {
 
     setLoading(true);
 
-    // Hàm chuyển đổi file sang base64
-    const convertFileToBase64 = async (file: File) => {
+    // Convert files to Base64...
+     // Hàm chuyển đổi file sang base64
+     const convertFileToBase64 = async (file: File) => {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result);
@@ -218,7 +219,6 @@ export const GameCU = () => {
     const base64Images = await Promise.all(
       images.map((image) => convertFileToBase64(image)),
     );
-
     const gameDTO = {
       sysIdGame,
       gameName,
@@ -226,11 +226,9 @@ export const GameCU = () => {
       discountPercent: parseFloat(discountPercent),
       quantity: parseInt(quantity, 10),
       status: status === "active",
-      categoryDetails: [
-        ...selectedCategories.map((categoryId) => ({
-          sysIdCategory: categoryId,
-        })),
-      ],
+      categoryDetails: selectedCategories.map((categoryId) => ({
+        sysIdCategory: categoryId,
+      })),
       description,
       media: [
         ...(base64Thumbnail
@@ -244,20 +242,18 @@ export const GameCU = () => {
       ],
       slug: gameName.toLowerCase().replace(/ /g, "-"),
     };
-    console.log("Game DTO:", gameDTO);
-    return;
 
     try {
-      const response = await apiClient.post("/api/games", gameDTO, {
+      const response = await apiClient.put(`/api/games/${sysIdGame}`, gameDTO, {
         headers: {
           "Content-Type": "application/json",
         },
       });
       console.log("Game updated:", response.data);
-      // navigate("/admin/game-list");
+      navigate("/admin/game-list");
     } catch (error) {
       console.error("Error updating game:", error);
-      // setError("Failed to save game.");
+      setError("Failed to update game.");
     } finally {
       setLoading(false);
     }
@@ -492,7 +488,7 @@ export const GameCU = () => {
               loading={loading}
               size="large"
               className="rounded bg-mainYellow px-5 py-3 text-xs font-bold uppercase text-white hover:brightness-110"
-              onClick={isUpdateMode ? handleUpdae : handleSave}
+              onClick={isUpdateMode ? handleUpdate : handleSave}
             >
               {isUpdateMode ? "Update" : "Add"}
             </Button>
