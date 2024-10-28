@@ -180,16 +180,20 @@ export const BrowserPage = () => {
     };
   };
 
-  const searchGames = async (name: string, minPrice?: string, maxPrice?: string, genre?: string) => {
+  const searchGames = async (name: string, minPrice?: number, maxPrice?: number, genre?: string) => {
     try {
       setLoading(true);
-      let url = `/api/games/browser?name=${name}&page=0&size=12`;
-      if (minPrice !== undefined && maxPrice !== undefined) {
-        url = `/api/games/browser?name=${name}&minPrice=${minPrice}&maxPrice=${maxPrice}&page=0&size=12`;
-      }
-      if (genre) {
-        url = `/api/games/browser?name=${name}&minPrice=${minPrice}&maxPrice=${maxPrice}&category=${genre}&page=0&size=12`;
-      }
+      const params = new URLSearchParams({
+        page: '0',
+        size: '12'
+      });
+  
+      if (name) params.append('name', name);
+      if (maxPrice !== undefined) params.append('minPrice', maxPrice.toString());
+      if (minPrice !== undefined) params.append('maxPrice', minPrice.toString());
+      if (genre) params.append('category', genre);
+  
+      const url = `/api/games/browser?${params.toString()}`;
       const response = await apiClient.get<{ content: Game[] }>(url);
       setGames(response.data.content);
       setLoading(false);
@@ -198,20 +202,22 @@ export const BrowserPage = () => {
       setLoading(false);
     }
   };
-
+  
   const debouncedSearch = useCallback(
-    debounce((term: string, minPrice?: string, maxPrice?: string) => searchGames(term, minPrice, maxPrice), 300),
+    debounce((term: string, minPrice?: number, maxPrice?: number, genre?: string) => 
+      searchGames(term, minPrice, maxPrice, genre), 300),
     []
   );
-
+  
   useEffect(() => {
-    if (searchTerm || selectedGenre) {
-      if (Array.isArray(price)) {
-        const [minPrice, maxPrice] = price;
-        debouncedSearch(searchTerm, minPrice, maxPrice, selectedGenre || undefined);
-      } else {
-        debouncedSearch(searchTerm, undefined, undefined, selectedGenre || undefined);
+    if (searchTerm || selectedGenre || (Array.isArray(price) && (price[0] !== 0 || price[1] !== 0))) {
+      let minPrice, maxPrice;
+      if (Array.isArray(price)) { 
+        [minPrice, maxPrice] = price;
       }
+      debouncedSearch(searchTerm, minPrice, maxPrice, selectedGenre || undefined);
+    } else {
+      fetchGames();
     }
   }, [searchTerm, price, selectedGenre, debouncedSearch]);
 
