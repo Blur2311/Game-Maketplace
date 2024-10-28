@@ -28,6 +28,8 @@ import { TransactionList } from "./layout/TransactionPage/TransactionList";
 import { ReviewHistory } from "./layout/ReviewHistoryPage/ReviewHistory";
 import { OrderHistory } from "./layout/OrderHistoryPage/OrderHistory";
 import { OrderHistoryDetail } from "./layout/OrderHistoryPage/OrderHistoryDetail";
+import { Wishlist } from "./layout/WishlistPage/Wishlist";
+import { News } from "./layout/NewsPage/News";
 
 function App() {
   return (
@@ -53,8 +55,10 @@ function App() {
               <Route path="cart" element={<CartPage />} />
               <Route path="checkout" element={<Checkout />} />
               <Route path="qr-scan" element={<QRscan />} />
+              <Route path="wishlist" element={<Wishlist />} />
+              <Route path="news" element={<News />} />
             </Route>
-            
+
             <Route path="/403" element={<Forbidden />} />
 
             <Route path="/setting" element={<NavSidebarPage />}>

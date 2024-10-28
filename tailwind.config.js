@@ -19,7 +19,7 @@ export default {
         gray150: "#B1B1B3",
         gray200: "#5A5A5A",
         gray250: "#E7E7E7",
-        gray300: "#202020",
+        gray300: "#202024",
         gray350: "#CCCCCC",
         gray400: "#353539",
         grayBorder: "#444444",
