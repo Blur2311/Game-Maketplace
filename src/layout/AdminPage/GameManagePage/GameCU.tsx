@@ -183,7 +183,7 @@ export const GameCU = () => {
         },
       });
       console.log("Game saved:", response.data);
-      // navigate("/admin/game-list");
+      navigate("/admin/game-list");
     } catch (error) {
       console.error("Error saving game:", error);
       // setError("Failed to save game.");
@@ -272,7 +272,7 @@ export const GameCU = () => {
             <h6 className="text-lg text-gray100">
               The information can be edited
             </h6>
-            <p className="text-textGray300 mt-3 flex items-center gap-1 text-sm">
+            <p className="flex items-center gap-1 mt-3 text-sm text-textGray300">
               <FaAsterisk className="text-[6px] text-red-500" />
               Is a mandatory information field
             </p>
@@ -288,7 +288,7 @@ export const GameCU = () => {
                   <img
                     src={thumbnailUrl}
                     alt="Thumbnail"
-                    className="h-24 w-24 rounded-full object-cover"
+                    className="object-cover w-24 h-24 rounded-full"
                   />
                 </div>
               )}
@@ -311,7 +311,7 @@ export const GameCU = () => {
                   <img
                     src={logoUrl}
                     alt="Logo"
-                    className="h-24 w-24 rounded-full object-cover"
+                    className="object-cover w-24 h-24 rounded-full"
                   />
                 </div>
               )}
@@ -329,13 +329,13 @@ export const GameCU = () => {
               <label className="block text-sm">
                 Images <span className="text-red-500">*</span>
               </label>
-              <div className="mb-4 flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 mb-4">
                 {imageUrls.map((url, index) => (
                   <img
                     key={index}
                     src={url}
                     alt={`Image ${index + 1}`}
-                    className="h-24 w-24 rounded-full object-cover"
+                    className="object-cover w-24 h-24 rounded-full"
                   />
                 ))}
               </div>
@@ -484,14 +484,14 @@ export const GameCU = () => {
           <div className="mt-6 flex items-center justify-end gap-8 border-t-2 border-[#F2F2F2] pt-3">
             <Link
               to={`/admin/category-list`}
-              className="rounded bg-gray250 px-5 py-3 text-xs font-bold uppercase hover:bg-gray350"
+              className="px-5 py-3 text-xs font-bold uppercase rounded bg-gray250 hover:bg-gray350"
             >
               Cancel
             </Link>
             <Button
               loading={loading}
               size="large"
-              className="rounded bg-mainYellow px-5 py-3 text-xs font-bold uppercase text-white hover:brightness-110"
+              className="px-5 py-3 text-xs font-bold text-white uppercase rounded bg-mainYellow hover:brightness-110"
               onClick={isUpdateMode ? handleUpdae : handleSave}
             >
               {isUpdateMode ? "Update" : "Add"}
