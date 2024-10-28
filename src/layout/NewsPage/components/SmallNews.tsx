@@ -13,7 +13,7 @@ export const SmallNews: React.FC<SmallNewsProps> = (props) => {
       <div className="">
         <hr className="opacity-65" />
         <div className="mb-[30px] flex items-start gap-5 pt-5">
-          <img src={props.img} alt="" className="max-w-[200px]" />
+          <img src={props.img} alt="" className="max-w-[200px] rounded" />
           <div className="">
             <p className="mb-1 text-[9px] font-medium text-textType">
               {props.date}

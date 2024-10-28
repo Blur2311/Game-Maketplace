@@ -30,6 +30,7 @@ import { OrderHistory } from "./layout/OrderHistoryPage/OrderHistory";
 import { OrderHistoryDetail } from "./layout/OrderHistoryPage/OrderHistoryDetail";
 import { Wishlist } from "./layout/WishlistPage/Wishlist";
 import { News } from "./layout/NewsPage/News";
+import { NewsDetail } from "./layout/NewsPage/NewsDetail";
 
 function App() {
   return (
@@ -57,6 +58,7 @@ function App() {
               <Route path="qr-scan" element={<QRscan />} />
               <Route path="wishlist" element={<Wishlist />} />
               <Route path="news" element={<News />} />
+              <Route path="news/detail/:id" element={<NewsDetail />} />
             </Route>
 
             <Route path="/403" element={<Forbidden />} />
