@@ -1,4 +1,5 @@
 import { LocalDate } from '@js-joda/core';
+import { useNavigate } from 'react-router-dom';
 
 export interface MediaDTO {
   mediaUrl: any;
@@ -48,16 +49,3 @@ export interface CartItem {
   slug: string;
   quantity: number;
 }
-export const addToCart = (item: CartItem): void => {
-  const storedCart = localStorage.getItem('cart');
-  let cartItems: CartItem[] = storedCart ? JSON.parse(storedCart) : [];
-
-  const existingItem = cartItems.find(cartItem => cartItem.slug === item.slug);
-  if (existingItem) {
-    existingItem.quantity += item.quantity;
-  } else {
-    cartItems.push(item);
-  }
-
-  localStorage.setItem('cart', JSON.stringify(cartItems));
-};

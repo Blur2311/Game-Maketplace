@@ -18,19 +18,19 @@ export const resendOtp = async (
 
     toast.current?.show({
       severity: response.status === 200 ? "success" : "error",
-      summary: "Thông báo",
+      summary: "Heads up!",
       detail:
         response.data.message ||
-        "Đã xảy ra lỗi khi xác thực email. Vui lòng thử lại.",
+        "Something went wrong. Try again.",
       life: 3000,
     });
   } catch (error) {
     toast.current?.show({
       severity: "error",
-      summary: "Lỗi",
+      summary: "Oops!",
       detail:
         (error as any)?.response?.data?.message ??
-        "Đã xảy ra lỗi khi gửi lại mã xác thực email. Vui lòng thử lại.",
+        "Couldn't resend the code. Try again.",
       life: 3000,
     });
   }
@@ -53,18 +53,18 @@ export const verifyOtp = async (
 
     toast.current?.show({
       severity: response.status === 200 ? "success" : "error",
-      summary: "Thông báo",
+      summary: "Heads up!",
       detail:
         response.data.message ||
-        "Đã xảy ra lỗi khi xác thực email. Vui lòng thử lại.",
+        "Something went wrong. Try again.",
       life: 3000,
     });
 
     if (response.status === 200) {
       toast.current?.show({
         severity: "info",
-        summary: "Mã xác thực hợp lệ",
-        detail: "Đang chuyển hướng đến trang đăng nhập...",
+        summary: "Code is good",
+        detail: "Redirecting to login...",
         life: 3000,
       });
 
@@ -75,10 +75,10 @@ export const verifyOtp = async (
   } catch (error) {
     toast.current?.show({
       severity: "error",
-      summary: "Lỗi",
+      summary: "Oops!",
       detail:
         (error as any)?.response?.data?.message ??
-        "Đã xảy ra lỗi khi xác thực email. Vui lòng thử lại.",
+        "Couldn't verify the code. Try again.",
       life: 3000,
     });
   }

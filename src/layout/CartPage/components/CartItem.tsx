@@ -1,26 +1,30 @@
-import React, { useState } from "react";
-import { Card } from "primereact/card";
 import { Button } from "primereact/button";
-import { formatCurrency } from "../../../utils/OtherUtils";
+import { Card } from "primereact/card";
+import React, { useState } from "react";
 import type { CartItem, GameDTO } from "../../../utils/CartUtils";
-import { useCart } from "../hooks/useCart";
+import { formatCurrency } from "../../../utils/OtherUtils";
 
 interface CartItemProps {
   item: CartItem;
   game: GameDTO;
   onRemove: (slug: string) => void;
+  onQuantityChange: (slug: string, quantityChange: number) => void;
 }
 
-const CartItem: React.FC<CartItemProps> = ({ item, game, onRemove }) => {
+const CartItem: React.FC<CartItemProps> = ({
+  item,
+  game,
+  onRemove,
+  onQuantityChange,
+}) => {
   const discountedPrice = game.price * (1 - (game.discountPercent || 0) / 100);
   const thumbnail = game.media.find((media) => media.mediaName === "thumbnail");
   const mediaUrl = thumbnail ? thumbnail.mediaUrl : game.media[0].mediaUrl;
-  const { updateQuantity } = useCart();
   const [itemQuantity, setItemQuantity] = useState(item.quantity);
   const handleQuantityChange = (gameSlug: string, quantityChange: number) => {
     setItemQuantity((prevQuantity) => prevQuantity + quantityChange);
-    updateQuantity(gameSlug, quantityChange);
-  }
+    onQuantityChange(gameSlug, quantityChange);
+  };
 
   return (
     <Card key={game.slug} className="mb-4">
@@ -36,12 +40,12 @@ const CartItem: React.FC<CartItemProps> = ({ item, game, onRemove }) => {
               {game.features && (
                 <div className="flex gap-2">
                   {game.features.split("\n").map((feature, index) => {
-                    return (index < 2) ? (
-                      <div className="inline-block px-2 py-1 mb-2 text-sm bg-[#343437] text-white rounded">
+                    return index < 2 ? (
+                      <div className="mb-2 inline-block rounded bg-[#343437] px-2 py-1 text-sm text-white">
                         {feature}
                       </div>
-                    ) : (index === 2) ? (
-                      <div className="inline-block px-2 py-1 mb-2 text-sm bg-[#343437] text-white rounded">
+                    ) : index === 2 ? (
+                      <div className="mb-2 inline-block rounded bg-[#343437] px-2 py-1 text-sm text-white">
                         ...more
                       </div>
                     ) : null;
@@ -52,7 +56,7 @@ const CartItem: React.FC<CartItemProps> = ({ item, game, onRemove }) => {
             </div>
             <div className="text-right">
               {game.discountPercent > 0 && (
-                <div className="inline-block px-2 py-1 mb-2 text-sm bg-[#1FBEC6] text-black rounded">
+                <div className="mb-2 inline-block rounded bg-[#1FBEC6] px-2 py-1 text-sm text-black">
                   -{game.discountPercent}%
                 </div>
               )}
@@ -80,7 +84,7 @@ const CartItem: React.FC<CartItemProps> = ({ item, game, onRemove }) => {
               <Button
                 icon="pi pi-plus"
                 className="p-button-rounded p-button-text"
-                disabled={itemQuantity >= game.quantityCount}
+                disabled={itemQuantity >= game.quantity}
                 onClick={() => handleQuantityChange(game.slug, 1)}
               />
             </div>

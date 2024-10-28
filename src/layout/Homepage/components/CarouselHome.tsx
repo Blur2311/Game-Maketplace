@@ -1,15 +1,18 @@
 import { Button } from "primereact/button";
 import { Carousel } from "primereact/carousel";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GoChevronRight } from "react-icons/go";
 import { Item } from "../../../components/Item";
+import apiClient from "../../../config/apiClient";
+import { getImage } from "../../../utils/ProductUtils";
 
 type CarouselHomeProps = {
   name: string;
+  field: string;
 };
 
-export const CarouselHome: React.FC<CarouselHomeProps> = ({ name }) => {
-  const [items] = useState<any[]>([
+export const CarouselHome: React.FC<CarouselHomeProps> = ({ name, field }) => {
+  const [items, setItems] = useState<any[]>([
     {
       name: "Black Myth Wukong",
       type: "Steam Game",
@@ -133,6 +136,43 @@ export const CarouselHome: React.FC<CarouselHomeProps> = ({ name }) => {
     }
   };
 
+  useEffect(() => {
+    loadTop10MostRecent(field);
+  }, []);
+
+  const loadTop10MostRecent = async (field: string) => {
+    let requestParams = {
+      field: field,
+      page: 0,
+      size: 10,
+    };
+    const result = await apiClient
+      .get(`/api/games/p/sort`, {
+        params: requestParams,
+      })
+      .then((response) => {
+        return response.data.data;
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    const newItems = result.map((item: any) => {
+      let thumbnail = getImage(item, "thumbnail");
+      let firstFeatureLine = item.features
+        ? item.features.split("\n")[0]
+        : "New released game";
+      return {
+        name: item.gameName,
+        type: firstFeatureLine,
+        price: item.price,
+        sale: item.discountPercent,
+        image: thumbnail ?? "/image1.2.jpg",
+        url: `/product/${item.slug}`,
+      };
+    });
+    setItems(newItems);
+  };
+
   const itemTemplate = (item: any) => {
     return (
       <Item
@@ -142,7 +182,7 @@ export const CarouselHome: React.FC<CarouselHomeProps> = ({ name }) => {
         price={item.price}
         sale={item.sale}
         wrapper={`mr-4 flex h-[397px] min-w-[190px] flex-col justify-center font-inter text-white sm:max-w-[200px]`}
-        url={""}
+        url={item.url}
       />
     );
   };
@@ -150,7 +190,7 @@ export const CarouselHome: React.FC<CarouselHomeProps> = ({ name }) => {
   return (
     <div className="relative mt-16">
       <div className="flex items-start justify-between">
-        <button className="group mb-4 flex items-center text-white">
+        <button className="flex items-center mb-4 text-white group">
           <span className="mr-2 text-xl font-bold">{name}</span>
           <GoChevronRight className="text-2xl transition-transform duration-300 group-hover:translate-x-2" />
         </button>
@@ -164,7 +204,7 @@ export const CarouselHome: React.FC<CarouselHomeProps> = ({ name }) => {
 
           <Button
             icon="pi pi-chevron-right"
-            className="h-7 w-7 rounded-full bg-gray400 bg-opacity-50"
+            className="bg-opacity-50 rounded-full h-7 w-7 bg-gray400"
             onClick={next}
             disabled={page === totalPages - 1}
           />

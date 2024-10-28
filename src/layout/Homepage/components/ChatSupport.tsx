@@ -26,7 +26,7 @@ export const ChatSupport: React.FC = () => {
       {/* Nút mở chat */}
       <Button
         icon="pi pi-comments"
-        className="fixed bottom-4 right-4 flex h-12 w-12 items-center justify-center rounded-full bg-yellow-400 text-black shadow-lg hover:bg-yellow-300"
+        className="fixed flex items-center justify-center w-12 h-12 text-black bg-yellow-400 rounded-full shadow-lg bottom-4 right-4 hover:bg-yellow-300"
         onClick={toggleDialog}
       />
 
@@ -35,12 +35,12 @@ export const ChatSupport: React.FC = () => {
         visible={isDialogVisible}
         onHide={toggleDialog}
         header="Hỗ Trợ Trực Tuyến"
-        className="fixed bottom-0 right-0 m-0 p-0 font-inter"
+        className="fixed bottom-0 right-0 p-0 m-0 font-inter"
         style={{ width: "300px" }}
       >
         <div className="flex flex-col gap-4">
           {/* Tin nhắn trả lời từ hỗ trợ */}
-          <div className="max-w-full rounded-lg bg-gray-200 p-3 text-xs">
+          <div className="max-w-full p-3 text-xs bg-gray-200 rounded-lg">
             Xin chào! Tôi có thể giúp gì cho bạn?
           </div>
 
@@ -51,7 +51,7 @@ export const ChatSupport: React.FC = () => {
               onChange={(e) => setMessage(e.target.value)}
               rows={3}
               placeholder="Nhập tin nhắn của bạn..."
-              className="w-full rounded-lg border border-gray-300 p-2"
+              className="w-full p-2 border border-gray-300 rounded-lg"
             />
             <button
               type="button"
