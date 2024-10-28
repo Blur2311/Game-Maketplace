@@ -7,6 +7,7 @@
 body {
   @apply font-inter;
   background-color: #011627;
+  opacity: 0.93;
 }
 
 .custom-galleria .p-galleria-content {
@@ -35,4 +36,46 @@ body {
 
 .p-password-panel {
   display: none;
+}
+
+[data-pc-section="thumbnailitems"][pr_id_10] {
+  [data-pc-section="thumbnailitem"] {
+    flex: none !important;
+  }
+}
+
+.hero-thumbnail-img {
+  @apply object-cover w-8 h-[2.875rem];
+}
+
+.hero-mini-game-description {
+  -webkit-line-clamp: 2;
+  max-height: 2.875rem;
+  line-height: 1rem;  
+  @apply text-sm font-light text-white text-overflow-ellipsis;
+}
+
+.hero-thumbnail-img-xl {
+  @apply object-cover w-10 h-[3.6rem];
+}
+
+.text-overflow-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;  
+}
+
+.text-overflow-ellipsis-1-line {
+  -webkit-line-clamp: 1;
+  @apply text-overflow-ellipsis;
+}
+
+.text-overflow-ellipsis-2-line {
+  -webkit-line-clamp: 2;
+  @apply text-overflow-ellipsis;
+}
+
+.top5-items-image {
+  @apply object-cover min-w-[5.625rem] min-h-[7.5rem] max-w-[5.625rem] max-h-[7.5rem];
 }

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
-import { formatCurrency, calculateSalePrice } from "../utils/OtherUtils";
-type ItemProps = {
+import { calculateSalePrice, formatCurrency } from "../utils/OtherUtils";
+import { useCart } from "../layout/CartPage/hooks/useCart";
+export type ItemProps = {
   name: string;
   image: string;
   type: string;
@@ -11,6 +12,7 @@ type ItemProps = {
 };
 
 export const Item: React.FC<ItemProps> = (item) => {
+  const { addToCart } = useCart();
   return (
     <>
       <div className={`${item.wrapper} text-white`}>
@@ -23,19 +25,28 @@ export const Item: React.FC<ItemProps> = (item) => {
         </Link>
         <p className="text-xs text-textType">{item.type}</p>
         <Link to={item.url}>
-          <h6 className="my-[5px] text-base font-bold">{item.name}</h6>
+          <h6 className="text-overflow-ellipsis-1-line my-[5px] text-base font-bold">
+            {item.name}
+          </h6>
         </Link>
-        <div className={`mt-[10px] flex items-center justify-between gap-1`}>
+        <div
+          className={`mt-[10px] flex items-center justify-between gap-1`}
+          onClick={() =>
+            addToCart({ slug: item.url.replace("/product/", ""), quantity: 1 })
+          }
+        >
           {item.sale ? (
             <>
               <div className="rounded-full bg-mainCyan px-2 py-[2px] text-xs text-black">
                 -{item.sale}%
               </div>
-              <p className="text-sm text-textType line-through">
+              <p className="text-sm line-through text-textType">
                 {formatCurrency(item.price)}
               </p>
               <p className="text-sm">
-                {formatCurrency(calculateSalePrice(item.price, item.sale))}
+                {formatCurrency(
+                  Math.round(calculateSalePrice(item.price, item.sale)),
+                )}
               </p>
             </>
           ) : (

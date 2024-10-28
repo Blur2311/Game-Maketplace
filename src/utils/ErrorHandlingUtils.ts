@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 export const handleLockedAccount = (message: string) => {
   Swal.fire({
     icon: "error",
-    title: "Tài khoản đang bị khóa",
+    title: "Account Locked",
     text: message,
   });
   setTimeout(() => {
@@ -14,7 +14,7 @@ export const handleLockedAccount = (message: string) => {
 };
 
 export const handleForbiddenAccess = () => {
-  window.location.href = "/signin";
+  window.location.href = "/403";
 };
 
 export const showErrorToast = (
@@ -23,7 +23,7 @@ export const showErrorToast = (
 ) => {
   toast.current?.show({
     severity: "error",
-    summary: "Lỗi",
+    summary: "Error",
     detail: error,
     life: 3000,
   });
@@ -35,7 +35,7 @@ export const showSuccessToast = (
 ) => {
   toast.current?.show({
     severity: "success",
-    summary: "Thành công",
+    summary: "Success",
     detail: message,
     life: 3000,
   });
@@ -47,7 +47,7 @@ export const showInfoToast = (
 ) => {
   toast.current?.show({
     severity: "info",
-    summary: "Lưu ý",
+    summary: "Note",
     detail: message,
     life: 5000,
   });

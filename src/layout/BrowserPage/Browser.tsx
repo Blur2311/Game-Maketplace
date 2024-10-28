@@ -243,7 +243,7 @@ export const BrowserPage = () => {
               totalRecords={100} // Độ dài dữ liệu
               template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
               onPageChange={onPageChange}
-              className="custom-paginator bg-bgMainColor"
+              className="custom-pagi-browser bg-bgMainColor"
             />
           </div>
         </div>

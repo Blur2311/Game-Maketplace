@@ -29,7 +29,7 @@ export const SideBar = () => {
           </li>
           <li>
             <NavLink
-              to={`/setting/user-i`}
+              to={`/setting/order-history`}
               className={({ isActive }) => {
                 return isActive
                   ? "flex items-center rounded bg-[#F2F2F2] px-5 py-1"
@@ -46,7 +46,7 @@ export const SideBar = () => {
           </li>
           <li>
             <NavLink
-              to={`/setting/user-i`}
+              to={`/setting/transaction`}
               className={({ isActive }) => {
                 return isActive
                   ? "flex items-center rounded bg-[#F2F2F2] px-5 py-1"
@@ -80,7 +80,7 @@ export const SideBar = () => {
           </li>
           <li>
             <NavLink
-              to={`/setting/user-i`}
+              to={`/setting/review-history`}
               className={({ isActive }) => {
                 return isActive
                   ? "flex items-center rounded bg-[#F2F2F2] px-5 py-1"
