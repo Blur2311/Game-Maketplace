@@ -15,6 +15,7 @@ export const GameCU = () => {
   const isUpdateMode = Boolean(id); // Xác định chế độ cập nhật hay tạo mới
   const navigate = useNavigate();
 
+  const [sysIdGame, setSysIdGame] = useState<number | null>(null);
   const [gameName, setGameName] = useState("");
   const [price, setPrice] = useState("");
   const [discountPercent, setDiscountPercent] = useState("");
@@ -27,10 +28,12 @@ export const GameCU = () => {
   >([]);
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
-  const [avatar, setAvatar] = useState<File | null>(null);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [logo, setLogo] = useState<File | null>(null);
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [images, setImages] = useState<File[]>([]);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [media, setMedia] = useState([]);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -38,7 +41,6 @@ export const GameCU = () => {
     const fetchCategories = async () => {
       try {
         const response = await apiClient.get("/api/categories");
-        console.log("Categories:", response.data.data);
 
         const formattedCategories = response.data.data.map((category: any) => ({
           label: category.categoryName,
@@ -48,7 +50,6 @@ export const GameCU = () => {
         setCategories(formattedCategories);
       } catch (error) {
         console.error("Error fetching categories:", error);
-        setError("Failed to load categories");
       }
     };
 
@@ -59,19 +60,31 @@ export const GameCU = () => {
     if (isUpdateMode && id) {
       const storedGame = localStorage.getItem("selectedGame");
       if (storedGame) {
-        const category = JSON.parse(storedGame);
-        setGameName(category.gameName);
-        setPrice(category.price);
-        setDiscountPercent(category.discountPercent);
-        setQuantity(category.quantity);
-        setStatus(category.isActive ? "active" : "inactive");
+        const game = JSON.parse(storedGame);
+        setSysIdGame(game.sysIdGame);
+        setGameName(game.gameName || "");
+        setPrice(game.price || "");
+        setDiscountPercent(game.discountPercent || "");
+        setQuantity(game.quantity || "");
+        setStatus(game.isActive ? "active" : "inactive");
         setSelectedCategories(
-          category.categoryDetails.map((cd: any) => cd.sysIdCategory),
+          game.categoryDetails.map((cd: any) => cd.sysIdCategory),
         );
-        setDescription(category.description);
-        setThumbnailUrl(category.thumbnail);
-        setAvatarUrl(category.avatar);
-        setImageUrls(category.images || []);
+        setDescription(game.description || "");
+        setThumbnailUrl(
+          game.media.mediaName === "thumbnail" ? game.media.mediaUrl : null,
+        );
+        setLogoUrl(
+          game.media.mediaName === "logo" ? game.media.mediaUrl : null,
+        );
+        setImageUrls(
+          game.media
+            .filter(
+              (m: any) => m.mediaName !== "thumbnail" && m.mediaName !== "logo",
+            )
+            .map((m: any) => m.mediaUrl),
+        );
+        setMedia(game.media || []);
       }
     }
   }, [id, isUpdateMode]);
@@ -85,11 +98,11 @@ export const GameCU = () => {
     reader.readAsDataURL(e.files[0]);
   };
 
-  const handleAvatarUpload = (e: any) => {
-    setAvatar(e.files[0]);
+  const handleLogoUpload = (e: any) => {
+    setLogo(e.files[0]);
     const reader = new FileReader();
     reader.onload = (event) => {
-      setAvatarUrl(event.target?.result as string);
+      setLogoUrl(event.target?.result as string);
     };
     reader.readAsDataURL(e.files[0]);
   };
@@ -107,6 +120,76 @@ export const GameCU = () => {
       });
     });
     Promise.all(urls).then((results) => setImageUrls(results));
+  };
+
+  const handleSave = async () => {
+    if (!gameName || !price || !quantity) {
+      setError("Please fill in all required fields.");
+      return;
+    }
+
+    setLoading(true);
+
+    // Hàm chuyển đổi file sang base64
+    const convertFileToBase64 = async (file: File) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
+        reader.readAsDataURL(file);
+      });
+    };
+
+    // Chuyển đổi các hình ảnh sang Base64
+    const base64Thumbnail = thumbnail
+      ? await convertFileToBase64(thumbnail)
+      : null;
+    const base64Logo = logo ? await convertFileToBase64(logo) : null;
+    const base64Images = await Promise.all(
+      images.map((image) => convertFileToBase64(image)),
+    );
+
+    // Tạo object gameDTO phù hợp với cấu trúc của GameDTO
+    const gameDTO = {
+      gameName,
+      price: parseFloat(price),
+      discountPercent: parseFloat(discountPercent),
+      quantity: parseInt(quantity, 10),
+      status: status === "active",
+      categoryDetails: [
+        ...selectedCategories.map((categoryId) => ({
+          sysIdCategory: categoryId,
+        })),
+      ],
+      description,
+      media: [
+        ...(base64Thumbnail
+          ? [{ mediaName: "thumbnail", mediaUrl: base64Thumbnail }]
+          : []),
+        ...(base64Logo ? [{ mediaName: "logo", mediaUrl: base64Logo }] : []),
+        ...base64Images.map((image, index) => ({
+          mediaName: "p" + (index + 1),
+          mediaUrl: image,
+        })),
+      ],
+      slug: gameName.toLowerCase().replace(/ /g, "-"),
+    };
+    console.log("Game DTO:", gameDTO);
+    // return;
+    try {
+      const response = await apiClient.post("/api/games", gameDTO, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      console.log("Game saved:", response.data);
+      // navigate("/admin/game-list");
+    } catch (error) {
+      console.error("Error saving game:", error);
+      // setError("Failed to save game.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -150,21 +233,21 @@ export const GameCU = () => {
 
             <div className="col-span-1 md:col-span-2">
               <label className="block text-sm">
-                Avatar <span className="text-red-500">*</span>
+                Logo <span className="text-red-500">*</span>
               </label>
-              {avatarUrl && (
+              {logoUrl && (
                 <div className="mb-4">
                   <img
-                    src={avatarUrl}
-                    alt="Avatar"
+                    src={logoUrl}
+                    alt="Logo"
                     className="h-24 w-24 rounded-full object-cover"
                   />
                 </div>
               )}
               <FileUpload
-                name="avatar"
+                name="logo"
                 customUpload
-                uploadHandler={handleAvatarUpload}
+                uploadHandler={handleLogoUpload}
                 accept="image/*"
                 maxFileSize={1000000}
                 className="w-full"
@@ -338,7 +421,7 @@ export const GameCU = () => {
               loading={loading}
               size="large"
               className="rounded bg-mainYellow px-5 py-3 text-xs font-bold uppercase text-white hover:brightness-110"
-              // onClick={handleSave}
+              onClick={handleSave}
             >
               {isUpdateMode ? "Update" : "Add"}
             </Button>

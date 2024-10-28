@@ -10,8 +10,15 @@ import apiClient from "../../../config/apiClient";
 interface CategoryDetail {
   sysIdCategoryDetail: number;
   sysIdGame: number;
-  sysIdCategory: number ;
+  sysIdCategory: number;
   categoryName: string;
+}
+
+interface Media {
+  sysIdMedia: number;
+  mediaName: string;
+  mediaUrl: string;
+  sysIdGame: number;
 }
 
 interface Game {
@@ -24,6 +31,7 @@ interface Game {
   description: string;
   isActive: boolean;
   quantity: number;
+  media: Media[];
 }
 
 export const GameList = () => {
@@ -117,6 +125,7 @@ export const GameList = () => {
                       description={game.description}
                       isActive={game.isActive}
                       quantity={game.quantity}
+                      media={game.media}
                     />
                   ))}
                 </tbody>
