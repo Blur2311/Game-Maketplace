@@ -15,7 +15,7 @@ export const useAuthCheck = (
         const token = localStorage.getItem("token");
         if (token) {
           const decodedToken: DecodedToken = jwtDecode(token);
-          if (!requireRoles.includes(decodedToken.role)) {
+          if (!(requireRoles.includes(decodedToken.role) || requireRoles.length === 0)) {
             navigate('/403');
           }
         } else {
@@ -55,4 +55,41 @@ export const getUsernameFromToken = (): string | null => {
     console.error('Failed to decode token:', error);
     return null;
   }
+};
+
+export const getDecodeToken = (): DecodedToken | null => {
+  const token = localStorage.getItem('token');
+  if (!token) return null;
+
+  try {
+    const decoded: DecodedToken = jwtDecode(token);
+    return decoded;
+  } catch (error) {
+    console.error('Failed to decode token:', error);
+    return null;
+  }
+};
+
+export const getCurrentUser = async (): Promise< User | null> => {
+  try {
+    const response = await apiClient.get('/api/auth/current-user');
+    let user: User = response.data.data;
+    user.role = getDecodeToken()?.role;
+    user.balance = parseInt(response.data.data.balance);
+    return user;
+  } catch (error) {
+    console.error('Failed to get current user:', error);
+    return null;
+  }
+};
+
+export type User = {
+  sysIdUser: number;
+  username: string;
+  email: string;
+  role: string;
+  hoVaTen: string;
+  balance: number;
+  avatar: string;
+  joinTime: string;
 };

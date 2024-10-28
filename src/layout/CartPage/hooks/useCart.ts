@@ -77,5 +77,5 @@ export const useCart = () => {
     setChanges((prev) => prev + 1);
   };
 
-  return { cartItems, games, loading, error, addToCart, updateQuantity, removeItem, setChanges };
+  return { cartItems, games, loading, error, addToCart, updateQuantity, removeItem, setChanges, fetchGameDetails };
 };
