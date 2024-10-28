@@ -1,5 +1,5 @@
 export const formatCurrency = (amount: number) => {
-  return `₫${amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+  return `₫${Math.round(amount).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
 };
 
 export const calculateSalePrice = (

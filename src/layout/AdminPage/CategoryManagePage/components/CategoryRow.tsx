@@ -1,25 +1,36 @@
 import { Link } from "react-router-dom";
 
 type CategoryRowProps = {
-  id: string;
-  name: string;
-  describe: string;
+  sysIdCategory: number;
+  categoryName: string;
+  description: string | null;
 };
 
 export const CategoryRow: React.FC<CategoryRowProps> = ({
-  id,
-  name,
-  describe,
+  sysIdCategory,
+  categoryName,
+  description,
 }) => {
+  const handleDetailClick = () => {
+    const categoryData = {
+      sysIdCategory,
+      categoryName,
+      description,
+    };
+    localStorage.setItem("selectedCategory", JSON.stringify(categoryData));
+  };
+
   return (
     <>
-      <tr className="border-borderRow border-b bg-white text-xs font-light">
-        <td className={`px-5 py-[25px]`}>{name}</td>
-        <td className="px-5 py-[25px]">{describe}</td>
+      <tr className="border-b border-borderRow bg-white text-xs font-light">
+        <td className={`px-5 py-[25px]`}>{sysIdCategory}</td>
+        <td className={`px-5 py-[25px]`}>{categoryName}</td>
+        <td className="px-5 py-[25px]">{description}</td>
         <td className={`px-5 py-[25px]`}>
           <Link
-            to={`admin/category-list/update/${id}`}
+            to={`/admin/category-list/update/${sysIdCategory}`}
             className="text-black underline"
+            onClick={handleDetailClick}
           >
             Detail
           </Link>

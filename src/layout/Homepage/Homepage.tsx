@@ -11,14 +11,14 @@ export const Homepage: React.FC = () => {
   return (
     <>
       <Hero />
-      <CarouselHome name="Discover Something New" />
+      <CarouselHome name="Discover Something New" field="releaseDate" />
       <LastChance />
-      <CarouselHome name="Trending" />
+      <CarouselHome name="Trending" field="rating" />
       <Sale />
       <Top5 />
-      <CarouselHome name="Recently Updated" />
+      <CarouselHome name="Recently Updated" field="discountPercent" />
       <NewsHome />
-      <div className="mb-32 mt-16 flex flex-col items-stretch justify-between gap-5 sm:flex-row">
+      <div className="flex flex-col items-stretch justify-between gap-5 mt-16 mb-32 sm:flex-row">
         <SaleCard
           image={"sale.jpeg"}
           name={"Sales & Specials"}
