@@ -8,6 +8,13 @@ type CategoryDetail = {
   categoryName: string;
 };
 
+type Media = {
+  sysIdMedia: number;
+  mediaName: string;
+  mediaUrl: string;
+  sysIdGame: number;
+}
+
 type GameRowProps = {
   sysIdGame: number;
   gameName: string;
@@ -18,6 +25,7 @@ type GameRowProps = {
   description: string;
   isActive: boolean;
   quantity: number;
+  media: Media[];
 };
 
 export const GameRow: React.FC<GameRowProps> = ({
@@ -30,6 +38,7 @@ export const GameRow: React.FC<GameRowProps> = ({
   description,
   isActive,
   quantity,
+  media,
 }) => {
   const handleDetailClick = () => {
     const gameData = {
@@ -42,6 +51,7 @@ export const GameRow: React.FC<GameRowProps> = ({
       description,
       isActive,
       quantity,
+      media,
     };
     localStorage.setItem("selectedGame", JSON.stringify(gameData));
   };
