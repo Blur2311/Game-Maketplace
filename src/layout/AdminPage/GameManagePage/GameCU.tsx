@@ -72,11 +72,11 @@ export const GameCU = () => {
         );
         setDescription(game.description || "");
         setThumbnailUrl(
-          game.media.mediaName === "thumbnail" ? game.media.mediaUrl : null,
+          game.media.find((m: any) => m.mediaName === "thumbnail")?.mediaUrl || null // Trả về null nếu không tìm thấy
         );
         setLogoUrl(
-          game.media.mediaName === "logo" ? game.media.mediaUrl : null,
-        );
+          game.media.find((m: any) => m.mediaName === "logo")?.mediaUrl || null // Trả về null nếu không tìm thấy
+        );               
         setImageUrls(
           game.media
             .filter(
@@ -192,6 +192,77 @@ export const GameCU = () => {
     }
   };
 
+  const handleUpdae = async () => {
+    if (!gameName || !price || !quantity) {
+      setError("Please fill in all required fields.");
+      return;
+    }
+
+    setLoading(true);
+
+    // Hàm chuyển đổi file sang base64
+    const convertFileToBase64 = async (file: File) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
+        reader.readAsDataURL(file);
+      });
+    };
+
+    // Chuyển đổi các hình ảnh sang Base64
+    const base64Thumbnail = thumbnail
+      ? await convertFileToBase64(thumbnail)
+      : null;
+    const base64Logo = logo ? await convertFileToBase64(logo) : null;
+    const base64Images = await Promise.all(
+      images.map((image) => convertFileToBase64(image)),
+    );
+
+    const gameDTO = {
+      sysIdGame,
+      gameName,
+      price: parseFloat(price),
+      discountPercent: parseFloat(discountPercent),
+      quantity: parseInt(quantity, 10),
+      status: status === "active",
+      categoryDetails: [
+        ...selectedCategories.map((categoryId) => ({
+          sysIdCategory: categoryId,
+        })),
+      ],
+      description,
+      media: [
+        ...(base64Thumbnail
+          ? [{ mediaName: "thumbnail", mediaUrl: base64Thumbnail }]
+          : []),
+        ...(base64Logo ? [{ mediaName: "logo", mediaUrl: base64Logo }] : []),
+        ...base64Images.map((image, index) => ({
+          mediaName: "p" + (index + 1),
+          mediaUrl: image,
+        })),
+      ],
+      slug: gameName.toLowerCase().replace(/ /g, "-"),
+    };
+    console.log("Game DTO:", gameDTO);
+    return;
+
+    try {
+      const response = await apiClient.post("/api/games", gameDTO, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      console.log("Game updated:", response.data);
+      // navigate("/admin/game-list");
+    } catch (error) {
+      console.error("Error updating game:", error);
+      // setError("Failed to save game.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <div className="mr-6">
@@ -203,7 +274,7 @@ export const GameCU = () => {
             </h6>
             <p className="text-textGray300 mt-3 flex items-center gap-1 text-sm">
               <FaAsterisk className="text-[6px] text-red-500" />
-              Là trường thông tin bắt buộc
+              Is a mandatory information field
             </p>
           </div>
 
@@ -421,7 +492,7 @@ export const GameCU = () => {
               loading={loading}
               size="large"
               className="rounded bg-mainYellow px-5 py-3 text-xs font-bold uppercase text-white hover:brightness-110"
-              onClick={handleSave}
+              onClick={isUpdateMode ? handleUpdae : handleSave}
             >
               {isUpdateMode ? "Update" : "Add"}
             </Button>

@@ -39,7 +39,7 @@ export const AdminLayout = () => {
             </p>
           </div>
           <ul className="mt-[50px] rounded">
-            <li>
+            {/* <li>
               <NavLink
                 to={`/setting/user-info`}
                 className={({ isActive }) => {
@@ -53,7 +53,7 @@ export const AdminLayout = () => {
                 </div>
                 <p className="p-[10px] text-xs font-bold uppercase">Overview</p>
               </NavLink>
-            </li>
+            </li> */}
             <li>
               <NavLink
                 to={`/admin/game-list`}
@@ -88,7 +88,7 @@ export const AdminLayout = () => {
             </li>
             <li>
               <NavLink
-                to={`/setting/user-info`}
+                to={`/`}
                 className={({ isActive }) => {
                   return isActive
                     ? "flex items-center rounded bg-mainYellow px-5 py-1 text-white"
@@ -103,7 +103,7 @@ export const AdminLayout = () => {
             </li>
             <li>
               <NavLink
-                to={`/setting/user-info`}
+                to={`/`}
                 className={({ isActive }) => {
                   return isActive
                     ? "flex items-center rounded bg-mainYellow px-5 py-1 text-white"
@@ -118,7 +118,7 @@ export const AdminLayout = () => {
                 </p>
               </NavLink>
             </li>
-            <li>
+            {/* <li>
               <NavLink
                 to={`/setting/user-info`}
                 className={({ isActive }) => {
@@ -134,7 +134,7 @@ export const AdminLayout = () => {
                   report & statistics
                 </p>
               </NavLink>
-            </li>
+            </li> */}
           </ul>
         </div>
         <div className="flex-1 bg-white">
