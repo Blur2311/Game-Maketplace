@@ -9,17 +9,20 @@ import { Slider } from "primereact/slider";
 import { formatCurrency } from "../../utils/OtherUtils";
 import "./Browser.css";
 import apiClient from "../../config/apiClient";
-import axios from 'axios'; // hoặc import apiClient từ config của bạn
 import { RadioButton } from "primereact/radiobutton";
+import type { Game, Filters } from "../../utils/BrowserUtils";
+import {searchGames} from "./components/service/apiService";
+
 
 export const BrowserPage = () => {
-  const [price, setPrice] = useState<number | [number, number]>([0, 0]);
+  const [price, setPrice] = useState<number | [number, number]>([10000000, 0]);
   const [activeAccorGenre, setActiveAccorGenre] = useState<number | null>(null);
   const [activeAccorType, setActiveAccorType] = useState<number | null>(null);
   const [activeAccorPrice, setActiveAccorPrice] = useState<number | null>(null); // trạng thái cho Accordion Price
   const [selectedItem, setSelectedItem] = useState<string | null>("1");
   const [first, setFirst] = useState(0);
-  const [rows, setRows] = useState(10);
+  const [rows, setRows] = useState(12);
+  const [totalRecords, setTotalRecords] = useState(0);
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({
     Action: false,
     Adventure: false,
@@ -46,31 +49,15 @@ export const BrowserPage = () => {
   });
   const [games, setGames] = useState<Game[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
-
-  interface Game {
-    sysIdGame: number;
-    gameName: string;
-    media: {
-      mediaUrl: string;
-    }[];
-    categoryDetails: {
-      sysIdCategoryDetail: number;
-      category: {
-        sysIdCategory: number;
-        categoryName: string;
-        description: string;
-      };
-    }[];
-    price: number;
-    discountPercent: number;
-    slug: string;
-  }
+  const [currentFilters, setCurrentFilters] = useState<Filters>({
+    name: '',
+    minPrice: undefined,
+    maxPrice: undefined,
+    genre: undefined
+  });
   const [searchTerm, setSearchTerm] = useState('');
 
-
-  // Hàm xử lý thay đổi trạng thái của checkbox
   // Hàm xử lý thay đổi trạng thái của checkbox
   const handleCheckboxChange = (selectedLabel: string) => {
     setCheckedItems((prev) => {
@@ -101,14 +88,6 @@ export const BrowserPage = () => {
     { label: "Price: High to Low", value: "3" },
     { label: "Price: Low to High", value: "4" },
   ];
-
-  const onSliderChange = (e: { value: number | [number, number] }) => {
-    setPrice(e.value);
-    if (Array.isArray(e.value)) {
-      const [minPrice, maxPrice] = e.value;
-      debouncedSearch(searchTerm, minPrice, maxPrice);
-    }
-  };
 
   // Hàm này quản lý trạng thái cho Accordion Genre
   const handleTabChangeGenre = (e: { index: number | number[] }) => {
@@ -141,9 +120,32 @@ export const BrowserPage = () => {
     setSelectedItem(e.value);
   };
 
-  const onPageChange = (event: any) => {
+  const onPageChange = async (event: any) => {
     setFirst(event.first);
     setRows(event.rows);
+  
+    const newPage = event.first / event.rows;
+  
+    try {
+      setLoading(true);
+      const params = new URLSearchParams({
+        page: newPage.toString(),
+        size: rows.toString(), // Dùng số hàng đã được đặt
+      });
+  
+      // Thêm các bộ lọc từ `currentFilters` vào URL nếu có giá trị
+      if (currentFilters.name) params.append('name', currentFilters.name);
+      if (currentFilters.minPrice !== undefined) params.append('maxPrice', currentFilters.minPrice.toString());
+      if (currentFilters.maxPrice !== undefined) params.append('minPrice', currentFilters.maxPrice.toString());
+      if (currentFilters.genre) params.append('category', currentFilters.genre);
+
+      const url = `/api/games/browser?${params.toString()}`;
+      const response = await apiClient.get<{ content: Game[], totalPages: number, totalElements: number, number: number }>(url);
+      setGames(response.data.content);
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+    }
   };
 
   const headerTemplate = (title: string, isActive: boolean) => (
@@ -159,16 +161,14 @@ export const BrowserPage = () => {
     const fetchGames = async () => {
       try {
         setLoading(true);
-        const response = await apiClient.get<{ content: Game[] }>('/api/games/browser?page=0&size=12');
-        console.log(response.data.content);
+        const response = await apiClient.get<{ content: Game[], totalElements: number, totalPages: number, size: number }>('/api/games/browser?page=0&size=12');
         setGames(response.data.content);
         setLoading(false);
+        setTotalRecords(response.data.totalElements);
       } catch (err) {
-        setError(err);
         setLoading(false);
       }
     };
-
     fetchGames();
   }, []);
 
@@ -180,65 +180,124 @@ export const BrowserPage = () => {
     };
   };
 
-  const searchGames = async (name: string, minPrice?: string, maxPrice?: string, genre?: string) => {
+  const searchGames = async (name: string, minPrice?: number, maxPrice?: number, genre?: string) => {
     try {
       setLoading(true);
-      let url = `/api/games/browser?name=${name}&page=0&size=12`;
-      if (minPrice !== undefined && maxPrice !== undefined) {
-        url = `/api/games/browser?name=${name}&minPrice=${minPrice}&maxPrice=${maxPrice}&page=0&size=12`;
-      }
-      if (genre) {
-        url = `/api/games/browser?name=${name}&minPrice=${minPrice}&maxPrice=${maxPrice}&category=${genre}&page=0&size=12`;
-      }
-      const response = await apiClient.get<{ content: Game[] }>(url);
+      const params = new URLSearchParams({
+        page: '0',
+        size: '12'
+      });
+
+      setCurrentFilters((prevFilters) => ({
+        ...prevFilters,
+        name,
+        minPrice,
+        maxPrice,
+        genre,
+      }));
+
+      if (name) params.append('name', name);
+      if (maxPrice !== undefined) params.append('minPrice', maxPrice.toString());
+      if (minPrice !== undefined) params.append('maxPrice', minPrice.toString());
+      if (genre) params.append('category', genre);
+
+      const url = `/api/games/browser?${params.toString()}`;
+      const response = await apiClient.get<{ content: Game[], totalElements: number, totalPages: number, size: number }>(url);
       setGames(response.data.content);
+      setTotalRecords(response.data.totalElements);
       setLoading(false);
     } catch (err) {
-      setError(err);
       setLoading(false);
     }
   };
 
   const debouncedSearch = useCallback(
-    debounce((term: string, minPrice?: string, maxPrice?: string) => searchGames(term, minPrice, maxPrice), 300),
+    debounce((term: string, minPrice?: number, maxPrice?: number, genre?: string) =>
+      searchGames(term, minPrice, maxPrice, genre), 300),
     []
   );
 
   useEffect(() => {
-    if (searchTerm || selectedGenre) {
+    if (searchTerm || selectedGenre || (Array.isArray(price) && (price[0] !== 0 || price[1] !== 0))) {
+      let minPrice, maxPrice;
       if (Array.isArray(price)) {
-        const [minPrice, maxPrice] = price;
-        debouncedSearch(searchTerm, minPrice, maxPrice, selectedGenre || undefined);
-      } else {
-        debouncedSearch(searchTerm, undefined, undefined, selectedGenre || undefined);
+        [minPrice, maxPrice] = price;
       }
+      debouncedSearch(searchTerm, minPrice, maxPrice, selectedGenre || undefined);
+    } else {
+      fetchGames();
     }
   }, [searchTerm, price, selectedGenre, debouncedSearch]);
+  
 
   const fetchGames = async () => {
     try {
       setLoading(true);
-      const response = await apiClient.get<{ content: Game[] }>('/api/games/browser?page=0&size=12');
+      const response = await apiClient.get<{ content: Game[], totalElements: number, totalPages: number, size: number }>('/api/games/browser?page=0&size=12');
       setGames(response.data.content);
       setLoading(false);
     } catch (err) {
-      setError(err);
       setLoading(false);
     }
   };
 
   const resetFilters = () => {
     setSearchTerm('');
-    setPrice([0, 0]);
+    setPrice([10000000, 0]);
     setSelectedGenre(null);
     setActiveAccorGenre(null);
     setActiveAccorPrice(null);
+    setCurrentFilters({
+      name: '',
+      minPrice: undefined,
+      maxPrice: undefined,
+      genre: undefined,
+    });
     fetchGames();
   };
 
   const handleGenreChange = (genre: string) => {
     setSelectedGenre(genre);
+    setCurrentFilters((prev) => ({ ...prev, genre })); 
   };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const term = e.target.value;
+    setSearchTerm(term);
+    setCurrentFilters((prev) => ({ ...prev, searchTerm: term })); 
+  };
+
+  const onSliderChange = (e: { value: number | [number, number] }) => {
+    setPrice(e.value);
+    if (Array.isArray(e.value)) {
+      const [minPrice, maxPrice] = e.value;
+      debouncedSearch(searchTerm, minPrice, maxPrice);
+    }
+  };
+
+  useEffect(() => {
+    const fetchGames = async () => {
+      setLoading(true);
+  
+      const params = new URLSearchParams({
+        page: (first / rows).toString(),
+        size: rows.toString(),
+      });
+  
+      if (currentFilters.name) params.append('name', currentFilters.name);
+      if (currentFilters.minPrice !== undefined) params.append('minPrice', currentFilters.minPrice.toString());
+      if (currentFilters.maxPrice !== undefined) params.append('maxPrice', currentFilters.maxPrice.toString());
+      if (currentFilters.genre) params.append('category', currentFilters.genre);
+  
+      const url = `/api/games/browser?${params.toString()}`;
+      const response = await apiClient.get<{ content: Game[], totalPages: number, totalElements: number, number: number }>(url);
+      setGames(response.data.content);
+      setLoading(false);
+    };
+  
+    fetchGames();
+  }, [currentFilters, first, rows]);  
+
 
   return (
     <>
@@ -246,13 +305,14 @@ export const BrowserPage = () => {
         <div className="w-3/4 pr-4">
           <div className="mb-4 flex items-center gap-2">
             <h6 className="text-sm font-normal text-gray150">Show:</h6>
-            <Dropdown
+            <div className="custom-dropdown bg-transparent !font-inter focus:outline-none focus:ring-0 text-white">All</div>
+            {/* <Dropdown
               value={selectedItem}
               options={options}
               defaultValue={"1"}
               onChange={onOptionChange}
               className="custom-dropdown bg-transparent !font-inter focus:outline-none focus:ring-0"
-            />
+            /> */}
           </div>
           <div className="flex flex-wrap gap-2">
             {games.map((game) => (
@@ -271,8 +331,8 @@ export const BrowserPage = () => {
           <div className="">
             <Paginator
               first={first} // bắt đầu từ đâu
-              rows={rows} // bao nhiêu cột hiển thị
-              totalRecords={100} // Độ dài dữ liệu
+              rows={12} // bao nhiêu cột hiển thị
+              totalRecords={totalRecords} // Độ dài dữ liệu
               template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
               onPageChange={onPageChange}
               className="custom-pagi-browser bg-bgMainColor"
@@ -303,43 +363,15 @@ export const BrowserPage = () => {
               headerTemplate={() => headerTemplate("Genre", activeAccorGenre === 0)}
             >
               {Object.keys(checkedItems).map((label) => (
-                <div key={label} className="mb-2 flex items-center">
-                  <RadioButton
-                    inputId={label}
-                    name="genre"
-                    value={label}
-                    onChange={() => handleGenreChange(label)}
-                    checked={selectedGenre === label}
-                  />
-                  <label htmlFor={label} className="ml-2 cursor-pointer text-sm text-white">
-                    {label}
-                  </label>
-                </div>
-              ))}
-            </AccordionTab>
-          </Accordion>
-          {/* <div className="px-3">
-            <div className="my-4 h-[1px] w-full bg-bgCheckBox" />
-          </div>
-          <Accordion
-            activeIndex={activeAccorType}
-            onTabChange={handleTabChangeType}
-          >
-            <AccordionTab
-              headerTemplate={() =>
-                headerTemplate("Types", activeAccorType === 0)
-              }
-            >
-              {Object.keys(checkedTypes).map((label) => (
                 <CustomCheckbox
                   key={label}
                   label={label}
-                  checked={checkedTypes[label]}
-                  onChange={() => handleCheckboxChangeType(label)}
+                  checked={selectedGenre === label}
+                  onChange={() => handleGenreChange(label)}
                 />
               ))}
             </AccordionTab>
-          </Accordion> */}
+          </Accordion>
 
           <div className="px-3">
             <div className="my-4 h-[1px] w-full bg-bgCheckBox" />

@@ -25,7 +25,7 @@ export const Item: React.FC<ItemProps> = (item) => {
         </Link>
         <p className="text-xs text-textType">{item.type}</p>
         <Link to={item.url}>
-          <h6 className="my-[5px] text-base font-bold line-clamp-2 max-w-[190px]">
+          <h6 className="my-[5px] text-base font-bold line-clamp-2 max-w-[190px] text-overflow-ellipsis-1-line">
             {item.name}
           </h6>
         </Link>

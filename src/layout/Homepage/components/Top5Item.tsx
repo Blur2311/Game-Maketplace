@@ -16,13 +16,13 @@ export const Top5Item: React.FC<ItemProps> = (item) => {
                 {item.name}
               </h6>
               <div className="item-center flex justify-between gap-1 md:gap-[10px]">
-                <div className="rounded-full bg-mainCyan px-2 py-[2px] text-xs text-black">
+                {item.sale !== 0 ? (<div className="rounded-full bg-mainCyan px-2 py-[2px] text-xs text-black">
                   -{item.sale}%
-                </div>
+                </div>) : <></>}
                 <div className="item-center flex flex-col gap-1 xl:flex-row xl:gap-[10px]">
-                  <p className="text-sm line-through text-textType">
+                  {item.sale !== 0 ? (<p className="text-sm line-through text-textType">
                     {formatCurrency(item.price)}
-                  </p>
+                  </p>) : <></>} 
                   <p className="text-sm">
                     {formatCurrency(
                       Math.round(
