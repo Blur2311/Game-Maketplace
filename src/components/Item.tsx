@@ -32,7 +32,7 @@ export const Item: React.FC<ItemProps> = (item) => {
         <div
           className={`mt-[10px] flex items-center justify-between gap-1`}
           onClick={() =>
-            addToCart({ slug: item.url.replace("/product/", ""), quantity: 1 })
+            addToCart({ slug: item.url.replace("/product?", ""), quantity: 1 })
           }
         >
           {item.sale ? (
