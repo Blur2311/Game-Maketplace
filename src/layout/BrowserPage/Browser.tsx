@@ -13,7 +13,7 @@ import axios from 'axios'; // hoặc import apiClient từ config của bạn
 import { RadioButton } from "primereact/radiobutton";
 
 export const BrowserPage = () => {
-  const [price, setPrice] = useState<number | [number, number]>([0, 0]);
+  const [price, setPrice] = useState<number | [number, number]>([9999999, 0]);
   const [activeAccorGenre, setActiveAccorGenre] = useState<number | null>(null);
   const [activeAccorType, setActiveAccorType] = useState<number | null>(null);
   const [activeAccorPrice, setActiveAccorPrice] = useState<number | null>(null); // trạng thái cho Accordion Price
@@ -163,7 +163,7 @@ export const BrowserPage = () => {
         console.log(response.data.content);
         setGames(response.data.content);
         setLoading(false);
-      } catch (err) {
+      } catch (err : any) {
         setError(err);
         setLoading(false);
       }
@@ -197,7 +197,7 @@ export const BrowserPage = () => {
       const response = await apiClient.get<{ content: Game[] }>(url);
       setGames(response.data.content);
       setLoading(false);
-    } catch (err) {
+    } catch (err : any) {
       setError(err);
       setLoading(false);
     }
@@ -227,7 +227,7 @@ export const BrowserPage = () => {
       const response = await apiClient.get<{ content: Game[] }>('/api/games/browser?page=0&size=12');
       setGames(response.data.content);
       setLoading(false);
-    } catch (err) {
+    } catch (err : any) {
       setError(err);
       setLoading(false);
     }
@@ -235,7 +235,7 @@ export const BrowserPage = () => {
 
   const resetFilters = () => {
     setSearchTerm('');
-    setPrice([0, 0]);
+    setPrice([9999999, 0]);
     setSelectedGenre(null);
     setActiveAccorGenre(null);
     setActiveAccorPrice(null);
@@ -248,9 +248,9 @@ export const BrowserPage = () => {
 
   return (
     <>
-      <div className="mt-2 flex items-start">
+      <div className="flex items-start mt-2">
         <div className="w-3/4 pr-4">
-          <div className="mb-4 flex items-center gap-2">
+          <div className="flex items-center gap-2 mb-4">
             <h6 className="text-sm font-normal text-gray150">Show:</h6>
             <Dropdown
               value={selectedItem}
@@ -270,7 +270,7 @@ export const BrowserPage = () => {
                 price={game.price}
                 sale={game.discountPercent}
                 wrapper="mb-5"
-                url={`/api/games/${game.slug}`}
+                url={`/product?${game.slug}`}
               />
             ))}
           </div>
@@ -292,10 +292,10 @@ export const BrowserPage = () => {
               <button className="text-xs text-mainCyan" onClick={resetFilters}>Reset</button>
             </div>
             <div className="relative mt-3 rounded-[4px] bg-gray300">
-              <i className="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 transform text-gray100"></i>
+              <i className="absolute transform -translate-y-1/2 pi pi-search left-3 top-1/2 text-gray100"></i>
               <InputText
                 placeholder="Keywords"
-                className="w-full bg-transparent p-3 pl-10 text-xs text-white focus:ring-0"
+                className="w-full p-3 pl-10 text-xs text-white bg-transparent focus:ring-0"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -309,7 +309,7 @@ export const BrowserPage = () => {
               headerTemplate={() => headerTemplate("Genre", activeAccorGenre === 0)}
             >
               {Object.keys(checkedItems).map((label) => (
-                <div key={label} className="mb-2 flex items-center">
+                <div key={label} className="flex items-center mb-2">
                   <RadioButton
                     inputId={label}
                     name="genre"
@@ -317,7 +317,7 @@ export const BrowserPage = () => {
                     onChange={() => handleGenreChange(label)}
                     checked={selectedGenre === label}
                   />
-                  <label htmlFor={label} className="ml-2 cursor-pointer text-sm text-white">
+                  <label htmlFor={label} className="ml-2 text-sm text-white cursor-pointer">
                     {label}
                   </label>
                 </div>
@@ -370,7 +370,7 @@ export const BrowserPage = () => {
                   className="mb-4"
                 />
                 <span className="text-sm text-white">Price:</span>
-                <span className="float-end text-sm text-white">
+                <span className="text-sm text-white float-end">
                   {Array.isArray(price)
                     ? `${formatCurrency(price[1])} - ${formatCurrency(price[0])}`
                     : price}

@@ -31,7 +31,7 @@ export const fetchTop = async (field: string, size: number) => {
             price: item.price,
             sale: item.discountPercent,
             image: thumbnail ?? "/image1.2.jpg",
-            url: `/product/${item.slug}`
+            url: `/product?${item.slug}`
         };
     });
     return newItems;
