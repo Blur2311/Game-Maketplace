@@ -13,7 +13,7 @@ export const useCart = () => {
   useEffect(() => {
     const storedCart = localStorage.getItem('cart');
     if (storedCart) {
-      // console.log(JSON.parse(storedCart));
+      // // console.log(JSON.parse(storedCart));
       const parsedCart: CartItem[] = JSON.parse(storedCart);
       setCartItems(parsedCart);
       fetchGameDetails(parsedCart);
@@ -31,7 +31,7 @@ export const useCart = () => {
           gameDetails.set(item.slug, response.data.data);
         })
       );
-      // console.log(gameDetails);
+      // // console.log(gameDetails);
       setGames(gameDetails);
     } catch (err) {
       setError('Failed to fetch game details');

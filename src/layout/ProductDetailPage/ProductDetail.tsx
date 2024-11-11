@@ -1,11 +1,13 @@
 import { Button } from "primereact/button";
+import { Messages } from "primereact/messages";
 import { Paginator } from "primereact/paginator";
 import { Rating } from "primereact/rating";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FiShare2 } from "react-icons/fi";
-import { IoChevronDownOutline } from "react-icons/io5";
 import { TbFlag3 } from "react-icons/tb";
+import { Link } from "react-router-dom";
 import { LinkType } from "../../components/LinkType";
+import { showInfoMessages } from "../../utils/ErrorHandlingUtils";
 import {
   calculateSalePrice,
   formatCurrency,
@@ -22,10 +24,17 @@ import useGameDetails from "./hook/useGameDetails";
 import "./ProductDetail.css";
 
 export const ProductDetail = () => {
-  const { gameDetails, recommendations, error } = useGameDetails();
+  const { gameDetails, recommendations, comments, error } = useGameDetails();
   const { addGameToCart } = useCart();
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(3);
+  const msgs = useRef<Messages>(null);
+
+  useEffect(() => {
+    if (!comments || comments.length === 0) {
+      showInfoMessages(msgs, "Be the first to review this game!");
+    }
+  }, [comments]);
 
   const onPageChange = (event: any) => {
     setFirst(event.first);
@@ -40,26 +49,6 @@ export const ProductDetail = () => {
     return <div>Loading...</div>;
   }
 
-  const reviews = [
-    {
-      username: "TheGamer",
-      date: "20-11-2024",
-      rating: 3,
-      text: "It's beautiful, frantic, challenging, and a delight to play.",
-    },
-    {
-      username: "IGN",
-      date: "20-11-2024",
-      rating: 4,
-      text: "Despite some frustrating technical issues, Black Myth: Wukong is a great action game with fantastic combat, exciting bosses, tantalizing secrets, and a beautiful world.",
-    },
-    {
-      username: "PC Gamer",
-      date: "20-11-2024",
-      rating: 5,
-      text: "Black Myth: Wukong blossoms with an eccentric cast of characters and expressive combat all wrapped up in the rich world of its source material.",
-    },
-  ];
   return (
     <>
       <div className="mt-2 text-white">
@@ -124,7 +113,7 @@ export const ProductDetail = () => {
           <div className="">
             <div className="flex items-center justify-between mb-6">
               <h6 className="text-xl font-semibold">
-                {gameDetails.gameName} Related Products & Add-Ons
+                {gameDetails.gameName} Related Products
               </h6>
               <Paginator
                 first={first} // bắt đầu từ đâu
@@ -135,14 +124,15 @@ export const ProductDetail = () => {
                 className="px-0 custom-pagi-browser bg-bgMainColor"
               />
             </div>
-            <div className="flex items-start justify-between">
-              {recommendations && recommendations.map((recommendation, index) => (
-                <ProductCard key={index} game={recommendation} />
-              ))}
+            <div className="flex items-start justify-evenly">
+              {recommendations &&
+                recommendations.map((recommendation, index) => (
+                  <ProductCard key={index} game={recommendation} />
+                ))}
             </div>
           </div>
           <div className="mt-12">
-            <Review />
+            <Review gameId={gameDetails.sysIdGame} />
           </div>
           <div className="my-12">
             <div className="w-full text-white rounded-lg">
@@ -150,33 +140,43 @@ export const ProductDetail = () => {
                 <h2 className="text-xl font-semibold">
                   {gameDetails.gameName} Ratings & Reviews
                 </h2>
-                <a href="#" className="flex items-center font-light">
-                  See All Reviews <i className="ml-2 pi pi-external-link"></i>
-                </a>
+                {comments && comments.length > 3 && (
+                  <Link to="#" className="flex items-center font-light">
+                    See All Reviews <i className="ml-2 pi pi-external-link"></i>
+                  </Link>
+                )}
               </div>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                {reviews.map((review, index) => (
-                  <ReviewCard
-                    key={index}
-                    username={review.username}
-                    date={review.date}
-                    rating={review.rating}
-                    text={review.text}
-                    // img={""}
-                  />
-                ))}
+                {comments &&
+                  comments.map((comment, index) => (
+                    <ReviewCard
+                      key={index}
+                      username={comment.usersDTO?.hoVaTen ?? "username"}
+                      date={formatDateFromLocalDate(comment.commentDate)}
+                      rating={comment.star}
+                      text={comment.context}
+                      img={comment.usersDTO?.avatar}
+                    />
+                  ))}
+              </div>
+              <div className="flex card justify-content-center">
+                <Messages ref={msgs} />
               </div>
             </div>
           </div>
         </div>
         <div className="relative w-1/3 pl-14">
           <div className="sticky top-0 flex flex-col items-start gap-[15px]">
-            <img src={getImage(gameDetails, 'logo')} alt="" className="rounded" />
+            <img
+              src={getImage(gameDetails, "logo")}
+              alt=""
+              className="rounded"
+            />
             {/* {gameDetails.features &&
               gameDetails.features.split("\n").slice(0, 1).map((feature, index) => (
                 <LinkType key={index} text={feature} url={""} />
               ))} */}
-            <div className="flex items-center w-full gap-2">
+            <div className="flex items-center w-full gap-2 justify-evenly">
               {gameDetails.discountPercent ? (
                 <>
                   <div className="rounded-full bg-mainCyan px-2 py-[2px] text-xs text-black">
@@ -223,6 +223,7 @@ export const ProductDetail = () => {
                 // disabled={isLockedOut}
               />
               <Button
+                disabled
                 label="Add to Wishlist"
                 size="large"
                 className="h-[50px] w-full rounded-[10px] bg-grayBorder text-sm font-medium transition duration-300 hover:bg-gray200"
@@ -238,17 +239,19 @@ export const ProductDetail = () => {
               <div className="flex items-center justify-between border-b border-bgCheckBox py-[10px]">
                 <p>Release Date</p>
                 <p className="text-white">
-                  {formatDateFromLocalDate(gameDetails.releaseDate.toString())}
+                  {formatDateFromLocalDate(
+                    gameDetails.releaseDate?.toString() ?? "2024-11-11",
+                  )}
                 </p>
               </div>
             </div>
-            <a
+            {/* <a
               href="#"
               className="flex items-center gap-1 text-sm font-light text-white hover:underline"
             >
               See All Editions and Add-Ons
               <IoChevronDownOutline className="text-xl" />
-            </a>
+            </a> */}
             <div className="mt-[15px] flex w-full gap-[10px] text-white">
               <button
                 type="button"
