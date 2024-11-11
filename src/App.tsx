@@ -19,7 +19,6 @@ import { CategoryCU } from "./layout/AdminPage/CategoryManagePage/CategoryCU";
 import { GameList } from "./layout/AdminPage/GameManagePage/GameList";
 import { GameCU } from "./layout/AdminPage/GameManagePage/GameCU";
 import { ChangePW } from "./layout/ChangePWPage/ChangePW";
-import { AdminSignIn } from "./layout/SignInPage/AdminSignIn";
 import Forbidden from "./layout/ErrorPage/Forbidden";
 import { Checkout } from "./layout/CartPage/Checkout";
 import { CartPage } from "./layout/CartPage/CartPage";
@@ -31,6 +30,12 @@ import { OrderHistoryDetail } from "./layout/OrderHistoryPage/OrderHistoryDetail
 import { Wishlist } from "./layout/WishlistPage/Wishlist";
 import { News } from "./layout/NewsPage/News";
 import { NewsDetail } from "./layout/NewsPage/NewsDetail";
+import { SignInAdmin } from "./layout/AdminPage/SignIn&ForgotPage/SignInAdmin";
+import { ForgotPWAdmin } from "./layout/AdminPage/SignIn&ForgotPage/ForgotPWAdmin";
+import { ResetPWAdmin } from "./layout/AdminPage/SignIn&ForgotPage/ResetPWAdmin";
+import { VerifyOTPAdmin } from "./layout/AdminPage/SignIn&ForgotPage/VerifyOTPAdmin";
+import { AdminAccInfo } from "./layout/AdminPage/AdminAccInfoPage/AdminAccInfo";
+import { AdminSetting } from "./layout/AdminPage/AdminSettingPage/AdminSetting";
 
 function App() {
   return (
@@ -39,13 +44,21 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/admin" element={<AdminLayout />}>
-              <Route path="category-list" element={<CategoryList />} />
-              <Route path="category-list/create" element={<CategoryCU />} />
-              <Route path="category-list/update/:id" element={<CategoryCU />} />
-              <Route path="game-list" element={<GameList />} />
-              <Route path="game-list/create" element={<GameCU />} />
-              <Route path="game-list/update/:id" element={<GameCU />} />
+              <Route path="category/list" element={<CategoryList />} />
+              <Route path="category/create" element={<CategoryCU />} />
+              <Route path="category/detail/:id" element={<CategoryCU />} />
+              <Route path="game/list" element={<GameList />} />
+              <Route path="game/create" element={<GameCU />} />
+              <Route path="game/detail/:id" element={<GameCU />} />
+
+              <Route path="account-info" element={<AdminAccInfo />} />
+              <Route path="settings" element={<AdminSetting />} />
             </Route>
+
+            <Route path="/admin/sign-in" element={<SignInAdmin />} />
+            <Route path="/admin/forgot-password" element={<ForgotPWAdmin />} />
+            <Route path="/admin/verify-otp" element={<VerifyOTPAdmin />} />
+            <Route path="/admin/reset-password" element={<ResetPWAdmin />} />
 
             <Route path="/" element={<NavFooterPage />}>
               {/* Route mặc định là "home" */}
@@ -60,8 +73,6 @@ function App() {
               <Route path="news" element={<News />} />
               <Route path="news/detail/:id" element={<NewsDetail />} />
             </Route>
-
-            <Route path="/403" element={<Forbidden />} />
 
             <Route path="/setting" element={<NavSidebarPage />}>
               <Route path="user-info" element={<UserProfile />} />
@@ -79,7 +90,7 @@ function App() {
             <Route path="/sign-in" element={<SignIn />} />
             <Route path="/register" element={<Registration />} />
             <Route path="/verify-otp" element={<VerifyOTP />} />
-            <Route path="/admin/sign-in" element={<AdminSignIn />} />
+            <Route path="/403" element={<Forbidden />} />
 
             {/* Chuyển hướng tất cả các route không hợp lệ về "home" */}
             <Route path="*" element={<Navigate to="/home" />} />

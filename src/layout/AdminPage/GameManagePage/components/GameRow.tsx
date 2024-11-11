@@ -1,5 +1,8 @@
 import { Link } from "react-router-dom";
 import { Tooltip } from "primereact/tooltip";
+import { formatCurrency } from "../../../../utils/OtherUtils";
+import { IoIosCheckmark } from "react-icons/io";
+import { LuClock3 } from "react-icons/lu";
 
 type CategoryDetail = {
   sysIdCategoryDetail: number;
@@ -13,7 +16,7 @@ type Media = {
   mediaName: string;
   mediaUrl: string;
   sysIdGame: number;
-}
+};
 
 type GameRowProps = {
   sysIdGame: number;
@@ -95,9 +98,27 @@ export const GameRow: React.FC<GameRowProps> = ({
       <tr className="border-b border-borderRow bg-white text-xs font-light">
         <td className={`px-5 py-[25px]`}>{sysIdGame}</td>
         <td className={`px-5 py-[25px]`}>{gameName}</td>
-        <td className="px-5 py-[25px]">{price}</td>
+        <td className="px-5 py-[25px]">{formatCurrency(price)}</td>
         <td className={`px-5 py-[25px]`}>
-          {discountPercent !== null ? `${discountPercent}%` : "N/A"}
+          {isActive ? (
+            <div className="flex">
+              <div className="flex items-center gap-2 rounded-full py-1 pe-3 ps-2 text-gray-800 shadow-adminBoxshadow">
+                <div className="flex h-4 w-4 items-center justify-center rounded-full bg-green-400">
+                  <IoIosCheckmark className="text-base text-white" />
+                </div>
+                <span className="text-xs font-medium">Published</span>
+              </div>
+            </div>
+          ) : (
+            <div className="flex">
+              <div className="flex items-center gap-2 rounded-full py-1 pe-3 ps-2 text-gray-800 shadow-adminBoxshadow">
+                <div className="flex h-4 w-4 items-center justify-center rounded-full">
+                  <LuClock3 className="text-base text-black" />
+                </div>
+                <span className="text-xs font-medium">Draft</span>
+              </div>
+            </div>
+          )}
         </td>
         <td className={`px-5 py-[25px]`}>{renderCategories()}</td>
         <td className={`px-5 py-[25px]`}>

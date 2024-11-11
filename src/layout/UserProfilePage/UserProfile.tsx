@@ -168,7 +168,7 @@ export const UserProfile = () => {
                 <div className="relative">
                   {/* Cái này có sẵn ấn vào hình mở input xog ấn nút để submit
                    xog cho nó loading nhìn cho giống real */}
-                  <div className="relative flex h-[248px] w-[248px] cursor-pointer items-center justify-center overflow-hidden">
+                  <div className="group relative flex h-[248px] w-[248px] cursor-pointer items-center justify-center overflow-hidden">
                     <input
                       type="file"
                       // onChange={handleChangeFile}
@@ -179,23 +179,34 @@ export const UserProfile = () => {
                     {uploading ? (
                       <ProgressSpinner />
                     ) : (
-                      <img
-                        // src={photoURL || "/girl.png"}  Thay thế bằng URL ảnh placeholder nếu cần
-                        src="/cat.jpeg" // nhớ xoá dòng này
-                        alt="Uploaded"
-                        className="h-full w-full rounded-full border-4 border-slate-900 object-cover"
-                      />
+                      <>
+                        <img
+                          // src={photoURL || "/girl.png"}  Thay thế bằng URL ảnh placeholder nếu cần
+                          src="/cat.jpeg" // nhớ xoá dòng này
+                          alt="Uploaded"
+                          className="h-full w-full rounded-full border border-dashed border-black object-cover p-1"
+                        />
+                        <div className="absolute left-1/2 top-1/2 flex h-[95%] w-[95%] -translate-x-1/2 -translate-y-1/2 transform items-center justify-center gap-2 rounded-full bg-black bg-opacity-40 text-lg text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                          <MdOutlineCameraAlt />
+                          <p className="">Select</p>
+                        </div>
+                      </>
                     )}
                   </div>
 
                   {/* Nút này để submit file lên nè */}
                   <div className="absolute bottom-0 right-8">
-                    <button
+                    {/* <button
                       // onClick={handleUpload}
-                      className="shadow-whiteInShadow flex items-center justify-center rounded-full bg-mainYellow pb-[7px] pe-[7px] ps-2 pt-2"
+                      className="shadow-whiteInShadow flex items-center justify-center rounded-full border-4 border-white bg-mainYellow pb-[7px] pe-[7px] ps-2 pt-2"
                     >
                       <MdOutlineCameraAlt className="text-[30px] text-slate-900" />
-                    </button>
+                    </button> */}
+                    <Button
+                      icon="pi pi-camera"
+                      tooltip="Upload image"
+                      className="shadow-whiteInShadow flex h-10 w-10 items-center justify-center rounded-full border-4 border-white bg-mainYellow"
+                    />
                   </div>
                 </div>
               </div>

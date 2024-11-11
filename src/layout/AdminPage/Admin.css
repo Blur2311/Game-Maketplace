@@ -1,0 +1,10 @@
+.custom-admin-navbar .p-overlaypanel-content {
+  padding: 0;
+}
+
+.custom-sidebar .p-sidebar-header {
+  display: none;
+}
+.custom-sidebar .p-sidebar-content {
+  padding: 0;
+}
