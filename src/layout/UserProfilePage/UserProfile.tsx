@@ -4,10 +4,53 @@ import { formatCurrency, formatDate } from "../../utils/OtherUtils";
 import { Button } from "primereact/button";
 import { MdOutlineCameraAlt } from "react-icons/md";
 import { ProgressSpinner } from "primereact/progressspinner";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
+import apiClient from "../../config/apiClient";
 
 export const UserProfile = () => {
   const [uploading, setUploading] = useState(false);
+  const [username, setUsername] = useState<string | null>(null);
+  const [userData, setUserData] = useState<any | null>(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      try {
+        const decoded: any = jwtDecode(token);
+        const fetchedUsername = decoded.sub;
+
+        setUsername(fetchedUsername);
+        fetchUserProfile(fetchedUsername).then((data) => {
+          if (data) {
+            console.log("Dữ liệu người dùng:", data);
+            setUserData(data); // Cập nhật userData nếu có dữ liệu
+          }
+        });
+      } catch (error) {
+        console.error("Token không hợp lệ", error);
+      }
+    }
+  }, []);
+
+  const fetchUserProfile = async (username: string): Promise<any | null> => {
+    try {
+      const response = await apiClient.get(
+        `/api/users/account-profile?username=${username}`,
+      );
+      return response.data.data; // Trả về dữ liệu để xử lý tiếp
+    } catch (error) {
+      console.error("Lỗi khi gọi API:", error);
+      return null; // Trả về null nếu có lỗi
+    }
+  };
+
+  useEffect(() => {
+    if (userData) {
+      console.log("UserData đã cập nhật:", userData.username);
+    }
+  }, [userData]);
 
   return (
     <>
@@ -22,17 +65,25 @@ export const UserProfile = () => {
             <div className="flex flex-1 flex-col gap-5">
               <div className="flex items-center">
                 <p className="min-w-[150px] text-sm font-semibold">Username:</p>
-                <p className="text-sm font-light">hieuchi1999</p>
+                <p className="text-sm font-light">
+                  {" "}
+                  {userData?.username || "N/A"}
+                </p>
               </div>
               <div className="flex items-center">
                 <p className="min-w-[150px] text-sm font-semibold">
                   Full Name:
                 </p>
-                <p className="text-sm font-light">Huy Phạm</p>
+                <p className="text-sm font-light">
+                  {userData?.hoVaTen || "N/A"}
+                </p>
               </div>
               <div className="flex items-center">
                 <p className="min-w-[150px] text-sm font-semibold">Balance:</p>
-                <p className="text-sm font-light">{formatCurrency(44910)}</p>
+                <p className="text-sm font-light">
+                  {/* {formatCurrency(44910)}  */}
+                  {userData?.balance ? formatCurrency(userData.balance) : "N/A"}
+                </p>
               </div>
               <div className="flex items-center">
                 <p className="min-w-[150px] text-sm font-semibold">
@@ -40,6 +91,7 @@ export const UserProfile = () => {
                 </p>
                 <p className="text-sm font-light">
                   {formatDate("2017-07-22T17:46:37")}
+                  {userData?.joinTime ? formatDate(userData?.joinTime) : "N/A"}
                 </p>
               </div>
             </div>
@@ -47,7 +99,7 @@ export const UserProfile = () => {
               <div className="flex items-center">
                 <p className="min-w-[150px] text-sm font-semibold">Email:</p>
                 <p className="text-sm font-light underline">
-                  ph7569626@gmail.com
+                  {userData?.email || "N/A"}
                 </p>
               </div>
               <div className="flex items-center">
@@ -60,21 +112,27 @@ export const UserProfile = () => {
                 <p className="min-w-[150px] text-sm font-semibold">
                   Accumulated:
                 </p>
-                <p className="text-sm font-light">{formatCurrency(4499910)}</p>
+                <p className="text-sm font-light">
+                  {/* {formatCurrency(0)} */}
+                  {userData?.totalSpent
+                    ? formatCurrency(userData.totalSpent)
+                    : "N/A"}
+                </p>
               </div>
             </div>
           </div>
-          <div className="mt-10">
+          {/* <div className="mt-10">
             <div className="flex items-center gap-5">
               <div className="flex flex-1 items-center gap-2">
                 <FloatLabel className="flex-1 text-sm">
                   <InputText
                     id="Username"
                     className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
-                    // value={username}
-                    // onChange={(e) => setUsername(e.target.value)}
-                    // aria-invalid={!!error}
-                    // aria-describedby="username-error"
+                    value={userData?.username || "N/A"}
+                  // value={username}
+                  // onChange={(e) => setUsername(e.target.value)}
+                  // aria-invalid={!!error}
+                  // aria-describedby="username-error"
                   />
                   <label htmlFor="Username">Username</label>
                 </FloatLabel>
@@ -82,8 +140,8 @@ export const UserProfile = () => {
                   icon="pi pi-pen-to-square"
                   size="large"
                   className="h-[50px] w-[50px] bg-mainYellow text-base font-bold text-slate-900"
-                  // onClick={handleLogin}
-                  // disabled={isLockedOut}
+                // onClick={handleLogin}
+                // disabled={isLockedOut}
                 />
               </div>
               <div className="flex flex-1 items-center gap-2">
@@ -91,10 +149,11 @@ export const UserProfile = () => {
                   <InputText
                     id="Email"
                     className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
-                    // value={username}
-                    // onChange={(e) => setUsername(e.target.value)}
-                    // aria-invalid={!!error}
-                    // aria-describedby="username-error"
+                  // value={username}
+                  // onChange={(e) => setUsername(e.target.value)}
+                  // aria-invalid={!!error}
+                  // aria-describedby="username-error"
+                    value={userData?.email || "N/A"}
                   />
                   <label htmlFor="Email">Email</label>
                 </FloatLabel>
@@ -102,12 +161,12 @@ export const UserProfile = () => {
                   icon="pi pi-pen-to-square"
                   size="large"
                   className="h-[50px] w-[50px] bg-mainYellow text-base font-bold text-slate-900"
-                  // onClick={handleLogin}
-                  // disabled={isLockedOut}
+                // onClick={handleLogin}
+                // disabled={isLockedOut}
                 />
               </div>
             </div>
-          </div>
+          </div> */}
           <div className="mt-[50px]">
             <h5 className="text-lg font-bold">Personal Details</h5>
             <div className="flex items-center">
@@ -116,6 +175,7 @@ export const UserProfile = () => {
                   <InputText
                     id="Username"
                     className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
+                    value={userData?.username || "N/A"}
                     // value={username}
                     // onChange={(e) => setUsername(e.target.value)}
                     // aria-invalid={!!error}
@@ -127,6 +187,7 @@ export const UserProfile = () => {
                   <InputText
                     id="Fullname"
                     className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
+                    value={userData?.hoVaTen || "N/A"}
                     // value={username}
                     // onChange={(e) => setUsername(e.target.value)}
                     // aria-invalid={!!error}
@@ -134,21 +195,22 @@ export const UserProfile = () => {
                   />
                   <label htmlFor="Fullname">Full Name</label>
                 </FloatLabel>
-                <FloatLabel className="flex-1 text-sm">
+                {/* <FloatLabel className="flex-1 text-sm">
                   <InputText
                     id="Gender"
                     className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
-                    // value={username}
-                    // onChange={(e) => setUsername(e.target.value)}
-                    // aria-invalid={!!error}
-                    // aria-describedby="username-error"
+                  // value={username}
+                  // onChange={(e) => setUsername(e.target.value)}
+                  // aria-invalid={!!error}
+                  // aria-describedby="username-error"
                   />
                   <label htmlFor="Gender">Gender</label>
-                </FloatLabel>
+                </FloatLabel> */}
                 <FloatLabel className="flex-1 text-sm">
                   <InputText
                     id="Address"
                     className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
+                    value={userData?.email || "N/A"}
                     // value={username}
                     // onChange={(e) => setUsername(e.target.value)}
                     // aria-invalid={!!error}

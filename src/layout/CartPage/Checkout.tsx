@@ -158,7 +158,7 @@ export const Checkout: React.FC = () => {
   const handleSelectedOptionChange = (option: string) => {
     if (option === "currentBalance") {
       if ((currentUser?.balance ?? 0) < afterTaxes) {
-        console.log(currentUser?.balance, afterTaxes);
+        // console.log(currentUser?.balance, afterTaxes);
         
         confirmDialog({
           message:
@@ -186,7 +186,7 @@ export const Checkout: React.FC = () => {
 
   const recharge = async () => {
     let amount = Math.round(afterTaxes - (currentUser?.balance ?? 0));
-    console.log(afterTaxes, currentUser?.balance, amount);
+    // console.log(afterTaxes, currentUser?.balance, amount);
 
     let payload = {
       amount: amount,
@@ -195,7 +195,7 @@ export const Checkout: React.FC = () => {
       successUrl: window.location.href + "?recharge=success",
       errorUrl: window.location.href + "?recharge=error",
     };
-    console.log(payload);
+    // console.log(payload);
 
     const response = await apiClient.post(`/api/transactions/vn-pay`, payload);
     window.location.href = response.data;
@@ -232,7 +232,7 @@ export const Checkout: React.FC = () => {
 
   const handleCreditCardPayment = async () => {
     let amount = Math.round(afterTaxes);
-    console.log(afterTaxes, currentUser?.balance, amount);
+    // console.log(afterTaxes, currentUser?.balance, amount);
 
     let payload = {
       amount: amount,
@@ -241,7 +241,7 @@ export const Checkout: React.FC = () => {
       successUrl: window.location.href + "?success",
       errorUrl: window.location.href + "?error",
     };
-    console.log(payload);
+    // console.log(payload);
 
     const response = await apiClient.post(`/api/transactions/vn-pay`, payload);
     window.location.href = response.data;

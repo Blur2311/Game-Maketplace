@@ -1,35 +1,37 @@
 import "primeicons/primeicons.css";
-import "primereact/resources/themes/saga-blue/theme.css";
 import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/saga-blue/theme.css";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { AdminLayout } from "./layout/AdminPage/AdminLayout";
+import { CategoryCU } from "./layout/AdminPage/CategoryManagePage/CategoryCU";
+import { CategoryList } from "./layout/AdminPage/CategoryManagePage/CategoryList";
+import { GameCU } from "./layout/AdminPage/GameManagePage/GameCU";
+import { GameList } from "./layout/AdminPage/GameManagePage/GameList";
+import { BrowserPage } from "./layout/BrowserPage/Browser";
+import { CartPage } from "./layout/CartPage/CartPage";
+import { Checkout } from "./layout/CartPage/Checkout";
+import { QRscan } from "./layout/CartPage/QRscan";
+import { ChangePW } from "./layout/ChangePWPage/ChangePW";
+import Forbidden from "./layout/ErrorPage/Forbidden";
+import { Homepage } from "./layout/Homepage/Homepage";
 import {
   NavFooterPage,
   NavSidebarPage,
 } from "./layout/Nav&Footer/Nav&FooterPage";
-import { BrowserPage } from "./layout/BrowserPage/Browser";
-import { Homepage } from "./layout/Homepage/Homepage";
-import { SignIn } from "./layout/SignInPage/SignIn";
-import { Registration } from "./layout/RegisterPage/Registration";
-import { VerifyOTP } from "./layout/RegisterPage/VerifyOTP";
-import { ProductDetai } from "./layout/ProductDetailPage/ProductDetail";
-import { UserProfile } from "./layout/UserProfilePage/UserProfile";
-import { AdminLayout } from "./layout/AdminPage/AdminLayout";
-import { CategoryList } from "./layout/AdminPage/CategoryManagePage/CategoryList";
-import { CategoryCU } from "./layout/AdminPage/CategoryManagePage/CategoryCU";
-import { GameList } from "./layout/AdminPage/GameManagePage/GameList";
-import { GameCU } from "./layout/AdminPage/GameManagePage/GameCU";
-import { ChangePW } from "./layout/ChangePWPage/ChangePW";
-import Forbidden from "./layout/ErrorPage/Forbidden";
-import { Checkout } from "./layout/CartPage/Checkout";
-import { CartPage } from "./layout/CartPage/CartPage";
-import { QRscan } from "./layout/CartPage/QRscan";
-import { TransactionList } from "./layout/TransactionPage/TransactionList";
-import { ReviewHistory } from "./layout/ReviewHistoryPage/ReviewHistory";
-import { OrderHistory } from "./layout/OrderHistoryPage/OrderHistory";
-import { OrderHistoryDetail } from "./layout/OrderHistoryPage/OrderHistoryDetail";
-import { Wishlist } from "./layout/WishlistPage/Wishlist";
 import { News } from "./layout/NewsPage/News";
 import { NewsDetail } from "./layout/NewsPage/NewsDetail";
+import { OrderHistory } from "./layout/OrderHistoryPage/OrderHistory";
+import { OrderHistoryDetail } from "./layout/OrderHistoryPage/OrderHistoryDetail";
+import { ProductDetail } from "./layout/ProductDetailPage/ProductDetail";
+import { Registration } from "./layout/RegisterPage/Registration";
+import { VerifyOTP } from "./layout/RegisterPage/VerifyOTP";
+import { ReviewHistory } from "./layout/ReviewHistoryPage/ReviewHistory";
+import { SignIn } from "./layout/SignInPage/SignIn";
+import { TransactionList } from "./layout/TransactionPage/TransactionList";
+import { UserProfile } from "./layout/UserProfilePage/UserProfile";
+import { Wishlist } from "./layout/WishlistPage/Wishlist";
 import { SignInAdmin } from "./layout/AdminPage/SignIn&ForgotPage/SignInAdmin";
 import { ForgotPWAdmin } from "./layout/AdminPage/SignIn&ForgotPage/ForgotPWAdmin";
 import { ResetPWAdmin } from "./layout/AdminPage/SignIn&ForgotPage/ResetPWAdmin";
@@ -65,7 +67,7 @@ function App() {
               <Route index element={<Homepage />} />
               <Route path="home" element={<Homepage />} />
               <Route path="browser" element={<BrowserPage />} />
-              <Route path="product" element={<ProductDetai />} />
+              <Route path="product" element={<ProductDetail />} />
               <Route path="cart" element={<CartPage />} />
               <Route path="checkout" element={<Checkout />} />
               <Route path="qr-scan" element={<QRscan />} />
@@ -96,6 +98,7 @@ function App() {
             <Route path="*" element={<Navigate to="/home" />} />
           </Routes>
         </BrowserRouter>
+        <ToastContainer />
       </div>
     </>
   );
