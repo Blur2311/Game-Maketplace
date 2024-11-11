@@ -1,5 +1,4 @@
 import { LocalDate } from '@js-joda/core';
-import { useNavigate } from 'react-router-dom';
 
 export interface MediaDTO {
   mediaUrl: any;
@@ -12,8 +11,10 @@ export interface VoucherDTO {
 }
 
 export interface CategoryDetailDTO {
-  id: number;
-  name: string;
+  categoryName: string;
+  sysIdCategory: number;
+  sysIdCategoryDetail: number;
+  sysIdGame: number;
 }
 
 export interface GameDTO {
@@ -25,19 +26,15 @@ export interface GameDTO {
   discountPercent: number;
   gameImage: string;
   slug: string;
-  gameCategory: string;
   description: string;
   isActive: boolean;
-  sysIdDiscount: number;
   quantity: number;
   quantitySold: number;
-  quantityCount: number;
-  voucher?: VoucherDTO;
   categoryDetails: CategoryDetailDTO[];
   rating: number;
   ratingCount: number;
   features: string;
-  releaseDate: LocalDate;
+  releaseDate: LocalDate; // or LocalDate if you have a date library
   developer: string;
   platform: string;
   language: string;
@@ -47,5 +44,8 @@ export interface GameDTO {
 
 export interface CartItem {
   slug: string;
+  name: string;
+  price: number;
   quantity: number;
+  mediaUrl: string;
 }

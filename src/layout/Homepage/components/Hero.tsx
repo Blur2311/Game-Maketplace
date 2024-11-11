@@ -88,7 +88,7 @@ export const Hero = () => {
         name: item.gameName,
         image: image ?? "/image1.png",
         imageThumbnail: thumbnail ?? "/image1.2.jpg",
-        slug: `/product?${item.slug}`,
+        slug: `/product?game=${item.slug}`,
       });
     });
     setItems(newItems);

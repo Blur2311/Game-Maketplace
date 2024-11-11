@@ -1,20 +1,29 @@
-import { Rating } from "primereact/rating";
-import { ImageGallery } from "./components/ImageGallery";
-import "./ProductDetail.css";
-import { LinkType } from "../../components/LinkType";
-import { formatCurrency, calculateSalePrice } from "../../utils/OtherUtils";
 import { Button } from "primereact/button";
-import { IoChevronDownOutline } from "react-icons/io5";
-import { FiShare2 } from "react-icons/fi";
-import { TbFlag3 } from "react-icons/tb";
-import ProductCard from "./components/ProductCard";
 import { Paginator } from "primereact/paginator";
+import { Rating } from "primereact/rating";
 import { useState } from "react";
+import { FiShare2 } from "react-icons/fi";
+import { IoChevronDownOutline } from "react-icons/io5";
+import { TbFlag3 } from "react-icons/tb";
+import { LinkType } from "../../components/LinkType";
+import {
+  calculateSalePrice,
+  formatCurrency,
+  formatDateFromLocalDate,
+} from "../../utils/OtherUtils";
+import { getImage } from "../../utils/ProductUtils";
+import { useCart } from "../CartPage/hooks/useCart";
+import { ImageGallery } from "./components/ImageGallery";
+import ProductCard from "./components/ProductCard";
+import { ReadMore } from "./components/ReadMore";
 import { Review } from "./components/Review";
 import { ReviewCard } from "./components/ReviewCard";
-import { ReadMore } from "./components/ReadMore";
+import useGameDetails from "./hook/useGameDetails";
+import "./ProductDetail.css";
 
-export const ProductDetai = () => {
+export const ProductDetail = () => {
+  const { gameDetails, recommendations, error } = useGameDetails();
+  const { addGameToCart } = useCart();
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(3);
 
@@ -22,6 +31,14 @@ export const ProductDetai = () => {
     setFirst(event.first);
     setRows(event.rows);
   };
+
+  if (error) {
+    return <div>Error loading game details.</div>;
+  }
+
+  if (!gameDetails) {
+    return <div>Loading...</div>;
+  }
 
   const reviews = [
     {
@@ -46,66 +63,68 @@ export const ProductDetai = () => {
   return (
     <>
       <div className="mt-2 text-white">
-        <h1 className="text-[40px] font-black">Black Myth: Wukong</h1>
+        <h1 className="text-[40px] font-black">{gameDetails.gameName}</h1>
         <div className="mt-[10px] flex items-center gap-2">
           <Rating
-            value={4}
+            value={gameDetails.rating}
             readOnly
             cancel={false}
-            className="custom-rating gap-1"
+            className="gap-1 custom-rating"
           />
-          4.9
+          {gameDetails.rating}
         </div>
         <div className="mb-5 mt-[30px] flex items-center gap-[30px] pb-2">
-          <div className="border-b-2 border-mainCyan py-2">
+          <div className="py-2 border-b-2 border-mainCyan">
             <p>Overview</p>
           </div>
-          <div className="cursor-pointer py-2">
+          {/* <div className="py-2 cursor-pointer">
             <p>Add-Ons</p>
-          </div>
+          </div> */}
         </div>
       </div>
       <div className="flex items-start">
         <div className="w-2/3 text-white">
-          <ImageGallery />
+          <ImageGallery mediaDTOs={gameDetails.media} />
           <div className="mt-[50px]">
             <p className="mb-[50px] font-light text-textType">
-              Black Myth: Wukong is an action RPG rooted in Chinese mythology.
-              You shall set out as the Destined One to venture into the
-              challenges and marvels ahead, to uncover the obscured truth
-              beneath the veil of a glorious legend from the past.
+              {gameDetails.description}
             </p>
             <div className="mb-[50px] flex items-start">
               <div className="flex-1 pr-5">
                 <p className="mb-2 text-sm font-light text-textType">Genres</p>
                 <div className="flex flex-wrap items-center gap-2">
-                  <LinkType text={"Action"} url={""} />
+                  {gameDetails.categoryDetails &&
+                    gameDetails.categoryDetails.map((category, index) => (
+                      <LinkType
+                        key={index}
+                        text={category.categoryName}
+                        url={""}
+                      />
+                    ))}
+                  {/* <LinkType text={"Action"} url={""} />
                   <LinkType text={"Adventure"} url={""} />
-                  <LinkType text={"RPG"} url={""} />
+                  <LinkType text={"RPG"} url={""} /> */}
                 </div>
               </div>
-
-              <div className="flex-1 border-l border-grayBorder pl-5">
-                <p className="mb-2 text-sm font-light text-textType">Types</p>
-                <div className="flex flex-wrap items-center gap-2">
-                  <LinkType text={"Steam Games"} url={""} />
-                  <LinkType text={"Entertainment"} url={""} />
+              {gameDetails.features && (
+                <div className="flex-1 pl-5 border-l border-grayBorder">
+                  <p className="mb-2 text-sm font-light text-textType">Types</p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    {gameDetails.features.split("\n").map((feature, index) => (
+                      <LinkType key={index} text={feature} url={""} />
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
           <div className="my-12">
-            <ReadMore
-              text={
-                "Black Myth: Wukong is an action RPG rooted in Chinese mythology. You shall set out as the Destined One to venture into the challenges and marvels ahead, to uncover the obscured truth beneath the veil of a glorious legend from the past. Black Myth: Wukong is an action RPG rooted in Chinese mythology. The story is based on Journey to the West, one of the Four Great Classical Novels of Chinese literature. You shall set out as the Destined One to venture into the challenges and marvels ahead, to uncover the obscured truth beneath the veil of a glorious legend from the past."
-              }
-              maxLength={200}
-            />
+            <ReadMore text={gameDetails.about} maxLength={200} />
           </div>
           <div className="">
-            <div className="mb-6 flex items-center justify-between">
+            <div className="flex items-center justify-between mb-6">
               <h6 className="text-xl font-semibold">
-                Black Myth: Wukong Related Products & Add-Ons
+                {gameDetails.gameName} Related Products & Add-Ons
               </h6>
               <Paginator
                 first={first} // bắt đầu từ đâu
@@ -113,26 +132,26 @@ export const ProductDetai = () => {
                 totalRecords={100} // Độ dài dữ liệu
                 template=" PrevPageLink  NextPageLink"
                 onPageChange={onPageChange}
-                className="custom-pagi-browser bg-bgMainColor px-0"
+                className="px-0 custom-pagi-browser bg-bgMainColor"
               />
             </div>
             <div className="flex items-start justify-between">
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
+              {recommendations && recommendations.map((recommendation, index) => (
+                <ProductCard key={index} game={recommendation} />
+              ))}
             </div>
           </div>
           <div className="mt-12">
             <Review />
           </div>
           <div className="my-12">
-            <div className="w-full rounded-lg text-white">
-              <div className="mb-6 flex items-center justify-between">
+            <div className="w-full text-white rounded-lg">
+              <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold">
-                  Black Myth: Wukong Ratings & Reviews
+                  {gameDetails.gameName} Ratings & Reviews
                 </h2>
                 <a href="#" className="flex items-center font-light">
-                  See All Reviews <i className="pi pi-external-link ml-2"></i>
+                  See All Reviews <i className="ml-2 pi pi-external-link"></i>
                 </a>
               </div>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -152,18 +171,41 @@ export const ProductDetai = () => {
         </div>
         <div className="relative w-1/3 pl-14">
           <div className="sticky top-0 flex flex-col items-start gap-[15px]">
-            <img src="sideimage.avif" alt="" className="rounded" />
-            <LinkType text={"Steam Games"} url={""} />
-            <div className="flex items-center gap-2">
-              <div className="rounded-full bg-mainCyan px-2 py-[2px] text-xs text-black">
-                -80%
-              </div>
-              <p className="text-sm text-textType line-through">
-                {formatCurrency(110000)}
-              </p>
-              <p className="text-base font-bold text-white">
-                {formatCurrency(calculateSalePrice(110000, 80))}
-              </p>
+            <img src={getImage(gameDetails, 'logo')} alt="" className="rounded" />
+            {/* {gameDetails.features &&
+              gameDetails.features.split("\n").slice(0, 1).map((feature, index) => (
+                <LinkType key={index} text={feature} url={""} />
+              ))} */}
+            <div className="flex items-center w-full gap-2">
+              {gameDetails.discountPercent ? (
+                <>
+                  <div className="rounded-full bg-mainCyan px-2 py-[2px] text-xs text-black">
+                    {gameDetails.discountPercent &&
+                      "-" + gameDetails.discountPercent}
+                    %
+                  </div>
+                  <p className="text-sm line-through text-textType">
+                    {formatCurrency(gameDetails.price)}
+                  </p>
+                  <p className="text-base font-bold text-white">
+                    {formatCurrency(
+                      calculateSalePrice(
+                        gameDetails.price,
+                        gameDetails.discountPercent,
+                      ),
+                    )}
+                  </p>
+                </>
+              ) : (
+                <p className="w-full text-base font-bold text-center text-white">
+                  {formatCurrency(
+                    calculateSalePrice(
+                      gameDetails.price,
+                      gameDetails.discountPercent,
+                    ),
+                  )}
+                </p>
+              )}
             </div>
             <div className="flex w-full flex-col gap-[10px] text-white">
               <Button
@@ -177,7 +219,7 @@ export const ProductDetai = () => {
                 label="Add To Cart"
                 size="large"
                 className="h-[50px] w-full rounded-[10px] bg-grayBorder text-sm font-medium transition duration-300 hover:bg-gray200"
-                // onClick={handleLogin}
+                onClick={() => addGameToCart(gameDetails, 1)}
                 // disabled={isLockedOut}
               />
               <Button
@@ -188,14 +230,16 @@ export const ProductDetai = () => {
                 // disabled={isLockedOut}
               />
             </div>
-            <div className="flex w-full flex-col text-sm font-light text-textType">
+            <div className="flex flex-col w-full text-sm font-light text-textType">
               <div className="flex items-center justify-between border-b border-bgCheckBox py-[10px]">
                 <p>Rewards</p>
                 <p className="text-white">Earn 5% Back</p>
               </div>
               <div className="flex items-center justify-between border-b border-bgCheckBox py-[10px]">
                 <p>Release Date</p>
-                <p className="text-white">08/20/24</p>
+                <p className="text-white">
+                  {formatDateFromLocalDate(gameDetails.releaseDate.toString())}
+                </p>
               </div>
             </div>
             <a

@@ -1,39 +1,33 @@
-import React, { useState } from "react";
 import { Galleria } from "primereact/galleria";
+import React, { useState } from "react";
+import { MediaDTO } from "../../../utils/CartUtils";
 
-export const ImageGallery: React.FC = () => {
-  const [images] = useState([
-    {
-      itemImageSrc: "/image2.png",
-    },
-    {
-      itemImageSrc: "/image1.png",
-    },
-    {
-      itemImageSrc: "/image2.png",
-    },
-    {
-      itemImageSrc: "/image1.png",
-    },
-    {
-      itemImageSrc: "/image2.png",
-    },
-    {
-      itemImageSrc: "/image1.png",
-    },
-    {
-      itemImageSrc: "/image2.png",
-    },
-    {
-      itemImageSrc: "/image1.png",
-    },
-    {
-      itemImageSrc: "/image2.png",
-    },
-    {
-      itemImageSrc: "/image1.png",
-    },
-  ]);
+
+interface Image {
+  itemImageSrc: string;
+}
+
+interface ImageGalleryProps {
+  images: Image[];
+}
+
+const convertMediaDTOToImageGalleryProps = (mediaDTOs: MediaDTO[]): ImageGalleryProps => {
+  const images: Image[] = mediaDTOs
+    .filter(media => media.mediaName.startsWith('p'))
+    .map(media => ({
+      itemImageSrc: media.mediaUrl,
+    }));
+
+  return { images };
+};
+
+interface ImageGalleryComponentProps {
+  mediaDTOs: MediaDTO[];
+}
+
+export const ImageGallery: React.FC<ImageGalleryComponentProps> = ({ mediaDTOs }) => {
+  const [currentImages] = useState<ImageGalleryProps>(convertMediaDTOToImageGalleryProps(mediaDTOs));
+
 
   const responsiveOptions = [
     {
@@ -52,7 +46,7 @@ export const ImageGallery: React.FC = () => {
 
   return (
     <Galleria
-      value={images}
+      value={currentImages.images}
       responsiveOptions={responsiveOptions}
       numVisible={6}
       circular

@@ -1,17 +1,14 @@
-import { Dropdown } from "primereact/dropdown";
-import React, { useState, useEffect, useCallback } from "react";
-import { Item } from "../../components/Item";
-import { Paginator } from "primereact/paginator";
-import { InputText } from "primereact/inputtext";
 import { Accordion, AccordionTab } from "primereact/accordion";
-import { CustomCheckbox } from "./components/CheckboxCus";
+import { InputText } from "primereact/inputtext";
+import { Paginator } from "primereact/paginator";
 import { Slider } from "primereact/slider";
+import React, { useCallback, useEffect, useState } from "react";
+import { Item } from "../../components/Item";
+import apiClient from "../../config/apiClient";
+import type { Filters, Game } from "../../utils/BrowserUtils";
 import { formatCurrency } from "../../utils/OtherUtils";
 import "./Browser.css";
-import apiClient from "../../config/apiClient";
-import { RadioButton } from "primereact/radiobutton";
-import type { Game, Filters } from "../../utils/BrowserUtils";
-import {searchGames} from "./components/service/apiService";
+import { CustomCheckbox } from "./components/CheckboxCus";
 
 
 export const BrowserPage = () => {
@@ -324,7 +321,7 @@ export const BrowserPage = () => {
                 price={game.price}
                 sale={game.discountPercent}
                 wrapper="mb-5"
-                url={`/product?${game.slug}`}
+                url={`/product?game=${game.slug}`}
               />
             ))}
           </div>

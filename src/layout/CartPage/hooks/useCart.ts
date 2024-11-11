@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import apiClient from '../../../config/apiClient';
 import { CartItem, GameDTO } from '../../../utils/CartUtils';
 
@@ -26,7 +27,7 @@ export const useCart = () => {
       const gameDetails = new Map<string, GameDTO>();
       await Promise.all(
         items.map(async (item) => {
-          const response = await apiClient.get(`/api/games/${item.slug}`);
+          const response = await apiClient.get(`/api/games/p/${item.slug}`);
           gameDetails.set(item.slug, response.data.data);
         })
       );
@@ -75,7 +76,20 @@ export const useCart = () => {
 
     localStorage.setItem('cart', JSON.stringify(cartItems));
     setChanges((prev) => prev + 1);
+    toast.info(`${item.name} has been added to the cart successfully!`);
+  };  
+  
+  const addGameToCart = (game: GameDTO, quantity : number): void => {
+    const cartItem: CartItem = {
+      slug: game.slug,
+      name: game.gameName,
+      price: game.price,
+      quantity,
+      mediaUrl: game.gameImage
+    };
+
+    addToCart(cartItem);
   };
 
-  return { cartItems, games, loading, error, addToCart, updateQuantity, removeItem, setChanges, fetchGameDetails };
+  return { cartItems, games, loading, error, addToCart, updateQuantity, removeItem, setChanges, fetchGameDetails, addGameToCart };
 };
