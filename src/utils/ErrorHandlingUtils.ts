@@ -1,6 +1,8 @@
 import { Messages } from "primereact/messages";
 import { Toast } from "primereact/toast";
+import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+import { isTokenValid } from "./AuthUtils";
 
 export const handleLockedAccount = (message: string) => {
   Swal.fire({
@@ -15,6 +17,10 @@ export const handleLockedAccount = (message: string) => {
 };
 
 export const handleForbiddenAccess = () => {
+  if (!isTokenValid()) {
+    localStorage.removeItem("token");
+    toast.warn("Expired session, please login again");
+  }
   window.location.href = "/403";
 };
 

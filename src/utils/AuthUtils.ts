@@ -2,6 +2,23 @@ import { jwtDecode } from 'jwt-decode';
 import apiClient from '../config/apiClient';
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+interface DecodedToken {
+  sub: string;
+  exp: number;
+}
+
+export const isTokenValid = (): boolean => {
+  try {
+    const decodedToken = getDecodeToken();
+    if (!decodedToken) return false;
+    const decoded: DecodedToken = decodedToken;
+    const currentTime = Math.floor(Date.now() / 1000);
+    return !!decoded.sub && decoded.exp > currentTime;
+  } catch (error) {
+    console.error('Failed to decode token:', error);
+    return false;
+  }
+};
 
 export const useAuthCheck = (
   requireRoles: string[] = [],
