@@ -84,7 +84,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onLinkClick }) => {
                       name={"Customer"}
                       listLink={"/admin/customer/list"}
                       createLink={"/admin/customer/create"}
-                      detailLink={"/admin/customer/detail"}
+                      detailLink={"/admin/customer/detail/1"}
                       location={"/admin/customer"}
                       onLinkClick={onLinkClick}
                     />

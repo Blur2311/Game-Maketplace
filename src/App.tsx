@@ -38,6 +38,8 @@ import { ResetPWAdmin } from "./layout/AdminPage/SignIn&ForgotPage/ResetPWAdmin"
 import { VerifyOTPAdmin } from "./layout/AdminPage/SignIn&ForgotPage/VerifyOTPAdmin";
 import { AdminAccInfo } from "./layout/AdminPage/AdminAccInfoPage/AdminAccInfo";
 import { AdminSetting } from "./layout/AdminPage/AdminSettingPage/AdminSetting";
+import { CustomerList } from "./layout/AdminPage/CustomerManagePage/CustomerList";
+import { CustomerCU } from "./layout/AdminPage/CustomerManagePage/CustomerCU";
 
 function App() {
   return (
@@ -49,9 +51,14 @@ function App() {
               <Route path="category/list" element={<CategoryList />} />
               <Route path="category/create" element={<CategoryCU />} />
               <Route path="category/detail/:id" element={<CategoryCU />} />
+
               <Route path="game/list" element={<GameList />} />
               <Route path="game/create" element={<GameCU />} />
               <Route path="game/detail/:id" element={<GameCU />} />
+
+              <Route path="customer/list" element={<CustomerList />} />
+              <Route path="customer/create" element={<CustomerCU />} />
+              <Route path="customer/detail/:id" element={<CustomerCU />} />
 
               <Route path="account-info" element={<AdminAccInfo />} />
               <Route path="settings" element={<AdminSetting />} />

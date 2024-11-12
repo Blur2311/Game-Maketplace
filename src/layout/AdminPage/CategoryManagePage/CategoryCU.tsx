@@ -71,36 +71,38 @@ export const CategoryCU = () => {
           </h3>
         </div>
 
-        <div className="rounded-[20px] px-6 pt-4 shadow-adminBoxshadow">
-          <h6 className="mb-6 text-lg font-medium">Basic information</h6>
+        <div className="rounded-[20px] shadow-adminBoxshadow">
+          <div className="px-6 pt-4">
+            <h6 className="mb-6 text-lg font-medium">Basic information</h6>
 
-          <div className="grid grid-cols-12 gap-x-6 gap-y-8 pb-8">
-            <FloatLabel className="col-span-12 text-sm">
-              <InputText
-                className="shadow-adminInputShadow w-full rounded-lg border bg-transparent p-4 ps-[10px] hover:border-black"
-                value={categoryName}
-                onChange={(e) => {
-                  setCategoryName(e.target.value);
-                  setError("");
-                }}
-              />
-              <label>
-                Category Name <span className="text-red-500">*</span>
-              </label>
-              {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
-            </FloatLabel>
+            <div className="grid grid-cols-12 gap-x-6 gap-y-8 pb-8">
+              <FloatLabel className="col-span-12 text-sm">
+                <InputText
+                  className="shadow-adminInputShadow w-full rounded-lg border bg-transparent p-4 ps-[10px] hover:border-black"
+                  value={categoryName}
+                  onChange={(e) => {
+                    setCategoryName(e.target.value);
+                    setError("");
+                  }}
+                />
+                <label>
+                  Category Name <span className="text-red-500">*</span>
+                </label>
+                {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
+              </FloatLabel>
 
-            <FloatLabel className="col-span-12 text-sm">
-              <InputTextarea
-                rows={5}
-                className="shadow-adminInputShadow w-full rounded-lg border bg-transparent p-4 ps-[10px] hover:border-black"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-              <label>
-                Category Describe <span className="text-red-500">*</span>
-              </label>
-            </FloatLabel>
+              <FloatLabel className="col-span-12 text-sm">
+                <InputTextarea
+                  rows={5}
+                  className="shadow-adminInputShadow w-full rounded-lg border bg-transparent p-4 ps-[10px] hover:border-black"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+                <label>
+                  Category Describe <span className="text-red-500">*</span>
+                </label>
+              </FloatLabel>
+            </div>
           </div>
 
           <div className="flex items-center justify-end gap-2 p-4 pt-2">

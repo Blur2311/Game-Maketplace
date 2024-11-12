@@ -90,7 +90,7 @@ export const UserProfile = () => {
                   Join Date:
                 </p>
                 <p className="text-sm font-light">
-                  {formatDate("2017-07-22T17:46:37")}
+                  {/* {formatDate("2017-07-22T17:46:37")} */}
                   {userData?.joinTime ? formatDate(userData?.joinTime) : "N/A"}
                 </p>
               </div>

@@ -6,7 +6,6 @@ import { Paginator } from "primereact/paginator";
 import { useState, useEffect } from "react";
 import "./Game.css";
 import apiClient from "../../../config/apiClient";
-import { FloatLabel } from "primereact/floatlabel";
 import { MultiSelect } from "primereact/multiselect";
 import { Dropdown } from "primereact/dropdown";
 
@@ -171,7 +170,7 @@ export const GameList = () => {
                   <table className="w-full rounded-xl">
                     <thead>
                       <tr className="text-left">
-                        <th className="p-5 text-xs font-light">Id</th>
+                        <th className="p-5 text-xs font-light">ID</th>
                         <th className="p-5 text-xs font-light">Game Name</th>
                         <th className="p-5 text-xs font-light">Price</th>
                         <th className="p-5 text-xs font-light">Status</th>
@@ -227,7 +226,7 @@ export const GameList = () => {
                     <Paginator
                       first={first} // bắt đầu từ đâu
                       rows={rows} // bao nhiêu cột hiển thị
-                      totalRecords={100} // Độ dài dữ liệu
+                      totalRecords={totalRecords} // Độ dài dữ liệu
                       template={{
                         layout: "CurrentPageReport PrevPageLink NextPageLink",
                         CurrentPageReport: (options: any) => (
