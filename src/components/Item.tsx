@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { calculateSalePrice, formatCurrency } from "../utils/OtherUtils";
-import { useCart } from "../layout/CartPage/hooks/useCart";
 export type ItemProps = {
   name: string;
   image: string;
@@ -12,7 +11,6 @@ export type ItemProps = {
 };
 
 export const Item: React.FC<ItemProps> = (item) => {
-  const { addToCart } = useCart();
   return (
     <>
       <div className={`${item.wrapper} text-white`}>
@@ -20,20 +18,20 @@ export const Item: React.FC<ItemProps> = (item) => {
           <img
             src={item.image}
             alt=""
-            className="mb-[10px] h-[254px] w-[190px] rounded-lg transition duration-300 hover:brightness-125 object-cover"
+            className="mb-[10px] h-[254px] w-[190px] rounded-lg object-cover transition duration-300 hover:brightness-125"
           />
         </Link>
         <p className="text-xs text-textType">{item.type}</p>
         <Link to={item.url}>
-          <h6 className="my-[5px] text-base font-bold line-clamp-2 max-w-[190px]">
+          <h6 className="text-overflow-ellipsis-1-line my-[5px] line-clamp-2 max-w-[190px] text-base font-bold">
             {item.name}
           </h6>
         </Link>
         <div
           className={`mt-[10px] flex items-center justify-between gap-1`}
-          onClick={() =>
-            addToCart({ slug: item.url.replace("/product/", ""), quantity: 1 })
-          }
+          // onClick={() =>
+          //   addToCart({ slug: item.url.replace("/product?game=", ""), quantity: 1 })
+          // }
         >
           {item.sale ? (
             <>

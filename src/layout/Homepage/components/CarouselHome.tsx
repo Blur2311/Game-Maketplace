@@ -167,7 +167,7 @@ export const CarouselHome: React.FC<CarouselHomeProps> = ({ name, field }) => {
         price: item.price,
         sale: item.discountPercent,
         image: thumbnail ?? "/image1.2.jpg",
-        url: `/product/${item.slug}`,
+        url: `/product?game=${item.slug}`,
       };
     });
     setItems(newItems);
