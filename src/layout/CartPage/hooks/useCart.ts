@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import apiClient from '../../../config/apiClient';
 import { CartItem, GameDTO } from '../../../utils/CartUtils';
+import { useNavigate } from 'react-router-dom';
 
 export const useCart = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -9,11 +10,12 @@ export const useCart = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [changes, setChanges] = useState<number>(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedCart = localStorage.getItem('cart');
     if (storedCart) {
-      // // console.log(JSON.parse(storedCart));
+      // console.log(JSON.parse(storedCart));
       const parsedCart: CartItem[] = JSON.parse(storedCart);
       setCartItems(parsedCart);
       fetchGameDetails(parsedCart);
@@ -31,7 +33,7 @@ export const useCart = () => {
           gameDetails.set(item.slug, response.data.data);
         })
       );
-      // // console.log(gameDetails);
+      // console.log(gameDetails);
       setGames(gameDetails);
     } catch (err) {
       setError('Failed to fetch game details');
@@ -89,7 +91,20 @@ export const useCart = () => {
     };
 
     addToCart(cartItem);
+  };  
+
+  const handleBuyNow = (game: GameDTO) => {
+    const cartItem: CartItem = {
+      slug: game.slug,
+      quantity: 1,
+      name: game.gameName,
+      price: game.price,
+      mediaUrl: game.gameImage
+    };
+    // console.log(cartItem);    
+    // addToCart(cartItem);
+    navigate("/checkout", { state: { cartItem: [{...cartItem}] } });
   };
 
-  return { cartItems, games, loading, error, addToCart, updateQuantity, removeItem, setChanges, fetchGameDetails, addGameToCart };
+  return { cartItems, games, loading, error, addToCart, updateQuantity, removeItem, setChanges, fetchGameDetails, addGameToCart, handleBuyNow };
 };

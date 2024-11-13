@@ -38,7 +38,7 @@ const useGameDetails = () => {
             try {
                 const response = await apiClient.get(`/api/games/p/${game}`);
                 setGameDetails(response.data.data);
-                console.log('Game details:', response.data.data);
+                // console.log('Game details:', response.data.data);
             } catch (err: any) {
                 console.error('Error fetching game details:', err);
                 setError(err);
@@ -49,7 +49,7 @@ const useGameDetails = () => {
             try {
                 const response = await apiClient.get(`/api/games/p/${game}/recommendations`);
                 setRecommendations(response.data.data);
-                console.log('Recommendations:', response.data.data);
+                // console.log('Recommendations:', response.data.data);
             } catch (err: any) {
                 console.error('Error fetching recommendations:', err);
                 setError(err);
@@ -60,7 +60,7 @@ const useGameDetails = () => {
             try {
                 const response = await apiClient.get(`/api/comments/p/game/${game}/latest-comments`);
                 setComments(response.data);
-                console.log('Comments:', response.data);
+                // console.log('Comments:', response.data);
             } catch (err: any) {
                 console.error('Error fetching comments:', err);
                 setError(err);

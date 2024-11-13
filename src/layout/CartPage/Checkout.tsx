@@ -6,12 +6,17 @@ import { Toast } from "primereact/toast";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { PiStarFourFill } from "react-icons/pi";
-import { useNavigate } from "react-router-dom";
-import apiClient from "../../config/apiClient";
+import { useLocation, useNavigate } from "react-router-dom";
 import { getCurrentUser, useAuthCheck, User } from "../../utils/AuthUtils";
+import { CartItem } from "../../utils/CartUtils";
 import {
-  checkDiscountCode, handleAfterPayment, handleCreditCardPayment,
-  handlePlaceOrder, handleUserBalancePayment, paymentOptions
+  checkDiscountCode,
+  handleAfterPayment,
+  handleCreditCardPayment,
+  handlePlaceOrder,
+  handleUserBalancePayment,
+  paymentOptions,
+  recharge,
 } from "../../utils/CheckOutUtils";
 import {
   showErrorToast,
@@ -28,18 +33,21 @@ import { PaymentOption } from "./components/PaymentOption";
 import { SummaryItem } from "./components/SummaryItem";
 import { useCart } from "./hooks/useCart";
 
-export const Checkout: React.FC = () => {
+export const Checkout: React.FC<{ cartItem?: CartItem[] }> = ({ cartItem }) => {
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [isButtonDisabled, setButtonDisabled] = useState<boolean>(false);
   useAuthCheck([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const { games, cartItems } = useCart();
+  const { games, cartItems, fetchGameDetails } = useCart();
+  const location = useLocation();
+  const initialCartItems = cartItem ?? location.state?.cartItem ?? cartItems;
+  const [checkOutItems] = useState<CartItem[]>(initialCartItems);
   const [{ total, subTotal, afterTaxes }, setTotal] = useState({
     total: 0,
     subTotal: 0,
     afterTaxes: 0,
   });
-  const [tax, setTax] = useState(2);
+  const [tax] = useState(2);
   const [{ discountPercent, discountAmount, usedDiscountCode }, setDiscount] =
     useState({ discountPercent: 0, discountAmount: 0, usedDiscountCode: "" });
   const [discountCode, setDiscountCode] = useState<string>("");
@@ -53,9 +61,20 @@ export const Checkout: React.FC = () => {
     });
   }, []);
 
+  const handleCheckOutItems = async () => {
+    if (checkOutItems.length === 0) {
+      checkOutItems.push(...cartItems);
+    }
+    await fetchGameDetails(checkOutItems);
+  };
+
+  useEffect(() => {
+    handleCheckOutItems();
+  }, [checkOutItems]);
+
   useEffect(() => {
     let subTotal = 0;
-    cartItems.forEach((item) => {
+    checkOutItems.forEach((item) => {
       const game = games.get(item.slug);
       if (game) {
         const price =
@@ -68,15 +87,18 @@ export const Checkout: React.FC = () => {
       subTotal,
       afterTaxes: Math.round(subTotal * (1 + tax / 100)),
     });
-  }, [cartItems, games]);
+  }, [games]);
 
   const renderCartItems = useMemo(() => {
-    if (cartItems.length === 0) {
+    if (checkOutItems.length === 0) {
+      checkOutItems.push(...cartItems);
+    }
+    if (checkOutItems.length === 0) {
       return (
         <div className="p-4 text-center text-gray-500">Your cart is empty</div>
       );
     }
-    return cartItems.map((item) => {
+    return checkOutItems.map((item) => {
       const game = games.get(item.slug);
       if (!game) return null;
       const image = getImage(game, "thumbnail") ?? "/assasin.webp";
@@ -93,7 +115,7 @@ export const Checkout: React.FC = () => {
         />
       );
     });
-  }, [cartItems, games]);
+  }, [checkOutItems, games]);
 
   const handleSelectedOptionChange = (option: string) => {
     if (option === "currentBalance") {
@@ -106,7 +128,11 @@ export const Checkout: React.FC = () => {
           acceptClassName: "custom-accept-button",
           rejectClassName: "custom-reject-button",
           accept: () => {
-            recharge();
+            if (currentUser) {
+              recharge(afterTaxes, currentUser);
+            } else {
+              showErrorToast(toast, "User not logged in");
+            }
           },
           reject: () => {
             setSelectedOption(selectedOption);
@@ -120,19 +146,6 @@ export const Checkout: React.FC = () => {
     }
   };
 
-  const recharge = async () => {
-    let amount = Math.round(afterTaxes - (currentUser?.balance ?? 0));
-    let payload = {
-      amount: amount,
-      bankCode: "NCB",
-      name: currentUser?.username,
-      successUrl: window.location.href + "?recharge=success",
-      errorUrl: window.location.href + "?recharge=error",
-    };
-    const response = await apiClient.post(`/api/transactions/vn-pay`, payload);
-    window.location.href = response.data;
-  };
-
   const handlePlaceOrderClick = () => {
     manageButtonStateDuringApiCall(
       () =>
@@ -144,7 +157,7 @@ export const Checkout: React.FC = () => {
                 currentUser,
                 afterTaxes,
                 usedDiscountCode,
-                cartItems,
+                checkOutItems,
                 toast,
                 navigate,
               );

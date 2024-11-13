@@ -25,7 +25,7 @@ import "./ProductDetail.css";
 
 export const ProductDetail = () => {
   const { gameDetails, recommendations, comments, error } = useGameDetails();
-  const { addGameToCart } = useCart();
+  const { addGameToCart, handleBuyNow } = useCart();
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(3);
   const msgs = useRef<Messages>(null);
@@ -127,7 +127,7 @@ export const ProductDetail = () => {
             <div className="flex items-start justify-evenly">
               {recommendations &&
                 recommendations.map((recommendation, index) => (
-                  <ProductCard key={index} game={recommendation} />
+                  <ProductCard key={index} {...recommendation} />
                 ))}
             </div>
           </div>
@@ -212,7 +212,7 @@ export const ProductDetail = () => {
                 label="Buy Now"
                 size="large"
                 className="h-[50px] w-full rounded-[10px] bg-mainYellow text-sm font-medium transition duration-300 hover:brightness-110"
-                // onClick={handleLogin}
+                onClick={() => handleBuyNow(gameDetails)}
                 // disabled={isLockedOut}
               />
               <Button

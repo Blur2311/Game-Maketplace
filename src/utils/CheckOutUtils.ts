@@ -124,7 +124,7 @@ export const handleUserBalancePayment = async (
       userId: currentUser.sysIdUser ?? 0,
       orders: cartItems,
     };
-    console.log(payload);
+    // console.log(payload);
     
     const response = await apiClient.post(`/api/orders/handle-payment`, payload);
     if (response.data.status === "OK") {
@@ -207,4 +207,17 @@ export type Order = {
   userId: number;
   orderDate: string;
   orders: CartItem[];
+};
+
+export const recharge = async (afterTaxes:number, currentUser: User) => {
+  let amount = Math.round(afterTaxes - (currentUser?.balance ?? 0));
+  let payload = {
+    amount: amount,
+    bankCode: "NCB",
+    name: currentUser?.username,
+    successUrl: window.location.href + "?recharge=success",
+    errorUrl: window.location.href + "?recharge=error",
+  };
+  const response = await apiClient.post(`/api/transactions/vn-pay`, payload);
+  window.location.href = response.data;
 };
