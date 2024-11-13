@@ -56,7 +56,7 @@ export const manageButtonStateDuringApiCall = async (
     onSuccess();
     setTimeout(() => {
       setButtonDisabled(false);
-    }, 5000);
+    }, 7777);
   } catch (error) {
     // On error, re-enable the button immediately
     onError(error);

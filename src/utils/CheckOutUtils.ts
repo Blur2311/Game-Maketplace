@@ -133,7 +133,7 @@ export const handleUserBalancePayment = async (
       localStorage.removeItem("cart");
       setTimeout(() => {
         navigate("/profile");
-      }, 5000);
+      }, 3000);
     } else {
       showErrorToast(toast, "Payment failed");
     }
