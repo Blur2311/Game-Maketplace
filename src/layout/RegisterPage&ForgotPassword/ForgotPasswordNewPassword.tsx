@@ -1,23 +1,20 @@
 import { Button } from "primereact/button";
-import { Checkbox } from "primereact/checkbox";
 import { FloatLabel } from "primereact/floatlabel";
 import { InputText } from "primereact/inputtext";
-// import { Password } from "primereact/password";
 import { Toast } from "primereact/toast";
 import React, { useCallback, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import apiClient from "../../config/apiClient";
+import { NewPasswordErrors } from "../../model/RegistrationModel";
 import {
   showErrorToast,
   showInfoToast,
   showSuccessToast,
 } from "../../utils/ErrorHandlingUtils";
-import { validateNewPasswordForm, validateRegisForm } from "../../utils/RegistrationUtils";
-import { NewPasswordErrors, RegistrationErrors } from "../../model/RegistrationModel";
-import { Link } from "react-router-dom";
+import { validateNewPasswordForm } from "../../utils/RegistrationUtils";
 
 export const NewPassword: React.FC = React.memo(() => {
-  const [email, setEmail] = useState(localStorage.getItem("email") || "");
+  const [email] = useState(localStorage.getItem("email") || "");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -28,11 +25,7 @@ export const NewPassword: React.FC = React.memo(() => {
   const navigate = useNavigate();
 
   const isFormValid = useCallback(() => {
-    const newErrors = validateNewPasswordForm(
-      email,
-      password,
-      confirmPassword,
-    );
+    const newErrors = validateNewPasswordForm(email, password, confirmPassword);
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
@@ -43,7 +36,7 @@ export const NewPassword: React.FC = React.memo(() => {
       });
       return false;
     }
-  }, [ password, confirmPassword]);
+  }, [password, confirmPassword]);
 
   const handleSubmit = useCallback(async () => {
     if (!isFormValid()) {
@@ -52,24 +45,28 @@ export const NewPassword: React.FC = React.memo(() => {
 
     setIsSubmitting(true);
 
-    showInfoToast(
-      toast,
-      "Hang tight while we reset your password.",
-    );
+    showInfoToast(toast, "Hang tight while we reset your password.");
 
     try {
-      const response = await apiClient.put("/api/accounts/forgot-password/new-password", null, {
-        params: {email: email, newPass: password},
-      });
+      const response = await apiClient.put(
+        "/api/accounts/forgot-password/new-password",
+        null,
+        {
+          params: { email: email, newPass: password },
+        },
+      );
 
       if (response.status === 200) {
         localStorage.setItem("email", email);
-        showSuccessToast(toast, response.data.message || "Reset password successful!");
+        showSuccessToast(
+          toast,
+          response.data.message || "Reset password successful!",
+        );
         showInfoToast(toast, "Redirecting to sign-in page...");
         setTimeout(() => {
           navigate("/sign-in");
         }, 3000); // Redirect to sign-in page after 3 seconds
-        toast
+        toast;
       } else {
         setIsSubmitting(false);
       }
@@ -86,7 +83,7 @@ export const NewPassword: React.FC = React.memo(() => {
   return (
     <>
       <Toast ref={toast} position="top-right" />
-      <div className="container flex justify-center h-full mx-auto sm:my-8 mt-[5rem]">
+      <div className="container mx-auto mt-[5rem] flex h-full justify-center sm:my-8">
         <div className="flex h-full w-full flex-col items-center rounded-lg bg-gray300 px-5 pb-[60px] pt-[50px] text-white sm:h-fit sm:w-[470px] sm:px-14">
           <Link to={"/"}>
             <img src="/logo.png" alt="" className="mb-[60px] h-14" />
@@ -109,7 +106,7 @@ export const NewPassword: React.FC = React.memo(() => {
               <label htmlFor="Password">Password</label>
               <Button
                 icon={showPassword ? "pi pi-eye-slash" : "pi pi-eye"}
-                className="absolute top-0 right-0 h-full"
+                className="absolute right-0 top-0 h-full"
                 onClick={() => setShowPassword(!showPassword)}
               />
             </FloatLabel>
@@ -126,18 +123,18 @@ export const NewPassword: React.FC = React.memo(() => {
               <label htmlFor="ConfirmPassword">Confirm Password</label>
               <Button
                 icon={showConfirmPassword ? "pi pi-eye-slash" : "pi pi-eye"}
-                className="absolute top-0 right-0 h-full"
+                className="absolute right-0 top-0 h-full"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               />
             </FloatLabel>
             <Button
               label="RESET PASSWORD"
               size="large"
-              className="w-full text-base font-bold h-14 bg-mainYellow text-slate-900"
+              className="h-14 w-full bg-mainYellow text-base font-bold text-slate-900"
               onClick={handleSubmit}
               disabled={isSubmitting}
             />
-            <div className="text-sm mt-9">
+            <div className="mt-9 text-sm">
               {"Already have an account? "}
               <Link
                 to="/sign-in"

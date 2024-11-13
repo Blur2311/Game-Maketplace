@@ -24,9 +24,13 @@ export const ForgotPassword: React.FC = React.memo(() => {
     showInfoToast(toast, "Hang tight while we send an OTP to your email.");
 
     try {
-      const response = await apiClient.post("/api/accounts/forgot-password", null, {
-        params: { email: email },
-      });
+      const response = await apiClient.post(
+        "/api/accounts/forgot-password",
+        null,
+        {
+          params: { email: email },
+        },
+      );
 
       if (response.status === 200) {
         localStorage.setItem("email", email);
@@ -47,7 +51,7 @@ export const ForgotPassword: React.FC = React.memo(() => {
   return (
     <>
       <Toast ref={toast} position="top-right" />
-      <div className="flex h-full items-center justify-center mt-[5rem]">
+      <div className="mt-[5rem] flex h-full items-center justify-center">
         <div className="flex h-full w-full flex-col items-center rounded-lg bg-gray300 px-5 pb-[60px] pt-[50px] text-white sm:h-fit sm:w-[470px] sm:px-14">
           <Link to={"/"}>
             <img src="/logo.png" alt="" className="mb-[60px] h-14" />
@@ -56,8 +60,8 @@ export const ForgotPassword: React.FC = React.memo(() => {
           <p className="mb-6 max-w-[360px] text-justify text-[0.925rem] text-mainYellow hover:text-white">
             To reset your password, please enter your email address below
           </p>
-          <div className="flex flex-col items-center gap-6 w-full">
-            <FloatLabel className="w-full text-sm mt-2">
+          <div className="flex w-full flex-col items-center gap-6">
+            <FloatLabel className="mt-2 w-full text-sm">
               <InputText
                 id="Email"
                 className={`h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]`}
