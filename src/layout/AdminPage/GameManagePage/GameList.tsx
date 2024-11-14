@@ -104,7 +104,7 @@ export const GameList = () => {
     <>
       <div className="">
         <div className="flex items-start justify-between gap-6">
-          <h3 className="text-[32px] font-medium">Game List</h3>
+          <h3 className="text-[32px] font-medium">Games</h3>
           <RightSideButton Icon={MdAddBox} link={"/admin/game/create"} />
         </div>
         <div className="mt-8">
@@ -112,19 +112,19 @@ export const GameList = () => {
             <div className="col-span-12">
               <div className="rounded-[20px] px-6 py-4 shadow-adminBoxshadow">
                 <div className="flex flex-wrap items-center justify-between gap-4">
-                  <div className="w-full sm:w-auto">
+                  <div className="flex-auto">
+                    <div className="shadow-adminInputShadow relative w-full min-w-[211px] rounded-lg border border-gray150 bg-transparent hover:border-black">
+                      <i className="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 transform text-gray100"></i>
+                      <InputText
+                        placeholder="Search"
+                        className="w-full bg-transparent py-[17px] pl-10 pr-3 text-sm text-black focus:ring-0"
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex-grow">
                     <div className="flex flex-wrap items-center justify-start gap-4">
-                      <div className="flex-1">
-                        <div className="shadow-adminInputShadow relative w-full min-w-[211px] rounded-lg border border-gray150 bg-transparent hover:border-black">
-                          <i className="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 transform text-gray100"></i>
-                          <InputText
-                            placeholder="Search"
-                            className="w-full bg-transparent py-[17px] pl-10 pr-3 text-sm text-black focus:ring-0"
-                            value={searchTerm}
-                            onChange={handleSearchChange}
-                          />
-                        </div>
-                      </div>
                       <div className="flex-1">
                         <MultiSelect
                           value={selectedCities}
@@ -149,17 +149,17 @@ export const GameList = () => {
                           itemClassName="!font-inter"
                         />
                       </div>
+                      <div className="flex-1">
+                        <Dropdown
+                          value={selectedOption}
+                          options={options}
+                          onChange={(e) => setSelectedOption(e.value)}
+                          className="custom-icon-color shadow-adminInputShadow w-full min-w-36 rounded-lg border border-gray150 px-4 py-2 !font-inter text-sm"
+                          dropdownIcon="pi pi-chevron-down"
+                          panelClassName="custom-dropdown-panel"
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div className="w-full sm:w-auto">
-                    <Dropdown
-                      value={selectedOption}
-                      options={options}
-                      onChange={(e) => setSelectedOption(e.value)}
-                      className="custom-icon-color shadow-adminInputShadow w-full min-w-36 rounded-lg border border-gray150 px-4 py-2 !font-inter text-sm"
-                      dropdownIcon="pi pi-chevron-down"
-                      panelClassName="custom-dropdown-panel"
-                    />
                   </div>
                 </div>
               </div>

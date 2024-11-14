@@ -28,7 +28,7 @@ export const CustomerList = () => {
     <>
       <div className="">
         <div className="flex items-start justify-between gap-6">
-          <h3 className="text-[32px] font-medium">Customer List</h3>
+          <h3 className="text-[32px] font-medium">Customers</h3>
           <RightSideButton Icon={MdAddBox} link={"/admin/customer/create"} />
         </div>
         <div className="mt-8">

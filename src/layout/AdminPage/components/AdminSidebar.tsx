@@ -94,10 +94,10 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onLinkClick }) => {
                       Icon={TbFileInvoice}
                       names={"Invoices"}
                       name={"Invoice"}
-                      listLink={"/admin/invoices/list"}
-                      createLink={"/admin/invoices/create"}
-                      detailLink={"/admin/invoices/detail"}
-                      location={"/admin/invoices"}
+                      listLink={"/admin/invoice/list"}
+                      createLink={"/admin/invoice/create"}
+                      detailLink={"/admin/invoice/detail"}
+                      location={"/admin/invoice"}
                       onLinkClick={onLinkClick}
                     />
                   </li>

@@ -40,6 +40,9 @@ import { AdminAccInfo } from "./layout/AdminPage/AdminAccInfoPage/AdminAccInfo";
 import { AdminSetting } from "./layout/AdminPage/AdminSettingPage/AdminSetting";
 import { CustomerList } from "./layout/AdminPage/CustomerManagePage/CustomerList";
 import { CustomerCU } from "./layout/AdminPage/CustomerManagePage/CustomerCU";
+import { CustomerDetail } from "./layout/AdminPage/CustomerManagePage/CustomerDetail";
+import { InvoiceList } from "./layout/AdminPage/InvoiceManagePage/InvoiceList";
+import { InvoiceDetail } from "./layout/AdminPage/InvoiceManagePage/InvoiceDetail";
 
 function App() {
   return (
@@ -58,7 +61,12 @@ function App() {
 
               <Route path="customer/list" element={<CustomerList />} />
               <Route path="customer/create" element={<CustomerCU />} />
-              <Route path="customer/detail/:id" element={<CustomerCU />} />
+              <Route path="customer/update/:id" element={<CustomerCU />} />
+              <Route path="customer/detail/:id" element={<CustomerDetail />} />
+
+              <Route path="invoice/list" element={<InvoiceList />} />
+              {/* <Route path="invoice/create" element={<GameCU />} /> */}
+              <Route path="invoice/detail/:id" element={<InvoiceDetail />} />
 
               <Route path="account-info" element={<AdminAccInfo />} />
               <Route path="settings" element={<AdminSetting />} />
