@@ -113,7 +113,7 @@ export const GameList = () => {
               <div className="rounded-[20px] px-6 py-4 shadow-adminBoxshadow">
                 <div className="flex flex-wrap items-center justify-between gap-4">
                   <div className="flex-auto">
-                    <div className="shadow-adminInputShadow relative w-full min-w-[211px] rounded-lg border border-gray150 bg-transparent hover:border-black">
+                    <div className="relative w-full min-w-[211px] rounded-lg border border-gray150 bg-transparent shadow-adminInputShadow hover:border-black">
                       <i className="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 transform text-gray100"></i>
                       <InputText
                         placeholder="Search"
@@ -133,7 +133,7 @@ export const GameList = () => {
                           optionLabel="name"
                           placeholder="Select Categories"
                           maxSelectedLabels={3}
-                          className="shadow-adminInputShadow w-full rounded-lg border border-gray150 px-4 py-2 font-inter text-sm"
+                          className="w-full rounded-lg border border-gray150 px-4 py-2 font-inter text-sm shadow-adminInputShadow"
                           itemClassName="!font-inter"
                         />
                       </div>
@@ -145,7 +145,7 @@ export const GameList = () => {
                           optionLabel="name"
                           placeholder="Select Status"
                           maxSelectedLabels={3}
-                          className="shadow-adminInputShadow w-full rounded-lg border border-gray150 px-4 py-2 font-inter text-sm"
+                          className="w-full rounded-lg border border-gray150 px-4 py-2 font-inter text-sm shadow-adminInputShadow"
                           itemClassName="!font-inter"
                         />
                       </div>
@@ -154,7 +154,7 @@ export const GameList = () => {
                           value={selectedOption}
                           options={options}
                           onChange={(e) => setSelectedOption(e.value)}
-                          className="custom-icon-color shadow-adminInputShadow w-full min-w-36 rounded-lg border border-gray150 px-4 py-2 !font-inter text-sm"
+                          className="custom-icon-color w-full min-w-36 rounded-lg border border-gray150 px-4 py-2 !font-inter text-sm shadow-adminInputShadow"
                           dropdownIcon="pi pi-chevron-down"
                           panelClassName="custom-dropdown-panel"
                         />
@@ -167,7 +167,7 @@ export const GameList = () => {
             <div className="col-span-12">
               <div className="mb-5 rounded-[20px] bg-[#F2F2F2] px-5 pb-5 shadow-adminBoxshadow">
                 <div className="overflow-x-scroll">
-                  <table className="w-full rounded-xl">
+                  <table className="w-full text-nowrap rounded-xl">
                     <thead>
                       <tr className="text-left">
                         <th className="p-5 text-xs font-light">ID</th>
