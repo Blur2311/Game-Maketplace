@@ -95,8 +95,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onLinkClick }) => {
                       names={"Invoices"}
                       name={"Invoice"}
                       listLink={"/admin/invoice/list"}
-                      createLink={"/admin/invoice/create"}
-                      detailLink={"/admin/invoice/detail"}
+                      detailLink={"/admin/invoice/detail/1"}
                       location={"/admin/invoice"}
                       onLinkClick={onLinkClick}
                     />
@@ -108,7 +107,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onLinkClick }) => {
                       name={"Discount"}
                       listLink={"/admin/discount/list"}
                       createLink={"/admin/discount/create"}
-                      detailLink={"/admin/discount/detail"}
+                      detailLink={"/admin/discount/detail/1"}
                       location={"/admin/discount"}
                       onLinkClick={onLinkClick}
                     />
