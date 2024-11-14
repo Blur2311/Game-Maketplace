@@ -66,9 +66,6 @@ export const ProductDetail = () => {
           <div className="py-2 border-b-2 border-mainCyan">
             <p>Overview</p>
           </div>
-          {/* <div className="py-2 cursor-pointer">
-            <p>Add-Ons</p>
-          </div> */}
         </div>
       </div>
       <div className="flex items-start">
@@ -90,9 +87,6 @@ export const ProductDetail = () => {
                         url={""}
                       />
                     ))}
-                  {/* <LinkType text={"Action"} url={""} />
-                  <LinkType text={"Adventure"} url={""} />
-                  <LinkType text={"RPG"} url={""} /> */}
                 </div>
               </div>
               {gameDetails.features && (
@@ -172,10 +166,6 @@ export const ProductDetail = () => {
               alt=""
               className="rounded"
             />
-            {/* {gameDetails.features &&
-              gameDetails.features.split("\n").slice(0, 1).map((feature, index) => (
-                <LinkType key={index} text={feature} url={""} />
-              ))} */}
             <div className="flex items-center w-full gap-2 justify-evenly">
               {gameDetails.discountPercent ? (
                 <>
@@ -213,22 +203,18 @@ export const ProductDetail = () => {
                 size="large"
                 className="h-[50px] w-full rounded-[10px] bg-mainYellow text-sm font-medium transition duration-300 hover:brightness-110"
                 onClick={() => handleBuyNow(gameDetails)}
-                // disabled={isLockedOut}
               />
               <Button
                 label="Add To Cart"
                 size="large"
                 className="h-[50px] w-full rounded-[10px] bg-grayBorder text-sm font-medium transition duration-300 hover:bg-gray200"
                 onClick={() => addGameToCart(gameDetails, 1)}
-                // disabled={isLockedOut}
               />
               <Button
                 disabled
                 label="Add to Wishlist"
                 size="large"
                 className="h-[50px] w-full rounded-[10px] bg-grayBorder text-sm font-medium transition duration-300 hover:bg-gray200"
-                // onClick={handleLogin}
-                // disabled={isLockedOut}
               />
             </div>
             <div className="flex flex-col w-full text-sm font-light text-textType">
@@ -245,19 +231,10 @@ export const ProductDetail = () => {
                 </p>
               </div>
             </div>
-            {/* <a
-              href="#"
-              className="flex items-center gap-1 text-sm font-light text-white hover:underline"
-            >
-              See All Editions and Add-Ons
-              <IoChevronDownOutline className="text-xl" />
-            </a> */}
             <div className="mt-[15px] flex w-full gap-[10px] text-white">
               <button
                 type="button"
                 className="flex h-[32px] w-full items-center justify-center gap-2 rounded-[10px] bg-grayBorder text-sm font-medium transition duration-300 hover:bg-gray200"
-                // onClick={handleLogin}
-                // disabled={isLockedOut}
               >
                 <FiShare2 className="text-xl" />
                 Share
@@ -265,8 +242,6 @@ export const ProductDetail = () => {
               <button
                 type="button"
                 className="flex h-[32px] w-full items-center justify-center gap-2 rounded-[10px] bg-grayBorder text-sm font-medium transition duration-300 hover:bg-gray200"
-                // onClick={handleLogin}
-                // disabled={isLockedOut}
               >
                 <TbFlag3 className="text-xl" />
                 Report

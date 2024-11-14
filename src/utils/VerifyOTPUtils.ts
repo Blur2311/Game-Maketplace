@@ -1,15 +1,22 @@
 // src/utils/api.ts
-import apiClient from "../config/apiClient";
 import { Toast } from "primereact/toast";
+import apiClient from "../config/apiClient";
 
 // API
 export const resendOtp = async (
   email: string,
   toast: React.RefObject<Toast>,
+  endPoint?: string,
 ) => {
+  let href = window.location.href;
+  if (href.includes("forgot-password")) {
+    endPoint = "/api/accounts/forgot-password/resend-otp";
+  } else {
+    endPoint = "/api/accounts/resend-registration-otp";
+  }
   try {
     const response = await apiClient.post(
-      `/api/accounts/resend-registration-otp`,
+      endPoint,
       null,
       {
         params: { email },
@@ -41,10 +48,17 @@ export const verifyOtp = async (
   email: string,
   toast: React.RefObject<Toast>,
   navigate: any,
+  endPoint?: string,
 ) => {
+  let href = window.location.href;
+  if (href.includes("forgot-password")) {
+    endPoint = "/api/accounts/forgot-password/verify-otp";
+  } else {
+    endPoint = "/api/accounts/verify-otp";
+  }
   try {
     const response = await apiClient.post(
-      `/api/accounts/verify-registration-otp`,
+      endPoint,
       null,
       {
         params: { otp: token, email },
@@ -61,16 +75,21 @@ export const verifyOtp = async (
     });
 
     if (response.status === 200) {
-      toast.current?.show({
-        severity: "info",
-        summary: "Code is good",
-        detail: "Redirecting to login...",
-        life: 3000,
-      });
+      if (endPoint === "/api/accounts/forgot-password/verify-otp") {
+        localStorage.setItem("email", email);
+        navigate("/forgot-password/new-password");
+      } else {
+        toast.current?.show({
+          severity: "info",
+          summary: "Code is good",
+          detail: "Redirecting to login...",
+          life: 3000,
+        });
 
-      setTimeout(() => {
-        navigate("/sign-in");
-      }, 3000);
+        setTimeout(() => {
+          navigate("/sign-in");
+        }, 3000);
+      }
     }
   } catch (error) {
     toast.current?.show({

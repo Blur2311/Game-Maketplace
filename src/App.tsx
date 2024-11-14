@@ -25,8 +25,8 @@ import { NewsDetail } from "./layout/NewsPage/NewsDetail";
 import { OrderHistory } from "./layout/OrderHistoryPage/OrderHistory";
 import { OrderHistoryDetail } from "./layout/OrderHistoryPage/OrderHistoryDetail";
 import { ProductDetail } from "./layout/ProductDetailPage/ProductDetail";
-import { Registration } from "./layout/RegisterPage/Registration";
-import { VerifyOTP } from "./layout/RegisterPage/VerifyOTP";
+import { Registration } from "./layout/RegisterPage&ForgotPassword/Registration";
+import { VerifyOTP } from "./layout/RegisterPage&ForgotPassword/VerifyOTP";
 import { ReviewHistory } from "./layout/ReviewHistoryPage/ReviewHistory";
 import { SignIn } from "./layout/SignInPage/SignIn";
 import { TransactionList } from "./layout/TransactionPage/TransactionList";
@@ -40,6 +40,8 @@ import { AdminAccInfo } from "./layout/AdminPage/AdminAccInfoPage/AdminAccInfo";
 import { AdminSetting } from "./layout/AdminPage/AdminSettingPage/AdminSetting";
 import { CustomerList } from "./layout/AdminPage/CustomerManagePage/CustomerList";
 import { CustomerCU } from "./layout/AdminPage/CustomerManagePage/CustomerCU";
+import { ForgotPassword } from "./layout/RegisterPage&ForgotPassword/ForgotPasswordEmailVerification";
+import { NewPassword } from "./layout/RegisterPage&ForgotPassword/ForgotPasswordNewPassword";
 import { CustomerDetail } from "./layout/AdminPage/CustomerManagePage/CustomerDetail";
 import { InvoiceList } from "./layout/AdminPage/InvoiceManagePage/InvoiceList";
 import { InvoiceDetail } from "./layout/AdminPage/InvoiceManagePage/InvoiceDetail";
@@ -108,6 +110,12 @@ function App() {
             <Route path="/register" element={<Registration />} />
             <Route path="/verify-otp" element={<VerifyOTP />} />
             <Route path="/403" element={<Forbidden />} />
+
+            <Route path="/forgot-password">
+              <Route index element={<ForgotPassword />} />
+              <Route path="verify-otp" element={<VerifyOTP />} />
+              <Route path="new-password" element={<NewPassword />} />
+            </Route>
 
             {/* Chuyển hướng tất cả các route không hợp lệ về "home" */}
             <Route path="*" element={<Navigate to="/home" />} />
