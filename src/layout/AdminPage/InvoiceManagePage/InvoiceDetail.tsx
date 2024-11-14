@@ -6,6 +6,7 @@ import {
   formatDateFromLocalDate,
 } from "../../../utils/OtherUtils";
 import { InvoiceDetailRow } from "./components/InvoiceDetailRow";
+import { Button } from "primereact/button";
 
 export const InvoiceDetail = () => {
   const [status] = useState(true);
@@ -13,31 +14,45 @@ export const InvoiceDetail = () => {
   return (
     <>
       <div className="">
-        <div className="mb-8 flex flex-col gap-6">
-          <NavLink
-            to={"/admin/invoice/list"}
-            className="flex items-center gap-2 text-sm hover:underline"
-          >
-            <TiArrowLeft className="text-xl" />
-            Invoices
-          </NavLink>
-          <div className="flex flex-col gap-2">
-            <h3 className="text-[32px] font-medium">INVOICE-01</h3>
-            <div className="flex">
-              <div
-                className={`flex h-8 items-center justify-center rounded-full px-3 text-[13px] font-medium ${status != null ? (status ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700") : "bg-yellow-100 text-yellow-700"}`}
-              >
-                <span>
-                  {status != null
-                    ? status
-                      ? "Completed"
-                      : "Refunded"
-                    : "Pending"}
-                </span>
+        <div className="">
+          <div className="mb-8 flex flex-col gap-6">
+            <NavLink
+              to={"/admin/invoice/list"}
+              className="flex items-center gap-2 text-sm hover:underline"
+            >
+              <TiArrowLeft className="text-xl" />
+              Invoices
+            </NavLink>
+            <div className="flex items-start justify-between gap-6">
+              <div className="flex flex-col gap-2">
+                <h3 className="text-[32px] font-medium">INVOICE-01</h3>
+                <div className="flex">
+                  <div
+                    className={`flex h-8 items-center justify-center rounded-full px-3 text-[13px] font-medium ${status != null ? (status ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700") : "bg-yellow-100 text-yellow-700"}`}
+                  >
+                    <span>
+                      {status != null
+                        ? status
+                          ? "Completed"
+                          : "Refunded"
+                        : "Pending"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="">
+                <Button
+                  label="Download"
+                  className={
+                    "rounded-lg bg-mainYellow px-4 py-[10px] text-white transition duration-300 hover:brightness-105"
+                  }
+                />
               </div>
             </div>
           </div>
         </div>
+
         <div className="rounded-[20px] p-12 shadow-adminBoxshadow">
           <div className="flex flex-col gap-12">
             <div className="flex items-start gap-6">
@@ -85,7 +100,7 @@ export const InvoiceDetail = () => {
 
             <div className="rounded-lg border bg-[#F2F2F2] px-5 pb-5">
               <div className="overflow-x-scroll">
-                <table className="w-full rounded-xl">
+                <table className="w-full text-nowrap rounded-xl">
                   <thead>
                     <tr className="text-left">
                       <th className="p-5 text-xs font-light">Name</th>
