@@ -89,7 +89,7 @@ export const SearchBar = () => {
               />
             </div>
           </div>
-          <div className="hidden lg:block">
+          {/* <div className="hidden lg:block">
             <ul className="flex items-center gap-8 text-sm font-normal text-gray150">
               <li>
                 <Button
@@ -100,7 +100,7 @@ export const SearchBar = () => {
                 />
               </li>
             </ul>
-          </div>
+          </div> */}
           {/* Cái này cũg thế kô rõ thì lên trên epic game xem */}
           <div className="hidden lg:block">
             <ul className="flex items-center gap-8 text-sm font-normal text-gray150">

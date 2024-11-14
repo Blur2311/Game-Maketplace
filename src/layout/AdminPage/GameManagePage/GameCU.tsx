@@ -5,22 +5,36 @@ import { InputTextarea } from "primereact/inputtextarea";
 import { RadioButton } from "primereact/radiobutton";
 import { MultiSelect } from "primereact/multiselect";
 import { FileUpload } from "primereact/fileupload";
-import { FaAsterisk } from "react-icons/fa";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate, NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
 import apiClient from "../../../config/apiClient";
+import { TiArrowLeft } from "react-icons/ti";
+import { Dropdown } from "primereact/dropdown";
+import { Editor } from "primereact/editor";
+import { InputNumber } from "primereact/inputnumber";
+import FileUploadComponent from "./components/FileUpload";
+import { formatCurrency, calculateSalePrice } from "../../../utils/OtherUtils";
 
 export const GameCU = () => {
+  const [text, setText] = useState("");
+  const handleTextChange = (e: any) => {
+    setText(e.htmlValue ?? ""); // Nếu e.htmlValue là null thì gán ''
+  };
+
   const { id } = useParams<{ id?: string }>(); // Nhận tham số id tùy chọn
   const isUpdateMode = Boolean(id); // Xác định chế độ cập nhật hay tạo mới
   const navigate = useNavigate();
 
   const [sysIdGame, setSysIdGame] = useState<number | null>(null);
   const [gameName, setGameName] = useState("");
-  const [price, setPrice] = useState("");
-  const [discountPercent, setDiscountPercent] = useState("");
-  const [quantity, setQuantity] = useState("");
-  const [status, setStatus] = useState("active");
+  const [price, setPrice] = useState<number | null>();
+  const [discountPercent, setDiscountPercent] = useState<number | null>();
+  const [quantity, setQuantity] = useState<number | null>();
+  const [status, setStatus] = useState("");
+  const options: any[] = [
+    { label: "Published", value: "active" },
+    { label: "Draft", value: "unactive" },
+  ];
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
   const [description, setDescription] = useState("");
   const [categories, setCategories] = useState<
@@ -72,11 +86,12 @@ export const GameCU = () => {
         );
         setDescription(game.description || "");
         setThumbnailUrl(
-          game.media.find((m: any) => m.mediaName === "thumbnail")?.mediaUrl || null // Trả về null nếu không tìm thấy
+          game.media.find((m: any) => m.mediaName === "thumbnail")?.mediaUrl ||
+            null, // Trả về null nếu không tìm thấy
         );
         setLogoUrl(
-          game.media.find((m: any) => m.mediaName === "logo")?.mediaUrl || null // Trả về null nếu không tìm thấy
-        );               
+          game.media.find((m: any) => m.mediaName === "logo")?.mediaUrl || null, // Trả về null nếu không tìm thấy
+        );
         setImageUrls(
           game.media
             .filter(
@@ -122,377 +137,468 @@ export const GameCU = () => {
     Promise.all(urls).then((results) => setImageUrls(results));
   };
 
-  const handleSave = async () => {
-    if (!gameName || !price || !quantity) {
-      setError("Please fill in all required fields.");
-      return;
-    }
+  // const handleSave = async () => {
+  //   if (!gameName || !price || !quantity) {
+  //     setError("Please fill in all required fields.");
+  //     return;
+  //   }
 
-    setLoading(true);
+  //   setLoading(true);
 
-    // Hàm chuyển đổi file sang base64
-    const convertFileToBase64 = async (file: File) => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = (error) => reject(error);
-        reader.readAsDataURL(file);
-      });
-    };
+  //   // Hàm chuyển đổi file sang base64
+  //   const convertFileToBase64 = async (file: File) => {
+  //     return new Promise((resolve, reject) => {
+  //       const reader = new FileReader();
+  //       reader.onload = () => resolve(reader.result);
+  //       reader.onerror = (error) => reject(error);
+  //       reader.readAsDataURL(file);
+  //     });
+  //   };
 
-    // Chuyển đổi các hình ảnh sang Base64
-    const base64Thumbnail = thumbnail
-      ? await convertFileToBase64(thumbnail)
-      : null;
-    const base64Logo = logo ? await convertFileToBase64(logo) : null;
-    const base64Images = await Promise.all(
-      images.map((image) => convertFileToBase64(image)),
-    );
+  //   // Chuyển đổi các hình ảnh sang Base64
+  //   const base64Thumbnail = thumbnail
+  //     ? await convertFileToBase64(thumbnail)
+  //     : null;
+  //   const base64Logo = logo ? await convertFileToBase64(logo) : null;
+  //   const base64Images = await Promise.all(
+  //     images.map((image) => convertFileToBase64(image)),
+  //   );
 
-    // Tạo object gameDTO phù hợp với cấu trúc của GameDTO
-    const gameDTO = {
-      gameName,
-      price: parseFloat(price),
-      discountPercent: parseFloat(discountPercent),
-      quantity: parseInt(quantity, 10),
-      status: status === "active",
-      categoryDetails: [
-        ...selectedCategories.map((categoryId) => ({
-          sysIdCategory: categoryId,
-        })),
-      ],
-      description,
-      media: [
-        ...(base64Thumbnail
-          ? [{ mediaName: "thumbnail", mediaUrl: base64Thumbnail }]
-          : []),
-        ...(base64Logo ? [{ mediaName: "logo", mediaUrl: base64Logo }] : []),
-        ...base64Images.map((image, index) => ({
-          mediaName: "p" + (index + 1),
-          mediaUrl: image,
-        })),
-      ],
-      slug: gameName.toLowerCase().replace(/ /g, "-"),
-    };
-    console.log("Game DTO:", gameDTO);
-    // return;
-    try {
-      const response = await apiClient.post("/api/games", gameDTO, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      console.log("Game saved:", response.data);
-      // navigate("/admin/game-list");
-    } catch (error) {
-      console.error("Error saving game:", error);
-      // setError("Failed to save game.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  //   // Tạo object gameDTO phù hợp với cấu trúc của GameDTO
+  //   const gameDTO = {
+  //     gameName,
+  //     price: parseFloat(price),
+  //     discountPercent: parseFloat(discountPercent),
+  //     quantity: parseInt(quantity, 10),
+  //     status: status === "active",
+  //     categoryDetails: [
+  //       ...selectedCategories.map((categoryId) => ({
+  //         sysIdCategory: categoryId,
+  //       })),
+  //     ],
+  //     description,
+  //     media: [
+  //       ...(base64Thumbnail
+  //         ? [{ mediaName: "thumbnail", mediaUrl: base64Thumbnail }]
+  //         : []),
+  //       ...(base64Logo ? [{ mediaName: "logo", mediaUrl: base64Logo }] : []),
+  //       ...base64Images.map((image, index) => ({
+  //         mediaName: "p" + (index + 1),
+  //         mediaUrl: image,
+  //       })),
+  //     ],
+  //     slug: gameName.toLowerCase().replace(/ /g, "-"),
+  //   };
+  //   console.log("Game DTO:", gameDTO);
+  //   // return;
+  //   try {
+  //     const response = await apiClient.post("/api/games", gameDTO, {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
+  //     console.log("Game saved:", response.data);
+  //     // navigate("/admin/game-list");
+  //   } catch (error) {
+  //     console.error("Error saving game:", error);
+  //     // setError("Failed to save game.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
-  const handleUpdate = async () => {
-    if (!gameName || !price || !quantity) {
-      setError("Please fill in all required fields.");
-      return;
-    }
+  // const handleUpdae = async () => {
+  //   if (!gameName || !price || !quantity) {
+  //     setError("Please fill in all required fields.");
+  //     return;
+  //   }
 
-    setLoading(true);
+  //   setLoading(true);
 
-    // Convert files to Base64...
-     // Hàm chuyển đổi file sang base64
-     const convertFileToBase64 = async (file: File) => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = (error) => reject(error);
-        reader.readAsDataURL(file);
-      });
-    };
+  //   // Hàm chuyển đổi file sang base64
+  //   const convertFileToBase64 = async (file: File) => {
+  //     return new Promise((resolve, reject) => {
+  //       const reader = new FileReader();
+  //       reader.onload = () => resolve(reader.result);
+  //       reader.onerror = (error) => reject(error);
+  //       reader.readAsDataURL(file);
+  //     });
+  //   };
 
-    // Chuyển đổi các hình ảnh sang Base64
-    const base64Thumbnail = thumbnail
-      ? await convertFileToBase64(thumbnail)
-      : null;
-    const base64Logo = logo ? await convertFileToBase64(logo) : null;
-    const base64Images = await Promise.all(
-      images.map((image) => convertFileToBase64(image)),
-    );
-    const gameDTO = {
-      sysIdGame,
-      gameName,
-      price: parseFloat(price),
-      discountPercent: parseFloat(discountPercent),
-      quantity: parseInt(quantity, 10),
-      status: status === "active",
-      categoryDetails: selectedCategories.map((categoryId) => ({
-        sysIdCategory: categoryId,
-      })),
-      description,
-      media: [
-        ...(base64Thumbnail
-          ? [{ mediaName: "thumbnail", mediaUrl: base64Thumbnail }]
-          : []),
-        ...(base64Logo ? [{ mediaName: "logo", mediaUrl: base64Logo }] : []),
-        ...base64Images.map((image, index) => ({
-          mediaName: "p" + (index + 1),
-          mediaUrl: image,
-        })),
-      ],
-      slug: gameName.toLowerCase().replace(/ /g, "-"),
-    };
+  //   // Chuyển đổi các hình ảnh sang Base64
+  //   const base64Thumbnail = thumbnail
+  //     ? await convertFileToBase64(thumbnail)
+  //     : null;
+  //   const base64Logo = logo ? await convertFileToBase64(logo) : null;
+  //   const base64Images = await Promise.all(
+  //     images.map((image) => convertFileToBase64(image)),
+  //   );
 
-    try {
-      const response = await apiClient.put(`/api/games/${sysIdGame}`, gameDTO, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      console.log("Game updated:", response.data);
-      navigate("/admin/game-list");
-    } catch (error) {
-      console.error("Error updating game:", error);
-      setError("Failed to update game.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  //   const gameDTO = {
+  //     sysIdGame,
+  //     gameName,
+  //     price: parseFloat(price),
+  //     discountPercent: parseFloat(discountPercent),
+  //     quantity: parseInt(quantity, 10),
+  //     status: status === "active",
+  //     categoryDetails: [
+  //       ...selectedCategories.map((categoryId) => ({
+  //         sysIdCategory: categoryId,
+  //       })),
+  //     ],
+  //     description,
+  //     media: [
+  //       ...(base64Thumbnail
+  //         ? [{ mediaName: "thumbnail", mediaUrl: base64Thumbnail }]
+  //         : []),
+  //       ...(base64Logo ? [{ mediaName: "logo", mediaUrl: base64Logo }] : []),
+  //       ...base64Images.map((image, index) => ({
+  //         mediaName: "p" + (index + 1),
+  //         mediaUrl: image,
+  //       })),
+  //     ],
+  //     slug: gameName.toLowerCase().replace(/ /g, "-"),
+  //   };
+  //   console.log("Game DTO:", gameDTO);
+  //   return;
+
+  //   try {
+  //     const response = await apiClient.post("/api/games", gameDTO, {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
+  //     console.log("Game updated:", response.data);
+  //     // navigate("/admin/game-list");
+  //   } catch (error) {
+  //     console.error("Error updating game:", error);
+  //     // setError("Failed to save game.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <>
-      <div className="mr-6">
-        <h3 className="text-[32px] font-semibold">Category Detail</h3>
-        <div className="my-5 rounded-md border-2 border-[#F2F2F2] p-5 pt-7">
-          <div className="border-b-2 border-[#F2F2F2] pb-3">
-            <h6 className="text-lg text-gray100">
-              The information can be edited
-            </h6>
-            <p className="text-textGray300 mt-3 flex items-center gap-1 text-sm">
-              <FaAsterisk className="text-[6px] text-red-500" />
-              Is a mandatory information field
-            </p>
-          </div>
+      <div className="">
+        <div className="mb-8 flex flex-col gap-6">
+          <NavLink
+            to={"/admin/game/list"}
+            className="flex items-center gap-2 text-sm hover:underline"
+          >
+            <TiArrowLeft className="text-xl" />
+            Games
+          </NavLink>
+          <h3 className="text-[32px] font-medium">
+            {isUpdateMode ? "Detail" : "Create"} game
+          </h3>
+        </div>
 
-          <div className="mt-10 grid grid-cols-1 gap-[35px] md:grid-cols-2">
-            <div className="col-span-1 md:col-span-2">
-              <label className="block text-sm">
-                Thumbnail <span className="text-red-500">*</span>
-              </label>
-              {thumbnailUrl && (
-                <div className="mb-4">
-                  <img
-                    src={thumbnailUrl}
-                    alt="Thumbnail"
-                    className="h-24 w-24 rounded-full object-cover"
-                  />
+        <div className="grid grid-cols-12 items-start gap-8">
+          <div
+            className={`${isUpdateMode ? "md:col-span-8" : "col-span-12"} order-2 col-span-12 rounded-[20px] shadow-adminBoxshadow md:order-1`}
+          >
+            <div className="px-6 pt-4">
+              <div className="flex flex-col gap-8 pb-8">
+                <h6 className="text-lg font-medium">Basic information</h6>
+                <div className="grid grid-cols-12 gap-x-6 gap-y-8">
+                  <FloatLabel className="col-span-12 text-sm md:col-span-6">
+                    <InputText
+                      className="shadow-adminInputShadow w-full rounded-lg border bg-transparent p-4 ps-[10px] hover:border-black"
+                      value={gameName || ""}
+                      onChange={(e) => {
+                        setGameName(e.target.value);
+                        setError("");
+                      }}
+                    />
+                    <label>
+                      Game name <span className="text-red-500">*</span>
+                    </label>
+                    {error && (
+                      <p className="mt-1 text-xs text-red-500">{error}</p>
+                    )}
+                  </FloatLabel>
+
+                  <FloatLabel className="col-span-12 text-sm md:col-span-6">
+                    <Dropdown
+                      value={status}
+                      options={options}
+                      onChange={(e) => setStatus(e.value)}
+                      className="custom-icon-color shadow-adminInputShadow w-full min-w-36 rounded-lg border px-4 py-2 !font-inter text-sm"
+                      dropdownIcon="pi pi-chevron-down"
+                      panelClassName="custom-dropdown-panel"
+                      placeholder="Select status"
+                    />
+                    <label>
+                      Status <span className="text-red-500">*</span>
+                    </label>
+                  </FloatLabel>
+
+                  <FloatLabel className="col-span-12 text-sm md:col-span-6">
+                    <MultiSelect
+                      value={selectedCategories}
+                      options={categories}
+                      onChange={(e) => setSelectedCategories(e.value)}
+                      className="shadow-adminInputShadow w-full rounded-lg border px-4 py-2 !font-inter text-sm"
+                      itemClassName="!font-inter"
+                      placeholder="Select categories"
+                      display="chip"
+                    />
+                    <label>
+                      Categories <span className="text-red-500">*</span>
+                    </label>
+                  </FloatLabel>
+
+                  <FloatLabel className="col-span-12 text-sm md:col-span-6">
+                    <MultiSelect
+                      // value={selectedCategories}
+                      // options={categories}
+                      // onChange={(e) => setSelectedCategories(e.value)}
+                      className="shadow-adminInputShadow w-full rounded-lg border px-4 py-2 !font-inter text-sm"
+                      itemClassName="!font-inter"
+                      placeholder="Select feature"
+                      display="chip"
+                    />
+                    <label>
+                      Feature <span className="text-red-500">*</span>
+                    </label>
+                  </FloatLabel>
+
+                  <div className="col-span-12 text-sm">
+                    <Editor
+                      value={text}
+                      onTextChange={handleTextChange}
+                      className="shadow-adminInputShadow custom-editor rounded-lg"
+                      style={{ height: 350 }}
+                      placeholder="Description"
+                    />
+                  </div>
                 </div>
-              )}
-              <FileUpload
-                name="thumbnail"
-                customUpload
-                uploadHandler={handleThumbnailUpload}
-                accept="image/*"
-                maxFileSize={1000000}
-                className="w-full"
-              />
-            </div>
 
-            <div className="col-span-1 md:col-span-2">
-              <label className="block text-sm">
-                Logo <span className="text-red-500">*</span>
-              </label>
-              {logoUrl && (
-                <div className="mb-4">
-                  <img
-                    src={logoUrl}
-                    alt="Logo"
-                    className="h-24 w-24 rounded-full object-cover"
-                  />
+                <hr />
+
+                <h6 className="text-lg font-medium">Price & Stock</h6>
+                <div className="grid grid-cols-12 gap-x-6 gap-y-8">
+                  <FloatLabel className="col-span-12 text-sm md:col-span-4">
+                    <InputNumber
+                      className="shadow-adminInputShadow w-full rounded-lg border bg-transparent p-4 ps-[10px] hover:border-black"
+                      inputClassName="focus:ring-0"
+                      min={0}
+                      value={price || 0}
+                      onChange={(e) => {
+                        setPrice(e.value);
+                        setError("");
+                      }}
+                    />
+                    <label>
+                      Price <span className="text-red-500">*</span>
+                    </label>
+                    {error && (
+                      <p className="mt-1 text-xs text-red-500">{error}</p>
+                    )}
+                  </FloatLabel>
+
+                  <FloatLabel className="col-span-12 text-sm md:col-span-4">
+                    <InputNumber
+                      className="shadow-adminInputShadow w-full rounded-lg border bg-transparent p-4 ps-[10px] hover:border-black"
+                      inputClassName="focus:ring-0"
+                      max={100}
+                      min={0}
+                      value={discountPercent || 0}
+                      onChange={(e) => {
+                        setDiscountPercent(e.value);
+                        setError("");
+                      }}
+                    />
+                    <label>
+                      Discount Percent <span className="text-red-500">*</span>
+                    </label>
+                    {error && (
+                      <p className="mt-1 text-xs text-red-500">{error}</p>
+                    )}
+                  </FloatLabel>
+
+                  <FloatLabel className="col-span-12 text-sm md:col-span-4">
+                    <InputNumber
+                      className="shadow-adminInputShadow w-full rounded-lg border bg-transparent p-4 ps-[10px] hover:border-black"
+                      inputClassName="focus:ring-0"
+                      min={0}
+                      value={quantity || 0}
+                      onChange={(e) => {
+                        setQuantity(e.value);
+                        setError("");
+                      }}
+                    />
+                    <label>
+                      Quantity <span className="text-red-500">*</span>
+                    </label>
+                    {error && (
+                      <p className="mt-1 text-xs text-red-500">{error}</p>
+                    )}
+                  </FloatLabel>
                 </div>
-              )}
-              <FileUpload
-                name="logo"
-                customUpload
-                uploadHandler={handleLogoUpload}
-                accept="image/*"
-                maxFileSize={1000000}
-                className="w-full"
-              />
-            </div>
 
-            <div className="col-span-1 md:col-span-2">
-              <label className="block text-sm">
-                Images <span className="text-red-500">*</span>
-              </label>
-              <div className="mb-4 flex flex-wrap gap-2">
-                {imageUrls.map((url, index) => (
-                  <img
-                    key={index}
-                    src={url}
-                    alt={`Image ${index + 1}`}
-                    className="h-24 w-24 rounded-full object-cover"
-                  />
-                ))}
+                <hr />
+
+                <h6 className="text-lg font-medium">Images</h6>
+                <div className="grid grid-cols-12 gap-x-6 gap-y-8">
+                  <div className="col-span-12">
+                    <FileUploadComponent />
+                  </div>
+                </div>
+
+                <h6 className="text-lg font-medium">Thumbnail</h6>
+                <div className="grid grid-cols-12 gap-x-6 gap-y-8">
+                  <div className="col-span-12">
+                    <FileUploadComponent />
+                  </div>
+                </div>
+
+                <h6 className="text-lg font-medium">Logo</h6>
+                <div className="grid grid-cols-12 gap-x-6 gap-y-8">
+                  <div className="col-span-12">
+                    <FileUploadComponent />
+                  </div>
+                </div>
+
+                {/* <div className="grid grid-cols-12 gap-x-6 gap-y-8">
+              <div className="col-span-12">
+                <label className="mb-2 block text-sm">
+                  Thumbnail <span className="text-red-500">*</span>
+                </label>
+                {thumbnailUrl && (
+                  <div className="mb-4">
+                    <img
+                      src={thumbnailUrl}
+                      alt="Thumbnail"
+                      className="h-24 w-24 rounded-full object-cover"
+                    />
+                  </div>
+                )}
+                <FileUpload
+                  name="thumbnail"
+                  customUpload
+                  uploadHandler={handleThumbnailUpload}
+                  accept="image/*"
+                  maxFileSize={1000000}
+                  className="shadow-adminInputShadow w-full bg-transparent"
+                />
               </div>
-              <FileUpload
-                name="images"
-                customUpload
-                multiple
-                uploadHandler={handleImagesUpload}
-                accept="image/*"
-                maxFileSize={1000000}
-                className="w-full"
-              />
-            </div>
 
-            <div>
-              <FloatLabel className="flex-1 text-sm">
-                <InputText
-                  className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
-                  value={gameName || ""}
-                  onChange={(e) => {
-                    setGameName(e.target.value);
-                    setError("");
-                  }}
-                />
-                <label>
-                  Game Name <span className="text-red-500">*</span>
+              <div className="col-span-12">
+                <label className="block text-sm">
+                  Logo <span className="text-red-500">*</span>
                 </label>
-                {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
-              </FloatLabel>
-            </div>
-
-            <div>
-              <FloatLabel className="flex-1 text-sm">
-                <InputText
-                  className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
-                  value={price || ""}
-                  onChange={(e) => {
-                    setPrice(e.target.value);
-                    setError("");
-                  }}
+                {logoUrl && (
+                  <div className="mb-4">
+                    <img
+                      src={logoUrl}
+                      alt="Logo"
+                      className="h-24 w-24 rounded-full object-cover"
+                    />
+                  </div>
+                )}
+                <FileUpload
+                  name="logo"
+                  customUpload
+                  uploadHandler={handleLogoUpload}
+                  accept="image/*"
+                  maxFileSize={1000000}
+                  className="w-full"
                 />
-                <label>
-                  Price <span className="text-red-500">*</span>
-                </label>
-                {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
-              </FloatLabel>
-            </div>
+              </div>
 
-            <div>
-              <FloatLabel className="flex-1 text-sm">
-                <InputText
-                  className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
-                  value={discountPercent || ""}
-                  onChange={(e) => {
-                    setDiscountPercent(e.target.value);
-                    setError("");
-                  }}
-                />
-                <label>
-                  Discount Percent <span className="text-red-500">*</span>
+              <div className="col-span-12">
+                <label className="block text-sm">
+                  Images <span className="text-red-500">*</span>
                 </label>
-                {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
-              </FloatLabel>
-            </div>
-
-            <div>
-              <FloatLabel className="flex-1 text-sm">
-                <InputText
-                  className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
-                  value={quantity || ""}
-                  onChange={(e) => {
-                    setQuantity(e.target.value);
-                    setError("");
-                  }}
-                />
-                <label>
-                  Quantity <span className="text-red-500">*</span>
-                </label>
-                {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
-              </FloatLabel>
-            </div>
-
-            <div>
-              <FloatLabel className="flex-1 text-sm">
-                <MultiSelect
-                  value={selectedCategories}
-                  options={categories}
-                  onChange={(e) => setSelectedCategories(e.value)}
-                  className="h-[80px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
-                  placeholder="Select Categories"
-                  display="chip"
-                />
-                <label>
-                  Categories <span className="text-red-500">*</span>
-                </label>
-              </FloatLabel>
-            </div>
-
-            <div>
-              <label className="block text-sm">
-                Status <span className="text-red-500">*</span>
-              </label>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center">
-                  <RadioButton
-                    inputId="statusActive"
-                    name="status"
-                    value="active"
-                    onChange={(e) => setStatus(e.value)}
-                    checked={status === "active"}
-                  />
-                  <label htmlFor="statusActive" className="ml-2">
-                    Active
-                  </label>
+                <div className="mb-4 flex flex-wrap gap-2">
+                  {imageUrls.map((url, index) => (
+                    <img
+                      key={index}
+                      src={url}
+                      alt={`Image ${index + 1}`}
+                      className="h-24 w-24 rounded-full object-cover"
+                    />
+                  ))}
                 </div>
-                <div className="flex items-center">
-                  <RadioButton
-                    inputId="statusInactive"
-                    name="status"
-                    value="inactive"
-                    onChange={(e) => setStatus(e.value)}
-                    checked={status === "inactive"}
-                  />
-                  <label htmlFor="statusInactive" className="ml-2">
-                    Inactive
-                  </label>
-                </div>
+                <FileUpload
+                  name="images"
+                  customUpload
+                  multiple
+                  uploadHandler={handleImagesUpload}
+                  accept="image/*"
+                  maxFileSize={1000000}
+                  className="w-full"
+                />
+              </div>
+            </div> */}
               </div>
             </div>
 
-            <div className="col-span-1 md:col-span-2">
-              <FloatLabel className="flex-1 text-sm">
-                <InputTextarea
-                  rows={5}
-                  className="w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
-                  value={description || ""}
-                  onChange={(e) => setDescription(e.target.value)}
-                />
-                <label>
-                  Description <span className="text-red-500">*</span>
-                </label>
-              </FloatLabel>
+            <div className="flex items-center justify-end gap-2 p-4 pt-2">
+              <Link
+                to={`/admin/game/list`}
+                className="rounded-lg px-2 py-[10px] text-sm font-medium hover:bg-black hover:bg-opacity-5"
+              >
+                Cancel
+              </Link>
+              <Button
+                loading={loading}
+                label={isUpdateMode ? "Update" : "Create"}
+                // onClick={handleSave}
+                className="rounded-lg bg-mainYellow px-4 py-[10px] text-sm font-medium text-white hover:brightness-105"
+              />
             </div>
           </div>
 
-          <div className="mt-6 flex items-center justify-end gap-8 border-t-2 border-[#F2F2F2] pt-3">
-            <Link
-              to={`/admin/category-list`}
-              className="rounded bg-gray250 px-5 py-3 text-xs font-bold uppercase hover:bg-gray350"
-            >
-              Cancel
-            </Link>
-            <Button
-              loading={loading}
-              size="large"
-              className="rounded bg-mainYellow px-5 py-3 text-xs font-bold uppercase text-white hover:brightness-110"
-              onClick={isUpdateMode ? handleUpdate : handleSave}
-            >
-              {isUpdateMode ? "Update" : "Add"}
-            </Button>
-          </div>
+          {isUpdateMode && (
+            <div className="order-1 col-span-12 rounded-[20px] shadow-adminBoxshadow md:order-2 md:col-span-4">
+              <div className="px-6 pt-4">
+                <div className="flex flex-col gap-8 pb-8">
+                  <h6 className="text-lg font-medium">Preview</h6>
+                </div>
+                <div className="flex flex-col gap-4 pb-8">
+                  <img
+                    src="/cat.jpeg"
+                    alt=""
+                    className="w-[100px] rounded-lg"
+                  />
+                  <div className="">
+                    <p className="text-sm text-textSecond">Steam Game</p>
+                    <h6 className="font-medium">Stray</h6>
+                  </div>
+
+                  {discountPercent ? (
+                    <div className="flex items-center gap-2">
+                      <div className="rounded-full bg-mainCyan px-2 py-[2px] text-xs text-black">
+                        -{discountPercent}%
+                      </div>
+                      <p className="text-sm line-through">
+                        {formatCurrency(price || 0)}
+                      </p>
+                      <p className="text-sm">
+                        {formatCurrency(
+                          Math.round(
+                            calculateSalePrice(price || 0, discountPercent),
+                          ),
+                        )}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-sm">{formatCurrency(price || 0)}</p>
+                  )}
+
+                  <Link
+                    to={"/product"}
+                    className="text-sm font-medium text-mainCyan"
+                  >
+                    http://localhost:5173/product
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </>

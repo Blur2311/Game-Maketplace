@@ -1,8 +1,10 @@
 import { Button } from "primereact/button";
 import { Card } from "primereact/card";
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import type { CartItem, GameDTO } from "../../../utils/CartUtils";
 import { formatCurrency } from "../../../utils/OtherUtils";
+import { getGameURL } from "../../../utils/ProductUtils";
 
 interface CartItemProps {
   item: CartItem;
@@ -29,11 +31,13 @@ const CartItem: React.FC<CartItemProps> = ({
   return (
     <Card key={game.slug} className="mb-4">
       <div className="flex flex-col items-center gap-4 md:flex-row">
-        <img
-          src={mediaUrl}
-          alt={game.gameName}
-          className="object-cover h-48 rounded w-36"
-        />
+        <Link to={getGameURL(game.slug)}>
+          <img
+            src={mediaUrl}
+            alt={game.gameName}
+            className="object-cover h-48 rounded w-36"
+          />
+        </Link>
         <div className="flex-grow">
           <div className="flex flex-col justify-between md:flex-row">
             <div>

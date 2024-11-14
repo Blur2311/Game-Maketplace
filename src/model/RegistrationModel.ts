@@ -5,3 +5,8 @@ export interface RegistrationErrors {
   confirmPassword?: string;
   isChecked?: string;
 }
+export interface NewPasswordErrors {
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+}

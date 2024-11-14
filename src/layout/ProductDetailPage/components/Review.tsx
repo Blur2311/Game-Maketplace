@@ -1,18 +1,56 @@
-import { useState } from "react";
-import { InputTextarea } from "primereact/inputtextarea";
 import { Button } from "primereact/button";
+import { InputTextarea } from "primereact/inputtextarea";
 import { Rating } from "primereact/rating";
+import { useState } from "react";
+import { toast } from "react-toastify";
+import apiClient from "../../../config/apiClient";
+import { getDecodeToken } from "../../../utils/AuthUtils";
+import { CommentDTO } from "../hook/useGameDetails";
 
-export const Review = () => {
+interface ReviewProps {
+  gameId: number;
+}
+
+export const Review: React.FC<ReviewProps> = ({ gameId }) => {
   const [rating, setRating] = useState(0);
   const [reviewText, setReviewText] = useState("");
 
-  const handleSubmit = () => {
-    alert(`Review Submitted: ${reviewText}, Rating: ${rating} stars`);
+  const isCommentValid = () => {
+    if (getDecodeToken() === null) {
+      toast.warn("Please login to submit a review");
+      return false;
+    }
+    if (!reviewText) {
+      toast.warn("Please enter a review");
+      return false;
+    }
+    if (!rating) {
+      toast.warn("Please select a rating");
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = async () => {
+    if (!isCommentValid()) return;
+    const comment: CommentDTO = {
+      context: reviewText,
+      commentDate: new Date().toISOString(),
+      gameId,
+      star: rating,
+    };
+
+    try {
+      await apiClient.post("/api/comments", comment);
+      toast.success("Review submitted successfully");
+    } catch (error: any) {
+      console.error("Error submitting review:", error);
+      toast.error(error.response.data.message ?? "Failed to submit review");
+    }
   };
 
   return (
-    <div className="w-full rounded-l text-white shadow-lg">
+    <div className="w-full text-white rounded-l shadow-lg">
       <h2 className="mb-4 text-xl font-semibold">Write a Review</h2>
 
       <div className="mb-4">
@@ -21,7 +59,7 @@ export const Review = () => {
           onChange={(e) => setReviewText(e.target.value)}
           placeholder="Enter your review here..."
           rows={4}
-          className="w-full rounded-lg bg-gray-800 p-2 text-white"
+          className="w-full p-2 text-white bg-gray-800 rounded-lg"
         />
       </div>
 
@@ -39,7 +77,8 @@ export const Review = () => {
 
         <Button
           label="Submit a Review"
-          className="rounded-md bg-mainYellow px-4 py-2 text-sm font-medium text-gray-900 transition-colors hover:bg-yellow-600"
+          disabled={!reviewText || !rating}
+          className="px-4 py-2 text-sm font-medium text-gray-900 transition-colors rounded-md bg-mainYellow hover:bg-yellow-600"
           onClick={handleSubmit}
         />
       </div>

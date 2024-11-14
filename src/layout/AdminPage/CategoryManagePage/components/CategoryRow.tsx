@@ -28,7 +28,7 @@ export const CategoryRow: React.FC<CategoryRowProps> = ({
         <td className="px-5 py-[25px]">{description}</td>
         <td className={`px-5 py-[25px]`}>
           <Link
-            to={`/admin/category-list/update/${sysIdCategory}`}
+            to={`/admin/category/detail/${sysIdCategory}`}
             className="text-black underline"
             onClick={handleDetailClick}
           >

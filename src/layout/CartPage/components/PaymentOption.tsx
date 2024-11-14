@@ -20,9 +20,9 @@ export const PaymentOption: React.FC<PaymentOptionProps> = ({
 }) => {
   return (
     <>
-      <div className="min-w-96 text-white">
+      <div className="text-white min-w-96">
         <div
-          className="flex cursor-pointer items-center gap-4 rounded-lg bg-gray300 p-4 text-white"
+          className="flex items-center gap-4 p-4 text-white rounded-lg cursor-pointer bg-gray300"
           onClick={() => onChange(value)}
         >
           <RadioButton
@@ -31,7 +31,7 @@ export const PaymentOption: React.FC<PaymentOptionProps> = ({
             onChange={(e) => onChange(e.value)}
             checked={selectedOption === value}
           />
-          <div className="flex h-10 w-14 items-center justify-center rounded-lg bg-gray-300 p-2">
+          <div className="flex items-center justify-center h-10 p-2 bg-gray-300 rounded-lg w-14">
             {typeof IconComponent === "string" ? (
               <img src={IconComponent} alt="" className="w-3/4" />
             ) : (

@@ -128,7 +128,7 @@ export const Wishlist = () => {
           <InputSwitch
             checked={checked}
             onChange={onToggleChange}
-            className=""
+            className="custom-input-slider"
           />
         </div>
       </div>

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import apiClient from '../../../config/apiClient';
 import { CartItem, GameDTO } from '../../../utils/CartUtils';
+import { useNavigate } from 'react-router-dom';
 
 export const useCart = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -8,6 +10,7 @@ export const useCart = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [changes, setChanges] = useState<number>(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedCart = localStorage.getItem('cart');
@@ -26,7 +29,7 @@ export const useCart = () => {
       const gameDetails = new Map<string, GameDTO>();
       await Promise.all(
         items.map(async (item) => {
-          const response = await apiClient.get(`/api/games/${item.slug}`);
+          const response = await apiClient.get(`/api/games/p/${item.slug}`);
           gameDetails.set(item.slug, response.data.data);
         })
       );
@@ -75,7 +78,33 @@ export const useCart = () => {
 
     localStorage.setItem('cart', JSON.stringify(cartItems));
     setChanges((prev) => prev + 1);
+    toast.info(`${item.name} has been added to the cart successfully!`);
+  };  
+  
+  const addGameToCart = (game: GameDTO, quantity : number): void => {
+    const cartItem: CartItem = {
+      slug: game.slug,
+      name: game.gameName,
+      price: game.price,
+      quantity,
+      mediaUrl: game.gameImage
+    };
+
+    addToCart(cartItem);
+  };  
+
+  const handleBuyNow = (game: GameDTO) => {
+    const cartItem: CartItem = {
+      slug: game.slug,
+      quantity: 1,
+      name: game.gameName,
+      price: game.price,
+      mediaUrl: game.gameImage
+    };
+    // console.log(cartItem);    
+    // addToCart(cartItem);
+    navigate("/checkout", { state: { cartItem: [{...cartItem}] } });
   };
 
-  return { cartItems, games, loading, error, addToCart, updateQuantity, removeItem, setChanges };
+  return { cartItems, games, loading, error, addToCart, updateQuantity, removeItem, setChanges, fetchGameDetails, addGameToCart, handleBuyNow };
 };

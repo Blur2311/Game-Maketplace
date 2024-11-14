@@ -1,15 +1,28 @@
 import { Button } from "primereact/button";
 import { OverlayPanel } from "primereact/overlaypanel";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaRegBell, FaRegPlusSquare } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-import { getUsernameFromToken, signOut } from "../../../utils/AuthUtils";
+import { getCurrentUser, getUsernameFromToken, signOut, User } from "../../../utils/AuthUtils";
 import { Avatar } from "primereact/avatar";
+import { formatCurrency } from "../../../utils/OtherUtils";
 
 export const Navbar = () => {
   const op = useRef<OverlayPanel>(null);
   const username = getUsernameFromToken();
   const navigate = useNavigate();
+  const [user, setUser] = useState<User | null>(null);
+
+
+  useEffect(() => {
+    if (username) {
+      getCurrentUser().then((user: User | null) => {
+        if (user) {
+          setUser(user);
+        }
+      });
+    }
+  }, []);
 
   return (
     // Trang này nó responsive làm nhớ để ý kỹ ko rõ thì liên hệ Huy
@@ -26,21 +39,21 @@ export const Navbar = () => {
             <div className="flex items-center gap-4">
               <Button
                 label="Sign In"
-                className="rounded-lg bg-gray400 px-3 py-1 text-base font-normal text-white hover:bg-gray200"
+                className="px-3 py-1 text-base font-normal text-white rounded-lg bg-gray400 hover:bg-gray200"
                 onClick={() => {
                   navigate("/sign-in");
                 }}
               />
               <Button
                 label="Create Account"
-                className="hidden rounded-lg bg-mainYellow px-3 py-1 text-base font-normal hover:bg-hoverYellow sm:block"
+                className="hidden px-3 py-1 text-base font-normal rounded-lg bg-mainYellow hover:bg-hoverYellow sm:block"
                 onClick={() => {
                   navigate("/register");
                 }}
               />
             </div>
           ) : (
-            <div className="flex cursor-pointer items-center gap-6">
+            <div className="flex items-center gap-6 cursor-pointer">
               <FaRegBell className="text-xl text-white" />
               <div
                 className="flex items-center gap-3 hover:opacity-80"
@@ -51,35 +64,35 @@ export const Navbar = () => {
                 <Avatar
                   icon="pi pi-user"
                   // style={{ backgroundColor: "#9c27b0", color: "#ffffff" }}
-                  className="bg-grayBorder text-white"
+                  className="text-white bg-grayBorder"
                   shape="circle"
                 />
                 <p className="text-sm text-gray250">{username || "Guest"}</p>
               </div>
               <OverlayPanel
                 ref={op}
-                className="min-w-56 rounded-xl border border-borderSubdued bg-gray300 bg-opacity-80 shadow-navBoxshadow backdrop-blur-lg"
+                className="border min-w-56 rounded-xl border-borderSubdued bg-gray300 bg-opacity-80 shadow-navBoxshadow backdrop-blur-lg"
               >
                 <ul className="text-white">
                   <>
-                    <li className="cursor-pointer rounded-lg px-4 py-2 hover:bg-gray200 hover:bg-opacity-50">
+                    <li className="px-4 py-2 rounded-lg cursor-pointer hover:bg-gray200 hover:bg-opacity-50">
                       <p>Account Balance: </p>
                       <div className="flex items-center gap-2">
-                        1.000$
+                        {formatCurrency(user?.balance || 0)}
                         <FaRegPlusSquare className="text-lg" />
                       </div>
                     </li>
-                    <li className="cursor-pointer rounded-lg px-4 py-2 hover:bg-gray200 hover:bg-opacity-50">
+                    <li className="px-4 py-2 rounded-lg cursor-pointer hover:bg-gray200 hover:bg-opacity-50">
                       <Link to={"/setting/user-info"}>Account Info</Link>
                     </li>
-                    <li className="cursor-pointer rounded-lg px-4 py-2 hover:bg-gray200 hover:bg-opacity-50">
+                    <li className="px-4 py-2 rounded-lg cursor-pointer hover:bg-gray200 hover:bg-opacity-50">
                       Transactions
                     </li>
-                    <li className="cursor-pointer rounded-lg px-4 py-2 hover:bg-gray200 hover:bg-opacity-50">
+                    <li className="px-4 py-2 rounded-lg cursor-pointer hover:bg-gray200 hover:bg-opacity-50">
                       Wishlist
                     </li>
                     <li
-                      className="cursor-pointer rounded-lg px-4 py-2 hover:bg-gray200 hover:bg-opacity-50"
+                      className="px-4 py-2 rounded-lg cursor-pointer hover:bg-gray200 hover:bg-opacity-50"
                       onClick={signOut}
                     >
                       Sign Out

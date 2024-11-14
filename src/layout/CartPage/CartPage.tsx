@@ -11,7 +11,7 @@ import { showErrorToast } from "../../utils/ErrorHandlingUtils";
 import { Toast } from "primereact/toast";
 
 export const CartPage: React.FC = () => {
-  const { cartItems, games, loading, error, removeItem, updateQuantity } = useCart();
+  const { cartItems, games, loading, error, removeItem, updateQuantity, fetchGameDetails } = useCart();
   const navigate = useNavigate();
   const toast = React.useRef<Toast>(null);
 
@@ -83,6 +83,7 @@ export const CartPage: React.FC = () => {
     .then((response) => {
       let res = response.data;
       if (!res || res.data.length === 0) {
+        fetchGameDetails(cartItems);
         navigate("/checkout");
       } else {
         showErrorToast(toast, res.message

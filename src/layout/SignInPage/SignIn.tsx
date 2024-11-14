@@ -84,7 +84,7 @@ export const SignIn: React.FC = React.memo(() => {
 
       setTimeout(() => {
         navigate("/");
-      }, 3000);
+      }, 777);
     } catch (error) {
       const attempts = getLoginAttempts() + 1;
       setLoginAttempts(attempts);
