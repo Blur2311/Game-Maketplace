@@ -61,7 +61,7 @@ export const CustomerCU = () => {
                 <div className="flex flex-col gap-2">
                   <p className="font-medium">Avatar</p>
                   <p className="text-xs text-textSecond">
-                    Min 400×400px, PNG or JPEG
+                    Min 400x400px, PNG or JPEG
                   </p>
                   <label className="mt-2 inline-block">
                     <input

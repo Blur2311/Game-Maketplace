@@ -68,7 +68,7 @@ export const CategoryList = () => {
     <>
       <div className="">
         <div className="flex items-start justify-between gap-6">
-          <h3 className="text-[32px] font-medium">Category List</h3>
+          <h3 className="text-[32px] font-medium">Categories</h3>
           <RightSideButton Icon={MdAddBox} link={"/admin/category/create"} />
         </div>
         <div className="mt-8">

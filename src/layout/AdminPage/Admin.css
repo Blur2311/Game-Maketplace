@@ -8,3 +8,6 @@
 .custom-sidebar .p-sidebar-content {
   padding: 0;
 }
+.custom-calendar-admin .p-button:focus {
+  box-shadow: none;
+}

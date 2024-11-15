@@ -42,6 +42,9 @@ import { CustomerList } from "./layout/AdminPage/CustomerManagePage/CustomerList
 import { CustomerCU } from "./layout/AdminPage/CustomerManagePage/CustomerCU";
 import { ForgotPassword } from "./layout/RegisterPage&ForgotPassword/ForgotPasswordEmailVerification";
 import { NewPassword } from "./layout/RegisterPage&ForgotPassword/ForgotPasswordNewPassword";
+import { CustomerDetail } from "./layout/AdminPage/CustomerManagePage/CustomerDetail";
+import { InvoiceList } from "./layout/AdminPage/InvoiceManagePage/InvoiceList";
+import { InvoiceDetail } from "./layout/AdminPage/InvoiceManagePage/InvoiceDetail";
 
 function App() {
   return (
@@ -60,7 +63,12 @@ function App() {
 
               <Route path="customer/list" element={<CustomerList />} />
               <Route path="customer/create" element={<CustomerCU />} />
-              <Route path="customer/detail/:id" element={<CustomerCU />} />
+              <Route path="customer/update/:id" element={<CustomerCU />} />
+              <Route path="customer/detail/:id" element={<CustomerDetail />} />
+
+              <Route path="invoice/list" element={<InvoiceList />} />
+              {/* <Route path="invoice/create" element={<GameCU />} /> */}
+              <Route path="invoice/detail/:id" element={<InvoiceDetail />} />
 
               <Route path="account-info" element={<AdminAccInfo />} />
               <Route path="settings" element={<AdminSetting />} />
@@ -105,8 +113,8 @@ function App() {
 
             <Route path="/forgot-password">
               <Route index element={<ForgotPassword />} />
-              <Route path="verify-otp" element={<VerifyOTP />} />                
-              <Route path="new-password" element={<NewPassword />} />                
+              <Route path="verify-otp" element={<VerifyOTP />} />
+              <Route path="new-password" element={<NewPassword />} />
             </Route>
 
             {/* Chuyển hướng tất cả các route không hợp lệ về "home" */}
