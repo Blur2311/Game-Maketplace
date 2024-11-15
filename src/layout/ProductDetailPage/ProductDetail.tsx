@@ -7,7 +7,10 @@ import { FiShare2 } from "react-icons/fi";
 import { TbFlag3 } from "react-icons/tb";
 import { Link } from "react-router-dom";
 import { LinkType } from "../../components/LinkType";
-import { showInfoMessages } from "../../utils/ErrorHandlingUtils";
+import {
+  clearMessages,
+  showInfoMessages,
+} from "../../utils/ErrorHandlingUtils";
 import {
   calculateSalePrice,
   formatCurrency,
@@ -33,6 +36,8 @@ export const ProductDetail = () => {
   useEffect(() => {
     if (!comments || comments.length === 0) {
       showInfoMessages(msgs, "Be the first to review this game!");
+    } else {
+      clearMessages(msgs);
     }
   }, [comments]);
 
@@ -145,7 +150,7 @@ export const ProductDetail = () => {
                   comments.map((comment, index) => (
                     <ReviewCard
                       key={index}
-                      username={comment.usersDTO?.hoVaTen ?? "username"}
+                      username={comment.usersDTO?.username ?? "username"}
                       date={formatDateFromLocalDate(comment.commentDate)}
                       rating={comment.star}
                       text={comment.context}

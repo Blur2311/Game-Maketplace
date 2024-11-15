@@ -64,3 +64,9 @@ export const showInfoMessages = (msgs: React.RefObject<Messages>, message: strin
   msgs.current?.clear();
   msgs.current?.show({ sticky: true, severity: 'info', summary: 'Info', detail: message, closable: false });
 }
+
+export const clearMessages = (msgs: React.RefObject<Messages>) => {
+  if (msgs.current) {
+    msgs.current.clear();
+  }
+};
