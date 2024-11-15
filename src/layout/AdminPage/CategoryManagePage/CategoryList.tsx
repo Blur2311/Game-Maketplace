@@ -6,19 +6,13 @@ import { Paginator } from "primereact/paginator";
 import { useState, useEffect } from "react";
 import "./Category.css";
 import apiClient from "../../../config/apiClient";
+import { Category } from "../../../model/CategoryModel";
 
 export const CategoryList = () => {
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(10);
   const [totalRecords, setTotalRecords] = useState(0);
   const [searchTerm, setSearchTerm] = useState(""); // Thêm state để lưu trữ giá trị tìm kiếm
-
-  interface Category {
-    sysIdCategory: number;
-    categoryName: string;
-    description: string | null;
-    categoryDetails: any | null;
-  }
 
   const [categories, setCategories] = useState<Category[]>([]);
 
@@ -111,24 +105,6 @@ export const CategoryList = () => {
                           description={category.description}
                         />
                       ))}
-                      <CategoryRow
-                        key={1}
-                        sysIdCategory={2}
-                        categoryName={"category.categoryName"}
-                        description={"category.description"}
-                      />
-                      <CategoryRow
-                        key={2}
-                        sysIdCategory={2}
-                        categoryName={"category.categoryName"}
-                        description={"category.description"}
-                      />
-                      <CategoryRow
-                        key={3}
-                        sysIdCategory={2}
-                        categoryName={"category.categoryName"}
-                        description={"Desciption for Action-adventure"}
-                      />
                     </tbody>
                   </table>
                 </div>
@@ -137,7 +113,7 @@ export const CategoryList = () => {
                     <Paginator
                       first={first} // bắt đầu từ đâu
                       rows={rows} // bao nhiêu cột hiển thị
-                      totalRecords={100} // Độ dài dữ liệu
+                      totalRecords={totalRecords} // Độ dài dữ liệu
                       template={{
                         layout: "CurrentPageReport PrevPageLink NextPageLink",
                         CurrentPageReport: (options: any) => (
