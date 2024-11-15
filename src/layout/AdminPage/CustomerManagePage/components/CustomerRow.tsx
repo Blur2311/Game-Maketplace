@@ -19,7 +19,9 @@ export const CustomerRow: React.FC<CustomerRowProps> = ({
       <tr className="border-b border-borderRow bg-white text-xs font-light">
         <td className={`px-5 py-[25px]`}>
           <div className="flex items-center gap-2">
-            <img src={avatar} alt="" className="h-10 w-10 rounded-full" />
+            <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full">
+              <img src={avatar} alt="" className="" />
+            </div>
             <p>{name}</p>
           </div>
         </td>

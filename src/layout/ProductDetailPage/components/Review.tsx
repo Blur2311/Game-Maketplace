@@ -34,6 +34,7 @@ export const Review: React.FC<ReviewProps> = ({ gameId }) => {
   const handleSubmit = async () => {
     if (!isCommentValid()) return;
     const comment: CommentDTO = {
+      usersDTO: {username: getDecodeToken()?.sub ?? ''},
       context: reviewText,
       commentDate: new Date().toISOString(),
       gameId,
@@ -43,6 +44,8 @@ export const Review: React.FC<ReviewProps> = ({ gameId }) => {
     try {
       await apiClient.post("/api/comments", comment);
       toast.success("Review submitted successfully");
+      setReviewText('');
+      setRating(0);      
     } catch (error: any) {
       console.error("Error submitting review:", error);
       toast.error(error.response.data.message ?? "Failed to submit review");
@@ -68,7 +71,7 @@ export const Review: React.FC<ReviewProps> = ({ gameId }) => {
           <span className="text-gray-400">Rating:</span>
           <Rating
             value={rating}
-            onChange={(e) => setRating(e.value ?? 0)} // Provide a fallback value of 0
+            onChange={(e) => setRating(e.value ?? 0)}
             stars={5}
             cancel={false}
             className="custom-rating-big"

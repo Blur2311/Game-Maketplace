@@ -11,9 +11,9 @@ type ReviewCardProps = {
 export const ReviewCard: React.FC<ReviewCardProps> = (review) => (
   <div className="flex flex-col justify-between gap-5 rounded-lg bg-gray-800 p-[30px] text-white">
     <div className="">
-      <div className="mb-4 flex items-center">
-        <div className="mr-3 flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-gray-600">
-          <img src={review.img || "/cat.jpeg"} alt="" />
+      <div className="flex items-center mb-4">
+        <div className="flex items-center justify-center w-10 h-10 mr-3 overflow-hidden bg-gray-600 rounded-full">
+          {review.img ? (<img src={review.img} alt="" />) : (<i className="p-avatar-icon pi pi-user"></i>)}
         </div>
         <div>
           <h4 className="font-semibold">{review.username}</h4>
@@ -34,7 +34,7 @@ export const ReviewCard: React.FC<ReviewCardProps> = (review) => (
     <Button
       label="Read Full Review"
       icon="pi pi-external-link"
-      className="p-button-text"
+      className="hidden p-button-text"
       onClick={() => window.open("#", "_blank")}
     />
   </div>
