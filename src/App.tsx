@@ -45,6 +45,8 @@ import { NewPassword } from "./layout/RegisterPage&ForgotPassword/ForgotPassword
 import { CustomerDetail } from "./layout/AdminPage/CustomerManagePage/CustomerDetail";
 import { InvoiceList } from "./layout/AdminPage/InvoiceManagePage/InvoiceList";
 import { InvoiceDetail } from "./layout/AdminPage/InvoiceManagePage/InvoiceDetail";
+import { DiscountList } from "./layout/AdminPage/DiscountManagePage/DiscountList";
+import { DiscountCU } from "./layout/AdminPage/DiscountManagePage/DiscountCU";
 
 function App() {
   return (
@@ -69,6 +71,10 @@ function App() {
               <Route path="invoice/list" element={<InvoiceList />} />
               {/* <Route path="invoice/create" element={<GameCU />} /> */}
               <Route path="invoice/detail/:id" element={<InvoiceDetail />} />
+
+              <Route path="discount/list" element={<DiscountList />} />
+              <Route path="discount/create" element={<DiscountCU />} />
+              <Route path="discount/detail/:id" element={<DiscountCU />} />
 
               <Route path="account-info" element={<AdminAccInfo />} />
               <Route path="settings" element={<AdminSetting />} />
