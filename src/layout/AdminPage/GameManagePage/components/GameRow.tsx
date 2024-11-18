@@ -3,35 +3,9 @@ import { Tooltip } from "primereact/tooltip";
 import { formatCurrency } from "../../../../utils/OtherUtils";
 import { IoIosCheckmark } from "react-icons/io";
 import { LuClock3 } from "react-icons/lu";
+import { Game } from "../../../../model/GameModel";
 
-type CategoryDetail = {
-  sysIdCategoryDetail: number;
-  sysIdGame: number;
-  sysIdCategory: number;
-  categoryName: string;
-};
-
-type Media = {
-  sysIdMedia: number;
-  mediaName: string;
-  mediaUrl: string;
-  sysIdGame: number;
-};
-
-type GameRowProps = {
-  sysIdGame: number;
-  gameName: string;
-  price: number;
-  discountPercent: number | null;
-  categoryDetails: CategoryDetail[];
-  gameImage: string;
-  description: string;
-  isActive: boolean;
-  quantity: number;
-  media: Media[];
-};
-
-export const GameRow: React.FC<GameRowProps> = ({
+export const GameRow: React.FC<Game> = ({
   sysIdGame,
   gameName,
   price,
@@ -123,7 +97,7 @@ export const GameRow: React.FC<GameRowProps> = ({
         <td className={`px-5 py-[25px]`}>{renderCategories()}</td>
         <td className={`px-5 py-[25px]`}>
           <Link
-            to={`/admin/game-list/update/${sysIdGame}`}
+            to={`/admin/game/detail/${sysIdGame}`}
             className="text-black underline"
             onClick={handleDetailClick}
           >
