@@ -6,33 +6,48 @@ import { Toast } from "primereact/toast";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { PiStarFourFill } from "react-icons/pi";
-import apiClient from "../../config/apiClient";
+import { useLocation, useNavigate } from "react-router-dom";
 import { getCurrentUser, useAuthCheck, User } from "../../utils/AuthUtils";
-import { Order, paymentOptions } from "../../utils/CheckOutUtils";
+import { CartItem } from "../../utils/CartUtils";
+import {
+  checkDiscountCode,
+  handleAfterPayment,
+  handleCreditCardPayment,
+  handlePlaceOrder,
+  handleUserBalancePayment,
+  paymentOptions,
+  recharge,
+} from "../../utils/CheckOutUtils";
 import {
   showErrorToast,
   showInfoToast,
   showSuccessToast,
 } from "../../utils/ErrorHandlingUtils";
-import { formatCurrency } from "../../utils/OtherUtils";
+import {
+  formatCurrency,
+  manageButtonStateDuringApiCall,
+} from "../../utils/OtherUtils";
 import { getImage } from "../../utils/ProductUtils";
 import "./CartPage.css";
 import { PaymentOption } from "./components/PaymentOption";
 import { SummaryItem } from "./components/SummaryItem";
 import { useCart } from "./hooks/useCart";
-import { useNavigate } from "react-router-dom";
 
-export const Checkout: React.FC = () => {
-  const [selectedOption, setSelectedOption] = useState<string>("");
+export const Checkout: React.FC<{ cartItem?: CartItem[] }> = ({ cartItem }) => {
   useAuthCheck([]);
+  const [selectedOption, setSelectedOption] = useState<string>("");
+  const [isButtonDisabled, setButtonDisabled] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const { games, cartItems } = useCart();
+  const { games, cartItems, fetchGameDetails } = useCart();
+  const location = useLocation();
+  const initialCartItems = cartItem ?? location.state?.cartItem ?? cartItems;
+  const [checkOutItems] = useState<CartItem[]>(initialCartItems);
   const [{ total, subTotal, afterTaxes }, setTotal] = useState({
     total: 0,
     subTotal: 0,
     afterTaxes: 0,
   });
-  const [tax, setTax] = useState(2);
+  const [tax] = useState(2);
   const [{ discountPercent, discountAmount, usedDiscountCode }, setDiscount] =
     useState({ discountPercent: 0, discountAmount: 0, usedDiscountCode: "" });
   const [discountCode, setDiscountCode] = useState<string>("");
@@ -42,13 +57,24 @@ export const Checkout: React.FC = () => {
   useEffect(() => {
     getCurrentUser().then((user) => {
       setCurrentUser(user);
-      handleAfterPayment();
+      handleAfterPayment(toast);
     });
   }, []);
 
+  const handleCheckOutItems = async () => {
+    if (checkOutItems.length === 0) {
+      checkOutItems.push(...cartItems);
+    }
+    await fetchGameDetails(checkOutItems);
+  };
+
+  useEffect(() => {
+    handleCheckOutItems();
+  }, [checkOutItems]);
+
   useEffect(() => {
     let subTotal = 0;
-    cartItems.forEach((item) => {
+    checkOutItems.forEach((item) => {
       const game = games.get(item.slug);
       if (game) {
         const price =
@@ -61,73 +87,18 @@ export const Checkout: React.FC = () => {
       subTotal,
       afterTaxes: Math.round(subTotal * (1 + tax / 100)),
     });
-  }, [cartItems, games]);
-
-  const handleAfterPayment = () => {
-    let href = window.location.href;
-    if (href.includes("/checkout?success")) {
-      showSuccessToast(
-        toast,
-        "Payment successful, redirecting to inventory...",
-      );
-      localStorage.removeItem("cart");
-      setTimeout(() => {
-        window.location.href = "/profile";
-      }, 2500);
-    } else if (href.includes("/checkout?error")) {
-      showErrorToast(toast, "Payment failed");
-    } else if (href.includes("/checkout?recharge=success")) {
-      showSuccessToast(toast, "Recharge successful");
-    } else if (href.includes("/checkout?recharge=error")) {
-      showErrorToast(toast, "Recharge failed");
-    }
-  };
-
-  const checkDiscountCode = async () => {
-    try {
-      const response = await apiClient.post(
-        `/api/vouchers/validate/${discountCode}`,
-      );
-      if (response.data.status === "OK") {
-        const voucher = response.data.data;
-        const discountPercent = voucher.discountPercent;
-        let discountAmount = subTotal * (discountPercent / 100);
-        discountAmount =
-          discountAmount > voucher.maxDiscount
-            ? voucher.maxDiscount
-            : discountAmount;
-        const newTotal = subTotal - discountAmount;
-        const afterTaxes = Math.round(newTotal * (1 + tax / 100));
-        setDiscount({
-          discountPercent,
-          discountAmount,
-          usedDiscountCode: discountCode,
-        });
-        setTotal({ total: newTotal, subTotal, afterTaxes: afterTaxes });
-        showSuccessToast(
-          toast,
-          "Discount code applied - " +
-            discountPercent +
-            "% off, capped at " +
-            formatCurrency(voucher.maxDiscount),
-        );
-      } else {
-        resetVoucher();
-        showErrorToast(toast, "Invalid discount code");
-      }
-    } catch (error) {
-      resetVoucher();
-      showErrorToast(toast, "Failed to apply discount code");
-    }
-  };
+  }, [games]);
 
   const renderCartItems = useMemo(() => {
-    if (cartItems.length === 0) {
+    if (checkOutItems.length === 0) {
+      checkOutItems.push(...cartItems);
+    }
+    if (checkOutItems.length === 0) {
       return (
         <div className="p-4 text-center text-gray-500">Your cart is empty</div>
       );
     }
-    return cartItems.map((item) => {
+    return checkOutItems.map((item) => {
       const game = games.get(item.slug);
       if (!game) return null;
       const image = getImage(game, "thumbnail") ?? "/assasin.webp";
@@ -144,22 +115,11 @@ export const Checkout: React.FC = () => {
         />
       );
     });
-  }, [cartItems, games]);
-
-  const resetVoucher = () => {
-    setDiscount({
-      discountPercent: 0,
-      discountAmount: 0,
-      usedDiscountCode: "",
-    });
-    setTotal({ total: subTotal, subTotal, afterTaxes });
-  };
+  }, [checkOutItems, games]);
 
   const handleSelectedOptionChange = (option: string) => {
     if (option === "currentBalance") {
       if ((currentUser?.balance ?? 0) < afterTaxes) {
-        // console.log(currentUser?.balance, afterTaxes);
-        
         confirmDialog({
           message:
             "Your balance is insufficient. Would you like to recharge to continue?",
@@ -168,7 +128,11 @@ export const Checkout: React.FC = () => {
           acceptClassName: "custom-accept-button",
           rejectClassName: "custom-reject-button",
           accept: () => {
-            recharge();
+            if (currentUser) {
+              recharge(afterTaxes, currentUser);
+            } else {
+              showErrorToast(toast, "User not logged in");
+            }
           },
           reject: () => {
             setSelectedOption(selectedOption);
@@ -178,82 +142,46 @@ export const Checkout: React.FC = () => {
         setSelectedOption(option);
       }
     } else if (paymentOptions.find((o) => o.value === option)) {
-      // if (option !== "creditCard") {
-        showInfoToast(toast, "This payment method is coming soon");
-      // } else setSelectedOption(option);
+      showInfoToast(toast, "This payment method is coming soon");
     }
   };
 
-  const recharge = async () => {
-    let amount = Math.round(afterTaxes - (currentUser?.balance ?? 0));
-    // console.log(afterTaxes, currentUser?.balance, amount);
-
-    let payload = {
-      amount: amount,
-      bankCode: "NCB",
-      name: currentUser?.username,
-      successUrl: window.location.href + "?recharge=success",
-      errorUrl: window.location.href + "?recharge=error",
-    };
-    // console.log(payload);
-
-    const response = await apiClient.post(`/api/transactions/vn-pay`, payload);
-    window.location.href = response.data;
+  const handlePlaceOrderClick = () => {
+    manageButtonStateDuringApiCall(
+      () =>
+        handlePlaceOrder(
+          selectedOption,
+          () => {
+            if (currentUser) {
+              handleUserBalancePayment(
+                currentUser,
+                afterTaxes,
+                usedDiscountCode,
+                checkOutItems,
+                toast,
+                navigate,
+              );
+            } else {
+              showErrorToast(toast, "User not logged in");
+            }
+          },
+          () => {
+            if (currentUser) {
+              handleCreditCardPayment(currentUser, afterTaxes);
+            } else {
+              showErrorToast(toast, "User not logged in");
+            }
+          },
+        ),
+      setButtonDisabled,
+      () => showSuccessToast(toast, "Order placed successfully"),
+      (error: any) =>
+        showErrorToast(
+          toast,
+          error.response.data.message ?? "Failed to place order",
+        ),
+    );
   };
-
-  const handleUserBalancePayment = async () => {
-    try {
-      const currentISODateTime = new Date().toISOString();
-      let payload: Order = {
-        orderCode: currentUser?.username + currentISODateTime, // Replace with actual order code
-        orderDate: currentISODateTime,
-        totalPayment: afterTaxes,
-        voucherCode: usedDiscountCode,
-        username: currentUser?.username ?? "",
-        userId: currentUser?.sysIdUser ?? 0,
-        orders: cartItems
-      };
-      const response = await apiClient.post(`/api/orders/handle-payment`, payload);
-      if (response.data.status === "OK") {
-        showSuccessToast(toast, "Payment successful, redirecting to inventory...");
-        showInfoToast(toast, "Game keys will be sent to your email");
-        localStorage.removeItem("cart");
-        setTimeout(() => {
-          navigate("/profile");
-        }, 5000);
-      } else {
-        showErrorToast(toast, "Payment failed");
-      }
-    } catch (error) {
-      showErrorToast(toast, "Payment failed");
-    }
-  }
-  
-
-  const handleCreditCardPayment = async () => {
-    let amount = Math.round(afterTaxes);
-    // console.log(afterTaxes, currentUser?.balance, amount);
-
-    let payload = {
-      amount: amount,
-      bankCode: "NCB",
-      name: currentUser?.username,
-      successUrl: window.location.href + "?success",
-      errorUrl: window.location.href + "?error",
-    };
-    // console.log(payload);
-
-    const response = await apiClient.post(`/api/transactions/vn-pay`, payload);
-    window.location.href = response.data;
-  };
-
-  const handlePlaceOrder = () => {
-    if (selectedOption === "currentBalance") {
-      handleUserBalancePayment();
-    } else if (selectedOption === "creditCard") {
-      handleCreditCardPayment();
-    }
-  }
 
   return (
     <>
@@ -334,10 +262,7 @@ export const Checkout: React.FC = () => {
                   <FloatLabel className="w-full text-sm mt-7">
                     <InputText
                       className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px] text-black"
-                      // value={username}
                       onChange={(e) => setDiscountCode(e.target.value)}
-                      // aria-invalid={!!error}
-                      // aria-describedby="username-error"
                     />
                     <label>Enter discount code</label>
                   </FloatLabel>
@@ -346,14 +271,23 @@ export const Checkout: React.FC = () => {
                     size="small"
                     className="h-10 mt-2 text-xs font-bold bg-mainYellow text-slate-900"
                     disabled={!discountCode}
-                    onClick={checkDiscountCode}
+                    onClick={() =>
+                      checkDiscountCode(
+                        discountCode,
+                        subTotal,
+                        tax,
+                        toast,
+                        setDiscount,
+                        setTotal,
+                      )
+                    }
                   />
                   <Button
                     label="PLACE ORDER"
                     size="large"
                     className="w-full mt-2 text-xs font-bold h-14 bg-mainYellow text-slate-900"
-                    onClick={handlePlaceOrder}
-                    disabled={!selectedOption}
+                    onClick={handlePlaceOrderClick}
+                    disabled={!selectedOption || isButtonDisabled}
                   />
                 </div>
               </div>

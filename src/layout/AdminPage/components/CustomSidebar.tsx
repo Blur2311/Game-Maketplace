@@ -7,7 +7,7 @@ type CustomSidebarProps = {
   name: string;
   names: string;
   listLink: string;
-  createLink: string;
+  createLink?: string;
   detailLink: string;
   location: string;
   onLinkClick: () => void;
@@ -69,30 +69,32 @@ export const CustomSidebar: React.FC<CustomSidebarProps> = (props) => {
                   )}
                 </NavLink>
               </li>
-              <li className="relative">
-                <NavLink
-                  to={props.createLink}
-                  onClick={props.onLinkClick}
-                  className={({ isActive }) => {
-                    return isActive
-                      ? "flex h-10 items-center gap-2 rounded-lg bg-mainYellow px-[16px] py-[6px] text-sm text-white"
-                      : "flex h-10 items-center gap-2 rounded-lg bg-transparent px-[16px] py-[6px] text-sm text-textAdminGray transition duration-300 ease-in-out hover:bg-bgCheckBox hover:text-white";
-                  }}
-                >
-                  {({ isActive }) => (
-                    <>
-                      <span>
-                        Create <span className="lowercase">{props.name}</span>
-                      </span>
+              {props.createLink && (
+                <li className="relative">
+                  <NavLink
+                    to={props.createLink}
+                    onClick={props.onLinkClick}
+                    className={({ isActive }) => {
+                      return isActive
+                        ? "flex h-10 items-center gap-2 rounded-lg bg-mainYellow px-[16px] py-[6px] text-sm text-white"
+                        : "flex h-10 items-center gap-2 rounded-lg bg-transparent px-[16px] py-[6px] text-sm text-textAdminGray transition duration-300 ease-in-out hover:bg-bgCheckBox hover:text-white";
+                    }}
+                  >
+                    {({ isActive }) => (
+                      <>
+                        <span>
+                          Create <span className="lowercase">{props.name}</span>
+                        </span>
 
-                      {/* Chỉ hiển thị div khi NavLink đang active */}
-                      {isActive && (
-                        <div className="absolute left-[-14px] top-1/2 h-5 w-[3px] -translate-y-1/2 transform rounded-sm bg-[#8a94a6]"></div>
-                      )}
-                    </>
-                  )}
-                </NavLink>
-              </li>
+                        {/* Chỉ hiển thị div khi NavLink đang active */}
+                        {isActive && (
+                          <div className="absolute left-[-14px] top-1/2 h-5 w-[3px] -translate-y-1/2 transform rounded-sm bg-[#8a94a6]"></div>
+                        )}
+                      </>
+                    )}
+                  </NavLink>
+                </li>
+              )}
 
               <li className="relative">
                 <NavLink

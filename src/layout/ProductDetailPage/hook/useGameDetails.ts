@@ -3,25 +3,24 @@ import { useLocation } from 'react-router-dom';
 import apiClient from '../../../config/apiClient';
 import { GameDTO } from '../../../utils/CartUtils';
 
-// Define the CommentDTO interface
 export interface CommentDTO {
     sysIdComment?: number;
     context: string;
-    commentDate: string; // Use string to handle date serialization
+    commentDate: string;
     usersDTO?: UsersDTO;
     gameId: number;
     star: number;
 }
 
 export interface UsersDTO {
-    sysIdUser: number;
-    username: string;
-    email: string;
-    hoVaTen: string;
-    balance: string;
-    joinTime: string; // Use string to handle date serialization
-    avatar: string;
-    totalSpent: number;
+    sysIdUser?: number;
+    username?: string;
+    email?: string;
+    hoVaTen?: string;
+    balance?: string;
+    joinTime?: string;
+    avatar?: string;
+    totalSpent?: number;
 }
 
 const useGameDetails = () => {
@@ -38,7 +37,6 @@ const useGameDetails = () => {
             try {
                 const response = await apiClient.get(`/api/games/p/${game}`);
                 setGameDetails(response.data.data);
-                console.log('Game details:', response.data.data);
             } catch (err: any) {
                 console.error('Error fetching game details:', err);
                 setError(err);
@@ -49,7 +47,6 @@ const useGameDetails = () => {
             try {
                 const response = await apiClient.get(`/api/games/p/${game}/recommendations`);
                 setRecommendations(response.data.data);
-                console.log('Recommendations:', response.data.data);
             } catch (err: any) {
                 console.error('Error fetching recommendations:', err);
                 setError(err);
@@ -60,7 +57,6 @@ const useGameDetails = () => {
             try {
                 const response = await apiClient.get(`/api/comments/p/game/${game}/latest-comments`);
                 setComments(response.data);
-                console.log('Comments:', response.data);
             } catch (err: any) {
                 console.error('Error fetching comments:', err);
                 setError(err);
@@ -74,7 +70,7 @@ const useGameDetails = () => {
         }
     }, [game]);
 
-    return { gameDetails, recommendations, comments, error };
+    return { gameDetails, recommendations, comments, error, setComments };
 };
 
 export default useGameDetails;

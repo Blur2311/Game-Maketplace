@@ -25,8 +25,8 @@ import { NewsDetail } from "./layout/NewsPage/NewsDetail";
 import { OrderHistory } from "./layout/OrderHistoryPage/OrderHistory";
 import { OrderHistoryDetail } from "./layout/OrderHistoryPage/OrderHistoryDetail";
 import { ProductDetail } from "./layout/ProductDetailPage/ProductDetail";
-import { Registration } from "./layout/RegisterPage/Registration";
-import { VerifyOTP } from "./layout/RegisterPage/VerifyOTP";
+import { Registration } from "./layout/RegisterPage&ForgotPassword/Registration";
+import { VerifyOTP } from "./layout/RegisterPage&ForgotPassword/VerifyOTP";
 import { ReviewHistory } from "./layout/ReviewHistoryPage/ReviewHistory";
 import { SignIn } from "./layout/SignInPage/SignIn";
 import { TransactionList } from "./layout/TransactionPage/TransactionList";
@@ -38,6 +38,15 @@ import { ResetPWAdmin } from "./layout/AdminPage/SignIn&ForgotPage/ResetPWAdmin"
 import { VerifyOTPAdmin } from "./layout/AdminPage/SignIn&ForgotPage/VerifyOTPAdmin";
 import { AdminAccInfo } from "./layout/AdminPage/AdminAccInfoPage/AdminAccInfo";
 import { AdminSetting } from "./layout/AdminPage/AdminSettingPage/AdminSetting";
+import { CustomerList } from "./layout/AdminPage/CustomerManagePage/CustomerList";
+import { CustomerCU } from "./layout/AdminPage/CustomerManagePage/CustomerCU";
+import { ForgotPassword } from "./layout/RegisterPage&ForgotPassword/ForgotPasswordEmailVerification";
+import { NewPassword } from "./layout/RegisterPage&ForgotPassword/ForgotPasswordNewPassword";
+import { CustomerDetail } from "./layout/AdminPage/CustomerManagePage/CustomerDetail";
+import { InvoiceList } from "./layout/AdminPage/InvoiceManagePage/InvoiceList";
+import { InvoiceDetail } from "./layout/AdminPage/InvoiceManagePage/InvoiceDetail";
+import { DiscountList } from "./layout/AdminPage/DiscountManagePage/DiscountList";
+import { DiscountCU } from "./layout/AdminPage/DiscountManagePage/DiscountCU";
 
 function App() {
   return (
@@ -49,9 +58,23 @@ function App() {
               <Route path="category/list" element={<CategoryList />} />
               <Route path="category/create" element={<CategoryCU />} />
               <Route path="category/detail/:id" element={<CategoryCU />} />
+
               <Route path="game/list" element={<GameList />} />
               <Route path="game/create" element={<GameCU />} />
               <Route path="game/detail/:id" element={<GameCU />} />
+
+              <Route path="customer/list" element={<CustomerList />} />
+              <Route path="customer/create" element={<CustomerCU />} />
+              <Route path="customer/update/:id" element={<CustomerCU />} />
+              <Route path="customer/detail/:id" element={<CustomerDetail />} />
+
+              <Route path="invoice/list" element={<InvoiceList />} />
+              {/* <Route path="invoice/create" element={<GameCU />} /> */}
+              <Route path="invoice/detail/:id" element={<InvoiceDetail />} />
+
+              <Route path="discount/list" element={<DiscountList />} />
+              <Route path="discount/create" element={<DiscountCU />} />
+              <Route path="discount/detail/:id" element={<DiscountCU />} />
 
               <Route path="account-info" element={<AdminAccInfo />} />
               <Route path="settings" element={<AdminSetting />} />
@@ -93,6 +116,12 @@ function App() {
             <Route path="/register" element={<Registration />} />
             <Route path="/verify-otp" element={<VerifyOTP />} />
             <Route path="/403" element={<Forbidden />} />
+
+            <Route path="/forgot-password">
+              <Route index element={<ForgotPassword />} />
+              <Route path="verify-otp" element={<VerifyOTP />} />
+              <Route path="new-password" element={<NewPassword />} />
+            </Route>
 
             {/* Chuyển hướng tất cả các route không hợp lệ về "home" */}
             <Route path="*" element={<Navigate to="/home" />} />

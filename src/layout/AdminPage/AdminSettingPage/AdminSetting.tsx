@@ -38,7 +38,9 @@ export const AdminSetting = () => {
                         className="w-full"
                         inputClassName="shadow-adminInputShadow w-full rounded-lg border bg-transparent p-4 ps-[10px] hover:border-black focus:border-black"
                       />
-                      <label>New password *</label>
+                      <label>
+                        New password <span className="text-red-500">*</span>
+                      </label>
                     </FloatLabel>
                   </div>
                   <div className="col-span-12 text-sm sm:col-span-6">
@@ -51,7 +53,10 @@ export const AdminSetting = () => {
                         className="w-full"
                         inputClassName="shadow-adminInputShadow w-full rounded-lg border bg-transparent p-4 ps-[10px] hover:border-black focus:border-black"
                       />
-                      <label>Re-type new password *</label>
+                      <label>
+                        Re-type new password{" "}
+                        <span className="text-red-500">*</span>
+                      </label>
                     </FloatLabel>
                   </div>
                 </div>

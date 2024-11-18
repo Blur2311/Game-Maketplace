@@ -80,7 +80,9 @@ export const AdminAccInfo = () => {
                       // value={description}
                       // onChange={(e) => setDescription(e.target.value)}
                     />
-                    <label>First name *</label>
+                    <label>
+                      Full name <span className="text-red-500">*</span>
+                    </label>
                   </FloatLabel>
                   <FloatLabel className="col-span-12 text-sm sm:col-span-6">
                     <InputText
@@ -88,7 +90,9 @@ export const AdminAccInfo = () => {
                       // value={description}
                       // onChange={(e) => setDescription(e.target.value)}
                     />
-                    <label>Last name *</label>
+                    <label>
+                      Username <span className="text-red-500">*</span>
+                    </label>
                   </FloatLabel>
                   <FloatLabel className="col-span-12 text-sm sm:col-span-6">
                     <InputText
@@ -96,7 +100,9 @@ export const AdminAccInfo = () => {
                       // value={description}
                       // onChange={(e) => setDescription(e.target.value)}
                     />
-                    <label>Email address *</label>
+                    <label>
+                      Email address <span className="text-red-500">*</span>
+                    </label>
                   </FloatLabel>
                   <FloatLabel className="col-span-12 text-sm sm:col-span-6">
                     <InputText

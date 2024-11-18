@@ -1,5 +1,5 @@
 // src/utils/formValidation.ts
-import { RegistrationErrors } from "../model/RegistrationModel";
+import { NewPasswordErrors, RegistrationErrors } from "../model/RegistrationModel";
 import {
   validateEmail,
   validateUsername,
@@ -18,36 +18,67 @@ export const validateRegisForm = (
 
   if (!email) {
     newErrors.email =
-      "Email không được để trống. Vui lòng nhập địa chỉ email hợp lệ.";
+      "Email is required. Please enter your email address.";
   } else if (!validateEmail(email)) {
     newErrors.email =
-      "Email không hợp lệ. Vui lòng nhập địa chỉ email đúng định dạng (ví dụ: example@domain.com).";
+      "Invalid email. Please enter a valid email address.";
   }
 
   if (!username) {
     newErrors.username =
-      "Tên người dùng không được để trống. Vui lòng nhập tên người dùng.";
+      "Username is required. Please enter a username.";
   } else if (!validateUsername(username)) {
     newErrors.username =
-      "Tên người dùng không hợp lệ. Tên người dùng phải có ít nhất 4 ký tự và chỉ chứa chữ cái, số, dấu gạch dưới (_) và dấu gạch ngang (-).";
+      "Invalid username. Username must be at least 6 characters long and contain only letters, numbers, and underscores.";
   }
 
   if (!password) {
     newErrors.password =
-      "Mật khẩu không được để trống. Vui lòng nhập mật khẩu.";
+      "Password is required. Please enter a password.";
   } else if (!validatePassword(password)) {
     newErrors.password =
-      "Mật khẩu không hợp lệ. Mật khẩu phải có ít nhất 6 ký tự, bao gồm ít nhất một chữ cái và một số.";
+      "Invalid password. Password must be at least 6 characters long and contain at least one letter and one number.";
   }
 
   if (password !== confirmPassword) {
     newErrors.confirmPassword =
-      "Mật khẩu xác nhận không khớp. Vui lòng nhập lại mật khẩu.";
+      "Password confirmation does not match. Please re-enter your password.";
   }
 
   if (!isChecked) {
     newErrors.isChecked =
-      "Bạn phải đồng ý với điều khoản dịch vụ. Vui lòng đánh dấu vào ô đồng ý.";
+      "You must agree to the terms and conditions to continue.";
+  }
+
+  return newErrors;
+};
+
+export const validateNewPasswordForm = (
+  email: string,
+  password: string,
+  confirmPassword: string,
+): NewPasswordErrors => {
+  const newErrors: NewPasswordErrors = {};
+
+  if (!email) {
+    newErrors.email =
+      "Whoops! Something went wrong. Please try again.";
+  } else if (!validateEmail(email)) {
+    newErrors.email =
+      "Invalid email. Please enter a valid email address.";
+  }
+
+  if (!password) {
+    newErrors.password =
+      "Password is required. Please enter a password.";
+  } else if (!validatePassword(password)) {
+    newErrors.password =
+      "Invalid password. Password must be at least 6 characters long and contain at least one letter and one number.";
+  }
+
+  if (password !== confirmPassword) {
+    newErrors.confirmPassword =
+      "Password confirmation does not match. Please re-enter your password.";
   }
 
   return newErrors;

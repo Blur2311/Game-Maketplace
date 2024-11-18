@@ -5,11 +5,7 @@ import { formatCurrency } from "../../../utils/OtherUtils";
 import { getGameURL, getImage } from "../../../utils/ProductUtils";
 import { useCart } from "../../CartPage/hooks/useCart";
 
-interface ProductCardProps {
-  game: GameDTO;
-}
-
-const ProductCard: React.FC<ProductCardProps> = ({ game }) => {
+const ProductCard: React.FC<GameDTO> = (game) => {
   const { addGameToCart } = useCart();
   return (
     <div className="max-w-[230px] rounded-lg bg-gray-800 text-white">

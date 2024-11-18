@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import apiClient from "../../../config/apiClient";
 import { NavLink } from "react-router-dom";
 import { TiArrowLeft } from "react-icons/ti";
+import { fetchCategoryById, saveCategory, CategoryDTO } from "./service/CategoryService"; // Import các hàm từ categoryService
 
 export const CategoryCU = () => {
   const { id } = useParams<{ id?: string }>(); // Nhận tham số id tùy chọn
@@ -19,41 +20,39 @@ export const CategoryCU = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // useEffect(() => {
-  //   if (isUpdateMode && id) {
-  //     const storedCategory = localStorage.getItem("selectedCategory");
-  //     if (storedCategory) {
-  //       const category = JSON.parse(storedCategory);
-  //       setCategoryName(category.categoryName);
-  //       setDescription(category.description);
-  //     }
-  //   }
-  // }, [id, isUpdateMode]);
+  useEffect(() => {
+    if (isUpdateMode && id) {
+      const storedCategory = localStorage.getItem("selectedCategory");
+      if (storedCategory) {
+        const category = JSON.parse(storedCategory);
+        setCategoryName(category.categoryName);
+        setDescription(category.description);
+      }
+    }
+  }, [id, isUpdateMode]);
 
-  // const handleSave = async () => {
-  //   if (!categoryName) {
-  //     setError("Category Name is required");
-  //     return;
-  //   }
+  const handleSave = async () => {
+    if (!categoryName) {
+      setError("Category Name is required");
+      return;
+    }
 
-  //   setLoading(true);
-  //   const categoryDTO = {
-  //     sysIdCategory: isUpdateMode ? id : null,
-  //     categoryName,
-  //     description,
-  //   };
+    setLoading(true);
+    const categoryDTO: CategoryDTO = {
+      sysIdCategory: isUpdateMode ? id : null,
+      categoryName,
+      description,
+    };
 
-  //   try {
-  //     const response = await apiClient.post("/api/categories", categoryDTO);
-  //     // console.log("Category saved:", response.data);
-  //     // điều hướng về trang danh sách sau khi lưu thành công
-  //     navigate("/admin/category/list");
-  //   } catch (error) {
-  //     console.error("Error saving category:", error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+    try {
+      await saveCategory(categoryDTO);
+      navigate("/admin/category/list");
+    } catch (error) {
+      console.error("Error saving category:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -71,36 +70,38 @@ export const CategoryCU = () => {
           </h3>
         </div>
 
-        <div className="rounded-[20px] px-6 pt-4 shadow-adminBoxshadow">
-          <h6 className="mb-6 text-lg font-medium">Basic information</h6>
+        <div className="rounded-[20px] shadow-adminBoxshadow">
+          <div className="px-6 pt-4">
+            <h6 className="mb-6 text-lg font-medium">Basic information</h6>
 
-          <div className="grid grid-cols-12 gap-x-6 gap-y-8 pb-8">
-            <FloatLabel className="col-span-12 text-sm">
-              <InputText
-                className="shadow-adminInputShadow w-full rounded-lg border bg-transparent p-4 ps-[10px] hover:border-black"
-                value={categoryName}
-                onChange={(e) => {
-                  setCategoryName(e.target.value);
-                  setError("");
-                }}
-              />
-              <label>
-                Category Name <span className="text-red-500">*</span>
-              </label>
-              {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
-            </FloatLabel>
+            <div className="grid grid-cols-12 gap-x-6 gap-y-8 pb-8">
+              <FloatLabel className="col-span-12 text-sm">
+                <InputText
+                  className="shadow-adminInputShadow w-full rounded-lg border bg-transparent p-4 ps-[10px] hover:border-black"
+                  value={categoryName}
+                  onChange={(e) => {
+                    setCategoryName(e.target.value);
+                    setError("");
+                  }}
+                />
+                <label>
+                  Category Name <span className="text-red-500">*</span>
+                </label>
+                {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
+              </FloatLabel>
 
-            <FloatLabel className="col-span-12 text-sm">
-              <InputTextarea
-                rows={5}
-                className="shadow-adminInputShadow w-full rounded-lg border bg-transparent p-4 ps-[10px] hover:border-black"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-              <label>
-                Category Describe <span className="text-red-500">*</span>
-              </label>
-            </FloatLabel>
+              <FloatLabel className="col-span-12 text-sm">
+                <InputTextarea
+                  rows={5}
+                  className="shadow-adminInputShadow w-full rounded-lg border bg-transparent p-4 ps-[10px] hover:border-black"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+                <label>
+                  Category Describe <span className="text-red-500">*</span>
+                </label>
+              </FloatLabel>
+            </div>
           </div>
 
           <div className="flex items-center justify-end gap-2 p-4 pt-2">
@@ -113,7 +114,7 @@ export const CategoryCU = () => {
             <Button
               loading={loading}
               label={isUpdateMode ? "Update" : "Create"}
-              // onClick={handleSave}
+              onClick={handleSave}
               className="rounded-lg bg-mainYellow px-4 py-[10px] text-sm font-medium text-white hover:brightness-105"
             />
           </div>

@@ -6,36 +6,10 @@ import { Paginator } from "primereact/paginator";
 import { useState, useEffect } from "react";
 import "./Game.css";
 import apiClient from "../../../config/apiClient";
-import { FloatLabel } from "primereact/floatlabel";
 import { MultiSelect } from "primereact/multiselect";
 import { Dropdown } from "primereact/dropdown";
-
-interface CategoryDetail {
-  sysIdCategoryDetail: number;
-  sysIdGame: number;
-  sysIdCategory: number;
-  categoryName: string;
-}
-
-interface Media {
-  sysIdMedia: number;
-  mediaName: string;
-  mediaUrl: string;
-  sysIdGame: number;
-}
-
-interface Game {
-  sysIdGame: number;
-  gameName: string;
-  price: number;
-  discountPercent: number | null;
-  categoryDetails: CategoryDetail[];
-  gameImage: string;
-  description: string;
-  isActive: boolean;
-  quantity: number;
-  media: Media[];
-}
+import { Game } from "../../../model/GameModel";
+import { Category } from "../../../model/CategoryModel";
 
 export const GameList = () => {
   const [first, setFirst] = useState(0);
@@ -44,42 +18,80 @@ export const GameList = () => {
   const [searchTerm, setSearchTerm] = useState(""); // Thêm state để lưu trữ giá trị tìm kiếm
   const [games, setGames] = useState<Game[]>([]);
   const [selectedOption, setSelectedOption] = useState<any | null>("oldest");
-  const [selectedCities, setSelectedCities] = useState(null);
-  const [selectedStatus, setSelectedStatus] = useState(null);
+  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+  const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   const options: any[] = [
     { label: "Oldest", value: "oldest" },
     { label: "Newest", value: "newest" },
   ];
-  const categories = [
-    { name: "New York", code: "NY" },
-    { name: "Rome", code: "RM" },
-    { name: "London", code: "LDN" },
-    { name: "Istanbul", code: "IST" },
-    { name: "Paris", code: "PRS" },
-  ];
 
   const status = [
-    { name: "Published", code: "true" },
-    { name: "Draft", code: "false" },
+    { name: "Active", code: "true" },
+    { name: "Inactive", code: "false" },
   ];
 
   const onPageChange = (event: any) => {
     setFirst(event.first);
     setRows(event.rows);
-    fetchGames(event.first, event.rows, searchTerm);
+    fetchGames(event.first, event.rows, searchTerm, selectedCategories, selectedStatus, selectedOption);
   };
 
-  const fetchGames = (first: number, rows: number, searchTerm: string) => {
+  const fetchCategories = () => {
+    apiClient
+      .get("/api/categories")
+      .then((response) => {
+        const allCategories = response.data.data;
+        // console.log("All categories:", allCategories);
+        
+        if (Array.isArray(allCategories)) {
+          for (let i = 0; i < allCategories.length; i++) {
+            allCategories[i].name = allCategories[i].categoryName;
+            allCategories[i].code = allCategories[i].sysIdCategory;
+          }
+          setCategories(allCategories);
+        } else {
+          console.error("API response is not an array:", allCategories);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching categories:", error);
+      });
+  };
+
+  const fetchGames = (first: number, rows: number, searchTerm: string, selectedCategories: number[], selectedStatus: string[], selectedOption: string) => {
     apiClient
       .get("/api/games")
       .then((response) => {
         const allGames = response.data.data;
-        // console.log("All games:", allGames);
+        console.log("All games:", allGames);
         if (Array.isArray(allGames)) {
-          const filteredGames = allGames.filter((game: Game) =>
+
+          let filteredGames = allGames.filter((game: Game) =>
             game.gameName.toLowerCase().includes(searchTerm.toLowerCase()),
           );
+
+          if (selectedCategories.length > 0) {
+            filteredGames = filteredGames.filter((game: Game) =>
+              game.categoryDetails.some((category: any) =>
+                selectedCategories.includes(category.sysIdCategory),
+              ),
+            );
+          }
+
+          if (selectedStatus.length > 0) {
+            filteredGames = filteredGames.filter((game: Game) =>
+              selectedStatus.includes(game.isActive.toString()),
+            );
+          }
+
+          if (selectedOption === "newest") {
+            filteredGames.sort((a: Game, b: Game) => new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime());
+          } else {
+            filteredGames.sort((a: Game, b: Game) => new Date(a.releaseDate).getTime() - new Date(b.releaseDate).getTime());
+          }
+
           setTotalRecords(filteredGames.length);
           const paginatedGames = filteredGames.slice(first, first + rows);
           setGames(paginatedGames);
@@ -93,19 +105,35 @@ export const GameList = () => {
   };
 
   useEffect(() => {
-    fetchGames(first, rows, searchTerm);
-  }, [first, rows, searchTerm]);
+    fetchCategories();
+     fetchGames(first, rows, searchTerm, selectedCategories, selectedStatus, selectedOption);
+    }, [first, rows, searchTerm, selectedCategories, selectedStatus, selectedOption]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
     setFirst(0); // trở lại trang đầu tiên khi tìm kiếm
   };
 
+  const handleCategoryChange = (e: any) => {
+    setSelectedCategories(e.value);
+    setFirst(0); // trở lại trang đầu tiên khi thay đổi thể loại
+  };
+
+  const handleStatusChange = (e: any) => {
+    setSelectedStatus(e.value);
+    setFirst(0); // trở lại trang đầu tiên khi thay đổi trạng thái
+  };
+
+  const handleOptionChange = (e: any) => {
+    setSelectedOption(e.value);
+    setFirst(0); // trở lại trang đầu tiên khi thay đổi sắp xếp
+  };
+
   return (
     <>
       <div className="">
         <div className="flex items-start justify-between gap-6">
-          <h3 className="text-[32px] font-medium">Game List</h3>
+          <h3 className="text-[32px] font-medium">Games</h3>
           <RightSideButton Icon={MdAddBox} link={"/admin/game/create"} />
         </div>
         <div className="mt-8">
@@ -113,54 +141,56 @@ export const GameList = () => {
             <div className="col-span-12">
               <div className="rounded-[20px] px-6 py-4 shadow-adminBoxshadow">
                 <div className="flex flex-wrap items-center justify-between gap-4">
-                  <div className="w-full sm:w-auto">
+                  <div className="flex-auto">
+                    <div className="relative w-full min-w-[211px] rounded-lg border border-gray150 bg-transparent shadow-adminInputShadow hover:border-black">
+                      <i className="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 transform text-gray100"></i>
+                      <InputText
+                        placeholder="Search"
+                        className="w-full bg-transparent py-[17px] pl-10 pr-3 text-sm text-black focus:ring-0"
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex-grow">
                     <div className="flex flex-wrap items-center justify-start gap-4">
                       <div className="flex-1">
-                        <div className="shadow-adminInputShadow relative w-full min-w-[211px] rounded-lg border border-gray150 bg-transparent hover:border-black">
-                          <i className="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 transform text-gray100"></i>
-                          <InputText
-                            placeholder="Search"
-                            className="w-full bg-transparent py-[17px] pl-10 pr-3 text-sm text-black focus:ring-0"
-                            value={searchTerm}
-                            onChange={handleSearchChange}
-                          />
-                        </div>
-                      </div>
-                      <div className="flex-1">
                         <MultiSelect
-                          value={selectedCities}
-                          onChange={(e) => setSelectedCities(e.value)}
+                          value={selectedCategories}
+                          onChange={handleCategoryChange}
                           options={categories}
                           optionLabel="name"
+                          optionValue="code"
                           placeholder="Select Categories"
                           maxSelectedLabels={3}
-                          className="shadow-adminInputShadow w-full rounded-lg border border-gray150 px-4 py-2 font-inter text-sm"
+                          className="w-full rounded-lg border border-gray150 px-4 py-2 font-inter text-sm shadow-adminInputShadow"
                           itemClassName="!font-inter"
                         />
                       </div>
                       <div className="flex-1">
                         <MultiSelect
                           value={selectedStatus}
-                          onChange={(e) => setSelectedStatus(e.value)}
+                          onChange={handleStatusChange}
                           options={status}
                           optionLabel="name"
+                          optionValue="code"
                           placeholder="Select Status"
                           maxSelectedLabels={3}
-                          className="shadow-adminInputShadow w-full rounded-lg border border-gray150 px-4 py-2 font-inter text-sm"
+                          className="w-full rounded-lg border border-gray150 px-4 py-2 font-inter text-sm shadow-adminInputShadow"
                           itemClassName="!font-inter"
                         />
                       </div>
+                      <div className="flex-1">
+                        <Dropdown
+                          value={selectedOption}
+                          options={options}
+                          onChange={handleOptionChange}
+                          className="custom-icon-color shadow-adminInputShadow w-full min-w-36 rounded-lg border border-gray150 px-4 py-2 !font-inter text-sm"
+                          dropdownIcon="pi pi-chevron-down"
+                          panelClassName="custom-dropdown-panel"
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div className="w-full sm:w-auto">
-                    <Dropdown
-                      value={selectedOption}
-                      options={options}
-                      onChange={(e) => setSelectedOption(e.value)}
-                      className="custom-icon-color shadow-adminInputShadow w-full min-w-36 rounded-lg border border-gray150 px-4 py-2 !font-inter text-sm"
-                      dropdownIcon="pi pi-chevron-down"
-                      panelClassName="custom-dropdown-panel"
-                    />
                   </div>
                 </div>
               </div>
@@ -168,10 +198,10 @@ export const GameList = () => {
             <div className="col-span-12">
               <div className="mb-5 rounded-[20px] bg-[#F2F2F2] px-5 pb-5 shadow-adminBoxshadow">
                 <div className="overflow-x-scroll">
-                  <table className="w-full rounded-xl">
+                  <table className="w-full text-nowrap rounded-xl">
                     <thead>
                       <tr className="text-left">
-                        <th className="p-5 text-xs font-light">Id</th>
+                        <th className="p-5 text-xs font-light">ID</th>
                         <th className="p-5 text-xs font-light">Game Name</th>
                         <th className="p-5 text-xs font-light">Price</th>
                         <th className="p-5 text-xs font-light">Status</th>
@@ -195,30 +225,6 @@ export const GameList = () => {
                           media={game.media}
                         />
                       ))}
-                      <GameRow
-                        sysIdGame={0}
-                        gameName={"ASSASIN CREED"}
-                        price={19000000}
-                        discountPercent={10}
-                        categoryDetails={[]}
-                        gameImage={""}
-                        description={"HAHAHHA"}
-                        isActive={false}
-                        quantity={0}
-                        media={[]}
-                      />
-                      <GameRow
-                        sysIdGame={0}
-                        gameName={"ASSASIN CREED"}
-                        price={19000000}
-                        discountPercent={10}
-                        categoryDetails={[]}
-                        gameImage={""}
-                        description={"HAHAHHA"}
-                        isActive={true}
-                        quantity={0}
-                        media={[]}
-                      />
                     </tbody>
                   </table>
                 </div>
@@ -227,7 +233,7 @@ export const GameList = () => {
                     <Paginator
                       first={first} // bắt đầu từ đâu
                       rows={rows} // bao nhiêu cột hiển thị
-                      totalRecords={100} // Độ dài dữ liệu
+                      totalRecords={totalRecords} // Độ dài dữ liệu
                       template={{
                         layout: "CurrentPageReport PrevPageLink NextPageLink",
                         CurrentPageReport: (options: any) => (

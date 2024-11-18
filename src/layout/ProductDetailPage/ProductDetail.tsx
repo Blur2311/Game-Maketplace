@@ -7,7 +7,10 @@ import { FiShare2 } from "react-icons/fi";
 import { TbFlag3 } from "react-icons/tb";
 import { Link } from "react-router-dom";
 import { LinkType } from "../../components/LinkType";
-import { showInfoMessages } from "../../utils/ErrorHandlingUtils";
+import {
+  clearMessages,
+  showInfoMessages,
+} from "../../utils/ErrorHandlingUtils";
 import {
   calculateSalePrice,
   formatCurrency,
@@ -24,15 +27,18 @@ import useGameDetails from "./hook/useGameDetails";
 import "./ProductDetail.css";
 
 export const ProductDetail = () => {
-  const { gameDetails, recommendations, comments, error } = useGameDetails();
-  const { addGameToCart } = useCart();
+  const { gameDetails, recommendations, comments, setComments, error } = useGameDetails();
+  const { addGameToCart, handleBuyNow } = useCart();
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(3);
   const msgs = useRef<Messages>(null);
 
   useEffect(() => {
+    console.log("comments", comments);    
     if (!comments || comments.length === 0) {
       showInfoMessages(msgs, "Be the first to review this game!");
+    } else {
+      clearMessages(msgs);
     }
   }, [comments]);
 
@@ -66,9 +72,6 @@ export const ProductDetail = () => {
           <div className="py-2 border-b-2 border-mainCyan">
             <p>Overview</p>
           </div>
-          {/* <div className="py-2 cursor-pointer">
-            <p>Add-Ons</p>
-          </div> */}
         </div>
       </div>
       <div className="flex items-start">
@@ -90,9 +93,6 @@ export const ProductDetail = () => {
                         url={""}
                       />
                     ))}
-                  {/* <LinkType text={"Action"} url={""} />
-                  <LinkType text={"Adventure"} url={""} />
-                  <LinkType text={"RPG"} url={""} /> */}
                 </div>
               </div>
               {gameDetails.features && (
@@ -127,12 +127,12 @@ export const ProductDetail = () => {
             <div className="flex items-start justify-evenly">
               {recommendations &&
                 recommendations.map((recommendation, index) => (
-                  <ProductCard key={index} game={recommendation} />
+                  <ProductCard key={index} {...recommendation} />
                 ))}
             </div>
           </div>
           <div className="mt-12">
-            <Review gameId={gameDetails.sysIdGame} />
+            <Review gameId={gameDetails.sysIdGame} comments={comments} setComments={setComments} />
           </div>
           <div className="my-12">
             <div className="w-full text-white rounded-lg">
@@ -151,7 +151,7 @@ export const ProductDetail = () => {
                   comments.map((comment, index) => (
                     <ReviewCard
                       key={index}
-                      username={comment.usersDTO?.hoVaTen ?? "username"}
+                      username={comment.usersDTO?.username ?? "username"}
                       date={formatDateFromLocalDate(comment.commentDate)}
                       rating={comment.star}
                       text={comment.context}
@@ -172,10 +172,6 @@ export const ProductDetail = () => {
               alt=""
               className="rounded"
             />
-            {/* {gameDetails.features &&
-              gameDetails.features.split("\n").slice(0, 1).map((feature, index) => (
-                <LinkType key={index} text={feature} url={""} />
-              ))} */}
             <div className="flex items-center w-full gap-2 justify-evenly">
               {gameDetails.discountPercent ? (
                 <>
@@ -212,23 +208,19 @@ export const ProductDetail = () => {
                 label="Buy Now"
                 size="large"
                 className="h-[50px] w-full rounded-[10px] bg-mainYellow text-sm font-medium transition duration-300 hover:brightness-110"
-                // onClick={handleLogin}
-                // disabled={isLockedOut}
+                onClick={() => handleBuyNow(gameDetails)}
               />
               <Button
                 label="Add To Cart"
                 size="large"
                 className="h-[50px] w-full rounded-[10px] bg-grayBorder text-sm font-medium transition duration-300 hover:bg-gray200"
                 onClick={() => addGameToCart(gameDetails, 1)}
-                // disabled={isLockedOut}
               />
               <Button
                 disabled
                 label="Add to Wishlist"
                 size="large"
                 className="h-[50px] w-full rounded-[10px] bg-grayBorder text-sm font-medium transition duration-300 hover:bg-gray200"
-                // onClick={handleLogin}
-                // disabled={isLockedOut}
               />
             </div>
             <div className="flex flex-col w-full text-sm font-light text-textType">
@@ -245,19 +237,10 @@ export const ProductDetail = () => {
                 </p>
               </div>
             </div>
-            {/* <a
-              href="#"
-              className="flex items-center gap-1 text-sm font-light text-white hover:underline"
-            >
-              See All Editions and Add-Ons
-              <IoChevronDownOutline className="text-xl" />
-            </a> */}
             <div className="mt-[15px] flex w-full gap-[10px] text-white">
               <button
                 type="button"
                 className="flex h-[32px] w-full items-center justify-center gap-2 rounded-[10px] bg-grayBorder text-sm font-medium transition duration-300 hover:bg-gray200"
-                // onClick={handleLogin}
-                // disabled={isLockedOut}
               >
                 <FiShare2 className="text-xl" />
                 Share
@@ -265,8 +248,6 @@ export const ProductDetail = () => {
               <button
                 type="button"
                 className="flex h-[32px] w-full items-center justify-center gap-2 rounded-[10px] bg-grayBorder text-sm font-medium transition duration-300 hover:bg-gray200"
-                // onClick={handleLogin}
-                // disabled={isLockedOut}
               >
                 <TbFlag3 className="text-xl" />
                 Report

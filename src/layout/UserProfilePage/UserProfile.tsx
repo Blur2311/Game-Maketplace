@@ -1,6 +1,6 @@
 import { FloatLabel } from "primereact/floatlabel";
 import { InputText } from "primereact/inputtext";
-import { formatCurrency, formatDate, formatDateDMY } from "../../utils/OtherUtils";
+import { formatCurrency, formatDate  } from "../../utils/OtherUtils";
 import { Button } from "primereact/button";
 import { MdOutlineCameraAlt } from "react-icons/md";
 import { ProgressSpinner } from "primereact/progressspinner";
@@ -150,14 +150,14 @@ export const UserProfile = () => {
   return (
     <>
       <div className="pl-5">
-        <div className="rounded bg-white p-10">
+        <div className="p-10 bg-white rounded">
           <h1 className="text-3xl">Account Settings</h1>
           <h6 className="mt-[15px] text-sm font-light">
             Manage your account's details.
           </h6>
           <h5 className="mt-[30px] text-lg font-bold">Account Information</h5>
-          <div className="mt-5 flex items-start">
-            <div className="flex flex-1 flex-col gap-5">
+          <div className="flex items-start mt-5">
+            <div className="flex flex-col flex-1 gap-5">
               <div className="flex items-center">
                 <p className="min-w-[150px] text-sm font-semibold">Username:</p>
                 <p className="text-sm font-light"> {userData?.username || "N/A"}</p>
@@ -184,7 +184,7 @@ export const UserProfile = () => {
                 </p>
               </div>
             </div>
-            <div className="flex flex-1 flex-col gap-5">
+            <div className="flex flex-col flex-1 gap-5">
               <div className="flex items-center">
                 <p className="min-w-[150px] text-sm font-semibold">Email:</p>
                 <p className="text-sm font-light underline">
@@ -367,7 +367,7 @@ export const UserProfile = () => {
                 // disabled={isLockedOut}
                 />
               </div>
-              <div className="flex flex-1 items-center justify-center">
+              <div className="flex items-center justify-center flex-1">
                 <div className="relative">
                   {/* Cái này có sẵn ấn vào hình mở input xog ấn nút để submit
                     xog cho nó loading nhìn cho giống real */}

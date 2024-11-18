@@ -1,7 +1,7 @@
 import { Button } from "primereact/button";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Rating } from "primereact/rating";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import apiClient from "../../../config/apiClient";
 import { getDecodeToken } from "../../../utils/AuthUtils";
@@ -9,11 +9,17 @@ import { CommentDTO } from "../hook/useGameDetails";
 
 interface ReviewProps {
   gameId: number;
+  comments: CommentDTO[];
+  setComments: (comments: CommentDTO[]) => void;
 }
 
-export const Review: React.FC<ReviewProps> = ({ gameId }) => {
+export const Review: React.FC<ReviewProps> = ({ gameId, comments, setComments }) => {
   const [rating, setRating] = useState(0);
   const [reviewText, setReviewText] = useState("");
+
+  useEffect(() => {
+    clearForm();
+  }, [gameId]);
 
   const isCommentValid = () => {
     if (getDecodeToken() === null) {
@@ -31,9 +37,15 @@ export const Review: React.FC<ReviewProps> = ({ gameId }) => {
     return true;
   };
 
+  const clearForm = () => {
+    setReviewText('');
+    setRating(0);    
+  }
+
   const handleSubmit = async () => {
     if (!isCommentValid()) return;
     const comment: CommentDTO = {
+      usersDTO: {username: getDecodeToken()?.sub ?? ''},
       context: reviewText,
       commentDate: new Date().toISOString(),
       gameId,
@@ -43,6 +55,8 @@ export const Review: React.FC<ReviewProps> = ({ gameId }) => {
     try {
       await apiClient.post("/api/comments", comment);
       toast.success("Review submitted successfully");
+      clearForm();
+      setComments([comment, ...comments]);  
     } catch (error: any) {
       console.error("Error submitting review:", error);
       toast.error(error.response.data.message ?? "Failed to submit review");
@@ -68,7 +82,7 @@ export const Review: React.FC<ReviewProps> = ({ gameId }) => {
           <span className="text-gray-400">Rating:</span>
           <Rating
             value={rating}
-            onChange={(e) => setRating(e.value ?? 0)} // Provide a fallback value of 0
+            onChange={(e) => setRating(e.value ?? 0)}
             stars={5}
             cancel={false}
             className="custom-rating-big"
