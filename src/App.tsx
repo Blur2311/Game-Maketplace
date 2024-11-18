@@ -47,6 +47,8 @@ import { InvoiceList } from "./layout/AdminPage/InvoiceManagePage/InvoiceList";
 import { InvoiceDetail } from "./layout/AdminPage/InvoiceManagePage/InvoiceDetail";
 import { DiscountList } from "./layout/AdminPage/DiscountManagePage/DiscountList";
 import { DiscountCU } from "./layout/AdminPage/DiscountManagePage/DiscountCU";
+import { HomeAdmin } from "./layout/AdminPage/Home&AnaPage/HomeAdmin";
+import { Analytics } from "./layout/AdminPage/Home&AnaPage/Analytics";
 
 function App() {
   return (
@@ -55,6 +57,9 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/admin" element={<AdminLayout />}>
+              <Route path="home" element={<HomeAdmin />} />
+              <Route path="analytic" element={<Analytics />} />
+
               <Route path="category/list" element={<CategoryList />} />
               <Route path="category/create" element={<CategoryCU />} />
               <Route path="category/detail/:id" element={<CategoryCU />} />

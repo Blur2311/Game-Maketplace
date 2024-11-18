@@ -4,8 +4,6 @@ import { InputText } from "primereact/inputtext";
 import { MultiSelect } from "primereact/multiselect";
 import { Paginator } from "primereact/paginator";
 import { useState } from "react";
-import { TbInvoice, TbCheck, TbClockHour3 } from "react-icons/tb";
-import { formatCurrency } from "../../../utils/OtherUtils";
 import { DiscountRow } from "./components/DiscountRow";
 
 export const DiscountList = () => {

@@ -14,7 +14,7 @@ export const AdminLayout = () => {
         </div>
         <div className="flex-1 bg-white">
           <AdminNavBar />
-          <div className="h-full min-h-svh px-6 py-16">
+          <div className="h-full min-h-svh bg-white px-6 py-16">
             <Outlet />
           </div>
         </div>
