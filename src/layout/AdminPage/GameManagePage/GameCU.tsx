@@ -14,12 +14,17 @@ import { Editor } from "primereact/editor";
 import { InputNumber } from "primereact/inputnumber";
 import FileUploadComponent from "./components/FileUpload";
 import { formatCurrency, calculateSalePrice } from "../../../utils/OtherUtils";
+import {
+  saveGame,
+  fetchCategories,
+  updateGame,
+  convertFileToBase64,
+  generateRandomString,
+  validateForm,
+} from "./service/GameCUService";
 
 export const GameCU = () => {
   const [text, setText] = useState("");
-  const handleTextChange = (e: any) => {
-    setText(e.htmlValue ?? ""); // Nếu e.htmlValue là null thì gán ''
-  };
 
   const { id } = useParams<{ id?: string }>(); // Nhận tham số id tùy chọn
   const isUpdateMode = Boolean(id); // Xác định chế độ cập nhật hay tạo mới
@@ -27,13 +32,13 @@ export const GameCU = () => {
 
   const [sysIdGame, setSysIdGame] = useState<number | null>(null);
   const [gameName, setGameName] = useState("");
-  const [price, setPrice] = useState<number | null>();
-  const [discountPercent, setDiscountPercent] = useState<number | null>();
-  const [quantity, setQuantity] = useState<number | null>();
-  const [status, setStatus] = useState("");
+  const [price, setPrice] = useState<number | null>(0);
+  const [discountPercent, setDiscountPercent] = useState<number | null>(0);
+  const [quantity, setQuantity] = useState<number | null>(0);
+  const [isActive, setIsActive] = useState(true);
   const options: any[] = [
-    { label: "Published", value: "active" },
-    { label: "Draft", value: "unactive" },
+    { label: "Active", value: true },
+    { label: "Inactive", value: false },
   ];
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
   const [description, setDescription] = useState("");
@@ -44,239 +49,194 @@ export const GameCU = () => {
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
   const [logo, setLogo] = useState<File | null>(null);
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
-  const [images, setImages] = useState<File[]>([]);
+  const [images, setImages] = useState<(File | string)[]>([]);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [media, setMedia] = useState([]);
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    const loadCategories = async () => {
       try {
-        const response = await apiClient.get("/api/categories");
-
-        const formattedCategories = response.data.data.map((category: any) => ({
-          label: category.categoryName,
-          value: category.sysIdCategory,
-        }));
-
-        setCategories(formattedCategories);
+        const categories = await fetchCategories();
+        setCategories(categories);
       } catch (error) {
-        console.error("Error fetching categories:", error);
+        console.error("Error loading categories:", error);
       }
     };
 
-    fetchCategories();
+    loadCategories();
   }, []);
 
   useEffect(() => {
     if (isUpdateMode && id) {
       const storedGame = localStorage.getItem("selectedGame");
       if (storedGame) {
-        const game = JSON.parse(storedGame);
-        setSysIdGame(game.sysIdGame);
-        setGameName(game.gameName || "");
-        setPrice(game.price || "");
-        setDiscountPercent(game.discountPercent || "");
-        setQuantity(game.quantity || "");
-        setStatus(game.isActive ? "active" : "inactive");
-        setSelectedCategories(
-          game.categoryDetails.map((cd: any) => cd.sysIdCategory),
-        );
-        setDescription(game.description || "");
-        setThumbnailUrl(
-          game.media.find((m: any) => m.mediaName === "thumbnail")?.mediaUrl ||
-            null, // Trả về null nếu không tìm thấy
-        );
-        setLogoUrl(
-          game.media.find((m: any) => m.mediaName === "logo")?.mediaUrl || null, // Trả về null nếu không tìm thấy
-        );
-        setImageUrls(
-          game.media
-            .filter(
-              (m: any) => m.mediaName !== "thumbnail" && m.mediaName !== "logo",
-            )
-            .map((m: any) => m.mediaUrl),
-        );
-        setMedia(game.media || []);
+        try {
+          const game = JSON.parse(storedGame);
+
+          setSysIdGame(game.sysIdGame || null);
+          setGameName(game.gameName || "");
+          setPrice(game.price || null);
+          setDiscountPercent(game.discountPercent || null);
+          setQuantity(game.quantity || null);
+          setIsActive(game.isActive);
+          setSelectedCategories(
+            (game.categoryDetails || []).map((cd: any) => cd.sysIdCategory),
+          );
+          setDescription(game.description || "");
+          setThumbnailUrl(
+            game.media?.find((m: any) => m.mediaName === "thumbnail")
+              ?.mediaUrl || null,
+          );
+          setLogoUrl(
+            game.media?.find((m: any) => m.mediaName === "logo")?.mediaUrl ||
+              null,
+          );
+          setImageUrls(
+            (game.media || [])
+              .filter(
+                (m: any) =>
+                  m.mediaName !== "thumbnail" && m.mediaName !== "logo",
+              )
+              .map((m: any) => m.mediaUrl),
+          );
+          setMedia(game.media || []);
+        } catch (error) {
+          console.error("Invalid game data:", error);
+        }
       }
     }
   }, [id, isUpdateMode]);
 
-  const handleThumbnailUpload = (e: any) => {
-    setThumbnail(e.files[0]);
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      setThumbnailUrl(event.target?.result as string);
-    };
-    reader.readAsDataURL(e.files[0]);
-  };
-
-  const handleLogoUpload = (e: any) => {
-    setLogo(e.files[0]);
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      setLogoUrl(event.target?.result as string);
-    };
-    reader.readAsDataURL(e.files[0]);
-  };
-
-  const handleImagesUpload = (e: any) => {
-    const uploadedFiles = Array.from(e.files) as File[];
-    setImages(uploadedFiles);
-    const urls = uploadedFiles.map((file: File) => {
+  const handleThumbnailUpload = (files: (File | string)[]) => {
+    if (files.length > 0) {
+      const file = files[0] as File;
+      setThumbnail(file);
       const reader = new FileReader();
+      reader.onload = (event) => {
+        setThumbnailUrl(event.target?.result as string);
+      };
       reader.readAsDataURL(file);
-      return new Promise<string>((resolve) => {
-        reader.onload = (event) => {
-          resolve(event.target?.result as string);
-        };
-      });
+    }
+  };
+
+  const handleLogoUpload = (files: (File | string)[]) => {
+    if (files.length > 0) {
+      const file = files[0] as File;
+      setLogo(file);
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setLogoUrl(event.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleImagesUpload = (files: (File | string)[]) => {
+    setImages(files);
+    const urls = files.map((file) => {
+      if (typeof file === "string") {
+        return Promise.resolve(file);
+      } else {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        return new Promise<string>((resolve) => {
+          reader.onload = (event) => {
+            resolve(event.target?.result as string);
+          };
+        });
+      }
     });
     Promise.all(urls).then((results) => setImageUrls(results));
   };
 
-  // const handleSave = async () => {
-  //   if (!gameName || !price || !quantity) {
-  //     setError("Please fill in all required fields.");
-  //     return;
-  //   }
-
-  //   setLoading(true);
-
-  //   // Hàm chuyển đổi file sang base64
-  //   const convertFileToBase64 = async (file: File) => {
-  //     return new Promise((resolve, reject) => {
-  //       const reader = new FileReader();
-  //       reader.onload = () => resolve(reader.result);
-  //       reader.onerror = (error) => reject(error);
-  //       reader.readAsDataURL(file);
-  //     });
-  //   };
-
-  //   // Chuyển đổi các hình ảnh sang Base64
-  //   const base64Thumbnail = thumbnail
-  //     ? await convertFileToBase64(thumbnail)
-  //     : null;
-  //   const base64Logo = logo ? await convertFileToBase64(logo) : null;
-  //   const base64Images = await Promise.all(
-  //     images.map((image) => convertFileToBase64(image)),
-  //   );
-
-  //   // Tạo object gameDTO phù hợp với cấu trúc của GameDTO
-  //   const gameDTO = {
-  //     gameName,
-  //     price: parseFloat(price),
-  //     discountPercent: parseFloat(discountPercent),
-  //     quantity: parseInt(quantity, 10),
-  //     status: status === "active",
-  //     categoryDetails: [
-  //       ...selectedCategories.map((categoryId) => ({
-  //         sysIdCategory: categoryId,
-  //       })),
-  //     ],
-  //     description,
-  //     media: [
-  //       ...(base64Thumbnail
-  //         ? [{ mediaName: "thumbnail", mediaUrl: base64Thumbnail }]
-  //         : []),
-  //       ...(base64Logo ? [{ mediaName: "logo", mediaUrl: base64Logo }] : []),
-  //       ...base64Images.map((image, index) => ({
-  //         mediaName: "p" + (index + 1),
-  //         mediaUrl: image,
-  //       })),
-  //     ],
-  //     slug: gameName.toLowerCase().replace(/ /g, "-"),
-  //   };
-  //   console.log("Game DTO:", gameDTO);
-  //   // return;
-  //   try {
-  //     const response = await apiClient.post("/api/games", gameDTO, {
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
-  //     console.log("Game saved:", response.data);
-  //     // navigate("/admin/game-list");
-  //   } catch (error) {
-  //     console.error("Error saving game:", error);
-  //     // setError("Failed to save game.");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  // const handleUpdae = async () => {
-  //   if (!gameName || !price || !quantity) {
-  //     setError("Please fill in all required fields.");
-  //     return;
-  //   }
-
-  //   setLoading(true);
-
-  //   // Hàm chuyển đổi file sang base64
-  //   const convertFileToBase64 = async (file: File) => {
-  //     return new Promise((resolve, reject) => {
-  //       const reader = new FileReader();
-  //       reader.onload = () => resolve(reader.result);
-  //       reader.onerror = (error) => reject(error);
-  //       reader.readAsDataURL(file);
-  //     });
-  //   };
-
-  //   // Chuyển đổi các hình ảnh sang Base64
-  //   const base64Thumbnail = thumbnail
-  //     ? await convertFileToBase64(thumbnail)
-  //     : null;
-  //   const base64Logo = logo ? await convertFileToBase64(logo) : null;
-  //   const base64Images = await Promise.all(
-  //     images.map((image) => convertFileToBase64(image)),
-  //   );
-
-  //   const gameDTO = {
-  //     sysIdGame,
-  //     gameName,
-  //     price: parseFloat(price),
-  //     discountPercent: parseFloat(discountPercent),
-  //     quantity: parseInt(quantity, 10),
-  //     status: status === "active",
-  //     categoryDetails: [
-  //       ...selectedCategories.map((categoryId) => ({
-  //         sysIdCategory: categoryId,
-  //       })),
-  //     ],
-  //     description,
-  //     media: [
-  //       ...(base64Thumbnail
-  //         ? [{ mediaName: "thumbnail", mediaUrl: base64Thumbnail }]
-  //         : []),
-  //       ...(base64Logo ? [{ mediaName: "logo", mediaUrl: base64Logo }] : []),
-  //       ...base64Images.map((image, index) => ({
-  //         mediaName: "p" + (index + 1),
-  //         mediaUrl: image,
-  //       })),
-  //     ],
-  //     slug: gameName.toLowerCase().replace(/ /g, "-"),
-  //   };
-  //   console.log("Game DTO:", gameDTO);
-  //   return;
-
-  //   try {
-  //     const response = await apiClient.post("/api/games", gameDTO, {
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
-  //     console.log("Game updated:", response.data);
-  //     // navigate("/admin/game-list");
-  //   } catch (error) {
-  //     console.error("Error updating game:", error);
-  //     // setError("Failed to save game.");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+  const handleSave = async () => {
+    const newErrors = validateForm(
+      gameName,
+      price,
+      quantity,
+      description,
+      selectedCategories,
+      thumbnail,
+      logo,
+      images,
+      discountPercent,
+      thumbnailUrl,
+      logoUrl,
+      imageUrls
+    );
+    if (Object.keys(newErrors).length > 0) {
+      setError(newErrors);
+      return;
+    }
+    setLoading(true);
+  
+    try {
+      const base64Thumbnail = thumbnail
+        ? await convertFileToBase64(thumbnail)
+        : thumbnailUrl; // Giữ lại thumbnail hiện tại nếu không có thumbnail mới
+      const base64Logo = logo ? await convertFileToBase64(logo) : logoUrl; // Giữ lại logo hiện tại nếu không có logo mới
+      const base64Images = await Promise.all(
+        images.map((image) => {
+          if (typeof image === "string") {
+            return Promise.resolve(image);
+          } else {
+            return convertFileToBase64(image);
+          }
+        })
+      );
+  
+      // Build DTO
+      const gameDTO = {
+        gameName,
+        gameCode: "GAME-" + generateRandomString(5),
+        price,
+        discountPercent,
+        quantity,
+        isActive: isActive,
+        categoryDetails: selectedCategories.map((id) => ({
+          sysIdCategory: id,
+        })),
+        description,
+        media: [
+          ...(base64Thumbnail
+            ? [{ mediaName: "thumbnail", mediaUrl: base64Thumbnail }]
+            : thumbnailUrl
+            ? [{ mediaName: "thumbnail", mediaUrl: thumbnailUrl }]
+            : []),
+          ...(base64Logo ? [{ mediaName: "logo", mediaUrl: base64Logo }] : logoUrl ? [{ mediaName: "logo", mediaUrl: logoUrl }] : []),
+          ...base64Images.map((image, index) => ({
+            mediaName: `p${index + 1}`,
+            mediaUrl: image,
+          })),
+        ],
+        slug:
+          gameName.toLowerCase().replace(/ /g, "-") +
+          "-" +
+          generateRandomString(5),
+        releaseDate: new Date().toLocaleDateString("en-CA"),
+      };
+  
+      console.log("Game DTO:", gameDTO);
+  
+      let response;
+      if (isUpdateMode && sysIdGame) {
+        response = await updateGame(sysIdGame, gameDTO);
+      } else {
+        response = await saveGame(gameDTO);
+      }
+  
+      console.log("Game saved:", response.data);
+      navigate("/admin/game/list");
+    } catch (error) {
+      console.error("Error saving game:", error);
+      setError({ general: "Failed to save the game. Please try again." });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -296,7 +256,9 @@ export const GameCU = () => {
 
         <div className="grid grid-cols-12 items-start gap-8">
           <div
-            className={`${isUpdateMode ? "md:col-span-8" : "col-span-12"} order-2 col-span-12 rounded-[20px] shadow-adminBoxshadow md:order-1`}
+            className={`${
+              isUpdateMode ? "md:col-span-12" : "col-span-12"
+            } order-2 col-span-12 rounded-[20px] shadow-adminBoxshadow md:order-1`}
           >
             <div className="px-6 pt-4">
               <div className="flex flex-col gap-8 pb-8">
@@ -304,27 +266,29 @@ export const GameCU = () => {
                 <div className="grid grid-cols-12 gap-x-6 gap-y-8">
                   <FloatLabel className="col-span-12 text-sm md:col-span-6">
                     <InputText
-                      className="shadow-adminInputShadow w-full rounded-lg border bg-transparent p-4 ps-[10px] hover:border-black"
+                      className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black"
                       value={gameName || ""}
                       onChange={(e) => {
                         setGameName(e.target.value);
-                        setError("");
+                        setError((prev) => ({ ...prev, gameName: "" }));
                       }}
                     />
                     <label>
                       Game name <span className="text-red-500">*</span>
                     </label>
-                    {error && (
-                      <p className="mt-1 text-xs text-red-500">{error}</p>
+                    {error.gameName && (
+                      <p className="mt-1 text-xs text-red-500">
+                        {error.gameName}
+                      </p>
                     )}
                   </FloatLabel>
 
                   <FloatLabel className="col-span-12 text-sm md:col-span-6">
                     <Dropdown
-                      value={status}
+                      value={isActive}
                       options={options}
-                      onChange={(e) => setStatus(e.value)}
-                      className="custom-icon-color shadow-adminInputShadow w-full min-w-36 rounded-lg border px-4 py-2 !font-inter text-sm"
+                      onChange={(e) => setIsActive(e.value)}
+                      className="custom-icon-color w-full min-w-36 rounded-lg border px-4 py-2 !font-inter text-sm shadow-adminInputShadow"
                       dropdownIcon="pi pi-chevron-down"
                       panelClassName="custom-dropdown-panel"
                       placeholder="Select status"
@@ -332,6 +296,11 @@ export const GameCU = () => {
                     <label>
                       Status <span className="text-red-500">*</span>
                     </label>
+                    {error.isActive && (
+                      <p className="mt-1 text-xs text-red-500">
+                        {error.isActive}
+                      </p>
+                    )}
                   </FloatLabel>
 
                   <FloatLabel className="col-span-12 text-sm md:col-span-6">
@@ -339,7 +308,7 @@ export const GameCU = () => {
                       value={selectedCategories}
                       options={categories}
                       onChange={(e) => setSelectedCategories(e.value)}
-                      className="shadow-adminInputShadow w-full rounded-lg border px-4 py-2 !font-inter text-sm"
+                      className="w-full rounded-lg border px-4 py-2 !font-inter text-sm shadow-adminInputShadow"
                       itemClassName="!font-inter"
                       placeholder="Select categories"
                       display="chip"
@@ -347,31 +316,26 @@ export const GameCU = () => {
                     <label>
                       Categories <span className="text-red-500">*</span>
                     </label>
-                  </FloatLabel>
-
-                  <FloatLabel className="col-span-12 text-sm md:col-span-6">
-                    <MultiSelect
-                      // value={selectedCategories}
-                      // options={categories}
-                      // onChange={(e) => setSelectedCategories(e.value)}
-                      className="shadow-adminInputShadow w-full rounded-lg border px-4 py-2 !font-inter text-sm"
-                      itemClassName="!font-inter"
-                      placeholder="Select feature"
-                      display="chip"
-                    />
-                    <label>
-                      Feature <span className="text-red-500">*</span>
-                    </label>
+                    {error.selectedCategories && (
+                      <p className="mt-1 text-xs text-red-500">
+                        {error.selectedCategories}
+                      </p>
+                    )}
                   </FloatLabel>
 
                   <div className="col-span-12 text-sm">
                     <Editor
-                      value={text}
-                      onTextChange={handleTextChange}
-                      className="shadow-adminInputShadow custom-editor rounded-lg"
+                      value={description}
+                      onTextChange={(e) => setDescription(e.htmlValue || "")}
+                      className="custom-editor rounded-lg shadow-adminInputShadow"
                       style={{ height: 350 }}
                       placeholder="Description"
                     />
+                    {error.description && (
+                      <p className="mt-1 text-xs text-red-500">
+                        {error.description}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -381,59 +345,63 @@ export const GameCU = () => {
                 <div className="grid grid-cols-12 gap-x-6 gap-y-8">
                   <FloatLabel className="col-span-12 text-sm md:col-span-4">
                     <InputNumber
-                      className="shadow-adminInputShadow w-full rounded-lg border bg-transparent p-4 ps-[10px] hover:border-black"
+                      className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black"
                       inputClassName="focus:ring-0"
                       min={0}
                       value={price || 0}
                       onChange={(e) => {
                         setPrice(e.value);
-                        setError("");
+                        setError((prev) => ({ ...prev, price: "" }));
                       }}
                     />
                     <label>
                       Price <span className="text-red-500">*</span>
                     </label>
-                    {error && (
-                      <p className="mt-1 text-xs text-red-500">{error}</p>
+                    {error.price && (
+                      <p className="mt-1 text-xs text-red-500">{error.price}</p>
                     )}
                   </FloatLabel>
 
                   <FloatLabel className="col-span-12 text-sm md:col-span-4">
                     <InputNumber
-                      className="shadow-adminInputShadow w-full rounded-lg border bg-transparent p-4 ps-[10px] hover:border-black"
+                      className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black"
                       inputClassName="focus:ring-0"
                       max={100}
                       min={0}
                       value={discountPercent || 0}
                       onChange={(e) => {
                         setDiscountPercent(e.value);
-                        setError("");
+                        setError((prev) => ({ ...prev, discountPercent: "" }));
                       }}
                     />
                     <label>
                       Discount Percent <span className="text-red-500">*</span>
                     </label>
-                    {error && (
-                      <p className="mt-1 text-xs text-red-500">{error}</p>
+                    {error.discountPercent && (
+                      <p className="mt-1 text-xs text-red-500">
+                        {error.discountPercent}
+                      </p>
                     )}
                   </FloatLabel>
 
                   <FloatLabel className="col-span-12 text-sm md:col-span-4">
                     <InputNumber
-                      className="shadow-adminInputShadow w-full rounded-lg border bg-transparent p-4 ps-[10px] hover:border-black"
+                      className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black"
                       inputClassName="focus:ring-0"
                       min={0}
                       value={quantity || 0}
                       onChange={(e) => {
                         setQuantity(e.value);
-                        setError("");
+                        setError((prev) => ({ ...prev, quantity: "" }));
                       }}
                     />
                     <label>
                       Quantity <span className="text-red-500">*</span>
                     </label>
-                    {error && (
-                      <p className="mt-1 text-xs text-red-500">{error}</p>
+                    {error.quantity && (
+                      <p className="mt-1 text-xs text-red-500">
+                        {error.quantity}
+                      </p>
                     )}
                   </FloatLabel>
                 </div>
@@ -443,96 +411,52 @@ export const GameCU = () => {
                 <h6 className="text-lg font-medium">Images</h6>
                 <div className="grid grid-cols-12 gap-x-6 gap-y-8">
                   <div className="col-span-12">
-                    <FileUploadComponent />
+                    <FileUploadComponent
+                      onFilesChange={handleImagesUpload}
+                      existingFiles={isUpdateMode ? imageUrls : []}
+                      isUpdateMode={isUpdateMode}
+                    />
+                    {error.images && (
+                      <p className="mt-1 text-xs text-red-500">
+                        {error.images}
+                      </p>
+                    )}
                   </div>
                 </div>
 
                 <h6 className="text-lg font-medium">Thumbnail</h6>
                 <div className="grid grid-cols-12 gap-x-6 gap-y-8">
                   <div className="col-span-12">
-                    <FileUploadComponent />
+                    <FileUploadComponent
+                      single
+                      onFilesChange={handleThumbnailUpload}
+                      existingFiles={
+                        isUpdateMode && thumbnailUrl ? [thumbnailUrl] : []
+                      }
+                      isUpdateMode={isUpdateMode}
+                    />
+                    {error.thumbnail && (
+                      <p className="mt-1 text-xs text-red-500">
+                        {error.thumbnail}
+                      </p>
+                    )}
                   </div>
                 </div>
 
                 <h6 className="text-lg font-medium">Logo</h6>
                 <div className="grid grid-cols-12 gap-x-6 gap-y-8">
                   <div className="col-span-12">
-                    <FileUploadComponent />
+                    <FileUploadComponent
+                      single
+                      onFilesChange={handleLogoUpload}
+                      existingFiles={isUpdateMode && logoUrl ? [logoUrl] : []}
+                      isUpdateMode={isUpdateMode}
+                    />
+                    {error.logo && (
+                      <p className="mt-1 text-xs text-red-500">{error.logo}</p>
+                    )}
                   </div>
                 </div>
-
-                {/* <div className="grid grid-cols-12 gap-x-6 gap-y-8">
-              <div className="col-span-12">
-                <label className="mb-2 block text-sm">
-                  Thumbnail <span className="text-red-500">*</span>
-                </label>
-                {thumbnailUrl && (
-                  <div className="mb-4">
-                    <img
-                      src={thumbnailUrl}
-                      alt="Thumbnail"
-                      className="h-24 w-24 rounded-full object-cover"
-                    />
-                  </div>
-                )}
-                <FileUpload
-                  name="thumbnail"
-                  customUpload
-                  uploadHandler={handleThumbnailUpload}
-                  accept="image/*"
-                  maxFileSize={1000000}
-                  className="shadow-adminInputShadow w-full bg-transparent"
-                />
-              </div>
-
-              <div className="col-span-12">
-                <label className="block text-sm">
-                  Logo <span className="text-red-500">*</span>
-                </label>
-                {logoUrl && (
-                  <div className="mb-4">
-                    <img
-                      src={logoUrl}
-                      alt="Logo"
-                      className="h-24 w-24 rounded-full object-cover"
-                    />
-                  </div>
-                )}
-                <FileUpload
-                  name="logo"
-                  customUpload
-                  uploadHandler={handleLogoUpload}
-                  accept="image/*"
-                  maxFileSize={1000000}
-                  className="w-full"
-                />
-              </div>
-
-              <div className="col-span-12">
-                <label className="block text-sm">
-                  Images <span className="text-red-500">*</span>
-                </label>
-                <div className="mb-4 flex flex-wrap gap-2">
-                  {imageUrls.map((url, index) => (
-                    <img
-                      key={index}
-                      src={url}
-                      alt={`Image ${index + 1}`}
-                      className="h-24 w-24 rounded-full object-cover"
-                    />
-                  ))}
-                </div>
-                <FileUpload
-                  name="images"
-                  customUpload
-                  multiple
-                  uploadHandler={handleImagesUpload}
-                  accept="image/*"
-                  maxFileSize={1000000}
-                  className="w-full"
-                />
-              </div>
-            </div> */}
               </div>
             </div>
 
@@ -546,59 +470,11 @@ export const GameCU = () => {
               <Button
                 loading={loading}
                 label={isUpdateMode ? "Update" : "Create"}
-                // onClick={handleSave}
+                onClick={handleSave}
                 className="rounded-lg bg-mainYellow px-4 py-[10px] text-sm font-medium text-white hover:brightness-105"
               />
             </div>
           </div>
-
-          {isUpdateMode && (
-            <div className="order-1 col-span-12 rounded-[20px] shadow-adminBoxshadow md:order-2 md:col-span-4">
-              <div className="px-6 pt-4">
-                <div className="flex flex-col gap-8 pb-8">
-                  <h6 className="text-lg font-medium">Preview</h6>
-                </div>
-                <div className="flex flex-col gap-4 pb-8">
-                  <img
-                    src="/cat.jpeg"
-                    alt=""
-                    className="w-[100px] rounded-lg"
-                  />
-                  <div className="">
-                    <p className="text-sm text-textSecond">Steam Game</p>
-                    <h6 className="font-medium">Stray</h6>
-                  </div>
-
-                  {discountPercent ? (
-                    <div className="flex items-center gap-2">
-                      <div className="rounded-full bg-mainCyan px-2 py-[2px] text-xs text-black">
-                        -{discountPercent}%
-                      </div>
-                      <p className="text-sm line-through">
-                        {formatCurrency(price || 0)}
-                      </p>
-                      <p className="text-sm">
-                        {formatCurrency(
-                          Math.round(
-                            calculateSalePrice(price || 0, discountPercent),
-                          ),
-                        )}
-                      </p>
-                    </div>
-                  ) : (
-                    <p className="text-sm">{formatCurrency(price || 0)}</p>
-                  )}
-
-                  <Link
-                    to={"/product"}
-                    className="text-sm font-medium text-mainCyan"
-                  >
-                    http://localhost:5173/product
-                  </Link>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </>
