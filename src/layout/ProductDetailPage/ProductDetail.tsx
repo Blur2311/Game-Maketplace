@@ -27,13 +27,14 @@ import useGameDetails from "./hook/useGameDetails";
 import "./ProductDetail.css";
 
 export const ProductDetail = () => {
-  const { gameDetails, recommendations, comments, error } = useGameDetails();
+  const { gameDetails, recommendations, comments, setComments, error } = useGameDetails();
   const { addGameToCart, handleBuyNow } = useCart();
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(3);
   const msgs = useRef<Messages>(null);
 
   useEffect(() => {
+    console.log("comments", comments);    
     if (!comments || comments.length === 0) {
       showInfoMessages(msgs, "Be the first to review this game!");
     } else {
@@ -131,7 +132,7 @@ export const ProductDetail = () => {
             </div>
           </div>
           <div className="mt-12">
-            <Review gameId={gameDetails.sysIdGame} />
+            <Review gameId={gameDetails.sysIdGame} comments={comments} setComments={setComments} />
           </div>
           <div className="my-12">
             <div className="w-full text-white rounded-lg">

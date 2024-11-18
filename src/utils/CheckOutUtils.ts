@@ -126,6 +126,7 @@ export const handleUserBalancePayment = async (
     };
     // console.log(payload);
     
+    showInfoToast(toast, "This process would take a minute, please wait...", 7777);
     const response = await apiClient.post(`/api/orders/handle-payment`, payload);
     if (response.data.status === "OK") {
       showSuccessToast(toast, "Payment successful, redirecting to inventory...");

@@ -1,7 +1,7 @@
 import { Button } from "primereact/button";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Rating } from "primereact/rating";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import apiClient from "../../../config/apiClient";
 import { getDecodeToken } from "../../../utils/AuthUtils";
@@ -9,11 +9,17 @@ import { CommentDTO } from "../hook/useGameDetails";
 
 interface ReviewProps {
   gameId: number;
+  comments: CommentDTO[];
+  setComments: (comments: CommentDTO[]) => void;
 }
 
-export const Review: React.FC<ReviewProps> = ({ gameId }) => {
+export const Review: React.FC<ReviewProps> = ({ gameId, comments, setComments }) => {
   const [rating, setRating] = useState(0);
   const [reviewText, setReviewText] = useState("");
+
+  useEffect(() => {
+    clearForm();
+  }, [gameId]);
 
   const isCommentValid = () => {
     if (getDecodeToken() === null) {
@@ -31,6 +37,11 @@ export const Review: React.FC<ReviewProps> = ({ gameId }) => {
     return true;
   };
 
+  const clearForm = () => {
+    setReviewText('');
+    setRating(0);    
+  }
+
   const handleSubmit = async () => {
     if (!isCommentValid()) return;
     const comment: CommentDTO = {
@@ -44,8 +55,8 @@ export const Review: React.FC<ReviewProps> = ({ gameId }) => {
     try {
       await apiClient.post("/api/comments", comment);
       toast.success("Review submitted successfully");
-      setReviewText('');
-      setRating(0);      
+      clearForm();
+      setComments([comment, ...comments]);  
     } catch (error: any) {
       console.error("Error submitting review:", error);
       toast.error(error.response.data.message ?? "Failed to submit review");

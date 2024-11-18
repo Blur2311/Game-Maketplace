@@ -9,6 +9,7 @@ import { useCart } from "./hooks/useCart";
 import { useNavigate } from "react-router-dom";
 import { showErrorToast } from "../../utils/ErrorHandlingUtils";
 import { Toast } from "primereact/toast";
+import { isTokenValid } from "../../utils/AuthUtils";
 
 export const CartPage: React.FC = () => {
   const { cartItems, games, loading, error, removeItem, updateQuantity, fetchGameDetails } = useCart();
@@ -79,6 +80,10 @@ export const CartPage: React.FC = () => {
   };
 
   const handleCheckOut = async () => {
+    if (!isTokenValid()) {
+      showErrorToast(toast, "Please login to proceed to checkout");
+      return;
+    };
     await apiClient.post(`/api/games/valid-cart-items`, cartItems)
     .then((response) => {
       let res = response.data;

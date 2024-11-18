@@ -45,6 +45,10 @@ import { NewPassword } from "./layout/RegisterPage&ForgotPassword/ForgotPassword
 import { CustomerDetail } from "./layout/AdminPage/CustomerManagePage/CustomerDetail";
 import { InvoiceList } from "./layout/AdminPage/InvoiceManagePage/InvoiceList";
 import { InvoiceDetail } from "./layout/AdminPage/InvoiceManagePage/InvoiceDetail";
+import { DiscountList } from "./layout/AdminPage/DiscountManagePage/DiscountList";
+import { DiscountCU } from "./layout/AdminPage/DiscountManagePage/DiscountCU";
+import { HomeAdmin } from "./layout/AdminPage/Home&AnaPage/HomeAdmin";
+import { Analytics } from "./layout/AdminPage/Home&AnaPage/Analytics";
 
 function App() {
   return (
@@ -53,6 +57,9 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/admin" element={<AdminLayout />}>
+              <Route path="home" element={<HomeAdmin />} />
+              <Route path="analytic" element={<Analytics />} />
+
               <Route path="category/list" element={<CategoryList />} />
               <Route path="category/create" element={<CategoryCU />} />
               <Route path="category/detail/:id" element={<CategoryCU />} />
@@ -69,6 +76,10 @@ function App() {
               <Route path="invoice/list" element={<InvoiceList />} />
               {/* <Route path="invoice/create" element={<GameCU />} /> */}
               <Route path="invoice/detail/:id" element={<InvoiceDetail />} />
+
+              <Route path="discount/list" element={<DiscountList />} />
+              <Route path="discount/create" element={<DiscountCU />} />
+              <Route path="discount/detail/:id" element={<DiscountCU />} />
 
               <Route path="account-info" element={<AdminAccInfo />} />
               <Route path="settings" element={<AdminSetting />} />

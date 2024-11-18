@@ -10,22 +10,20 @@ import {
   IoIosTime,
 } from "react-icons/io";
 
-type InvoiceRowProps = {
+type DiscountRowProps = {
   amount: number;
   status?: boolean;
   id: string;
   name: string;
-  avatar: string;
   dateStart: string;
   dateEnd: string;
 };
 
-export const InvoiceRow: React.FC<InvoiceRowProps> = ({
+export const DiscountRow: React.FC<DiscountRowProps> = ({
   amount,
   status,
   id,
   name,
-  avatar,
   dateStart,
   dateEnd,
 }) => {
@@ -34,11 +32,7 @@ export const InvoiceRow: React.FC<InvoiceRowProps> = ({
       <tr className="border-b border-borderRow bg-white text-xs font-light">
         <td className={`px-5 py-[25px]`}>
           <div className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full">
-              <img src={avatar} alt="" className="" />
-            </div>
             <div className="">
-              <h6 className="font-medium">{id}</h6>
               <p>{name}</p>
             </div>
           </div>
@@ -64,11 +58,7 @@ export const InvoiceRow: React.FC<InvoiceRowProps> = ({
               )}
 
               <span>
-                {status != null
-                  ? status
-                    ? "Completed"
-                    : "Refunded"
-                  : "Pending"}
+                {status != null ? (status ? "Active" : "Expired") : "Pending"}
               </span>
             </div>
           </div>

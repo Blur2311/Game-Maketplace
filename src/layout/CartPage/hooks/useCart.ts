@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import apiClient from '../../../config/apiClient';
 import { CartItem, GameDTO } from '../../../utils/CartUtils';
+import { isTokenValid } from '../../../utils/AuthUtils';
 
 export const useCart = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -90,11 +91,14 @@ export const useCart = () => {
       quantity,
       mediaUrl: game.gameImage
     };
-
     addToCart(cartItem);
   };
 
   const handleBuyNow = (game: GameDTO) => {
+    if (!isTokenValid()) {
+      toast.error('Please login to continue');
+      return;
+    };
     const cartItem: CartItem = {
       slug: game.slug,
       quantity: 1,

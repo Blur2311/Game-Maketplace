@@ -34,9 +34,9 @@ import { SummaryItem } from "./components/SummaryItem";
 import { useCart } from "./hooks/useCart";
 
 export const Checkout: React.FC<{ cartItem?: CartItem[] }> = ({ cartItem }) => {
+  useAuthCheck([]);
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [isButtonDisabled, setButtonDisabled] = useState<boolean>(false);
-  useAuthCheck([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const { games, cartItems, fetchGameDetails } = useCart();
   const location = useLocation();
