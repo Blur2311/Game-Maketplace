@@ -42,7 +42,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onLinkClick }) => {
                       <p className="text-sm font-medium">Home</p>
                     </NavLink>
                   </li>
-                  <li>
+                  {/* <li>
                     <NavLink
                       to={`/admin/analytic`}
                       onClick={onLinkClick}
@@ -55,7 +55,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onLinkClick }) => {
                       <LuBarChart4 className="text-xl" />
                       <p className="text-sm font-medium">Analytics</p>
                     </NavLink>
-                  </li>
+                  </li> */}
                 </ul>
               </div>
             </li>
@@ -77,7 +77,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onLinkClick }) => {
                       onLinkClick={onLinkClick}
                     />
                   </li>
-                  <li>
+                  {/* <li>
                     <CustomSidebar
                       Icon={FiUsers}
                       names={"Customers"}
@@ -88,8 +88,8 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onLinkClick }) => {
                       location={"/admin/customer"}
                       onLinkClick={onLinkClick}
                     />
-                  </li>
-                  <li>
+                  </li> */}
+                  {/* <li>
                     <CustomSidebar
                       Icon={TbFileInvoice}
                       names={"Invoices"}
@@ -99,16 +99,16 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onLinkClick }) => {
                       location={"/admin/invoice"}
                       onLinkClick={onLinkClick}
                     />
-                  </li>
+                  </li> */}
                   <li>
                     <CustomSidebar
                       Icon={FiPercent}
-                      names={"Discounts"}
-                      name={"Discount"}
-                      listLink={"/admin/discount/list"}
-                      createLink={"/admin/discount/create"}
-                      detailLink={"/admin/discount/detail/1"}
-                      location={"/admin/discount"}
+                      names={"Vouchers"}
+                      name={"Voucher"}
+                      listLink={"/admin/voucher/list"}
+                      createLink={"/admin/voucher/create"}
+                      detailLink={"/admin/voucher/detail/1"}
+                      location={"/admin/voucher"}
                       onLinkClick={onLinkClick}
                     />
                   </li>

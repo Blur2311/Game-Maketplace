@@ -9,23 +9,17 @@ import {
   IoIosCloseCircle,
   IoIosTime,
 } from "react-icons/io";
+import { Voucher } from "../../../../model/VoucherModel";
 
-type DiscountRowProps = {
-  amount: number;
-  status?: boolean;
-  id: string;
-  name: string;
-  dateStart: string;
-  dateEnd: string;
-};
+type VoucherRowProps = Voucher;
 
-export const DiscountRow: React.FC<DiscountRowProps> = ({
-  amount,
-  status,
-  id,
-  name,
-  dateStart,
-  dateEnd,
+export const VoucherRow: React.FC<VoucherRowProps> = ({
+  discountPercent,
+  active,
+  sysIdVoucher,
+  discountName,
+  startDate,
+  endDate,
 }) => {
   return (
     <>
@@ -33,40 +27,38 @@ export const DiscountRow: React.FC<DiscountRowProps> = ({
         <td className={`px-5 py-[25px]`}>
           <div className="flex items-center gap-2">
             <div className="">
-              <p>{name}</p>
+              <p>{discountName}</p>
             </div>
           </div>
         </td>
-        <td className={`px-5 py-[25px]`}>{formatCurrency(amount)}</td>
+        <td className={`px-5 py-[25px]`}>{formatCurrency(discountPercent)}</td>
         <td className={`px-5 py-[25px]`}>
-          {formatDateFromLocalDate(dateStart)}
+          {formatDateFromLocalDate(startDate)}
         </td>
-        <td className={`px-5 py-[25px]`}>{formatDateFromLocalDate(dateEnd)}</td>
+        <td className={`px-5 py-[25px]`}>{formatDateFromLocalDate(endDate)}</td>
         <td className={`px-5 py-[25px]`}>
           <div className="flex">
             <div
               className={`flex h-6 items-center justify-center gap-1 rounded-full border px-2 font-medium`}
             >
-              {status != null ? (
-                status ? (
+               {active ? (
+                <>
                   <IoIosCheckmarkCircle size={16} className="text-green-500" />
-                ) : (
-                  <IoIosCloseCircle size={16} className="text-red-500" />
-                )
+                  <span>Active</span>
+                </>
               ) : (
-                <IoIosTime size={16} className="text-yellow-500" />
+                <>
+                  <IoIosCloseCircle size={16} className="text-red-500" />
+                  <span>Inactive</span>
+                </>
               )}
-
-              <span>
-                {status != null ? (status ? "Active" : "Expired") : "Pending"}
-              </span>
             </div>
           </div>
         </td>
         <td className={`px-5 py-[25px]`}>
           <div className="flex">
             <Link
-              to={`/admin/invoice/detail/${id}`}
+              to={`/admin/voucher/detail/${sysIdVoucher}`}
               className={"rounded-lg p-2 hover:bg-gray-100"}
             >
               <IoArrowForward size={24} />
