@@ -3,10 +3,12 @@ import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { MultiSelect } from "primereact/multiselect";
 import { Paginator } from "primereact/paginator";
-import { useState } from "react";
-import { DiscountRow } from "./components/DiscountRow";
+import { useState, useEffect } from "react";
+import { VoucherRow } from "./components/VoucherRow";
+import { getAllVouchers } from "./service/VoucherListService";
+import { Voucher } from "../../../model/VoucherModel";
 
-export const DiscountList = () => {
+export const VoucherList = () => {
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(10);
   const [totalRecords, setTotalRecords] = useState(100);
@@ -14,11 +16,90 @@ export const DiscountList = () => {
   const [selectedOption, setSelectedOption] = useState<any | null>("oldest");
   const [fromDate, setFromDate] = useState<Date | null>(null);
   const [toDate, setToDate] = useState<Date | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<any[]>([]);
+  const [vouchers, setVouchers] = useState<Voucher[]>([]);
+  const [filteredVouchers, setFilteredVouchers] = useState<Voucher[]>([]);
 
   const options: any[] = [
     { label: "Oldest", value: "oldest" },
     { label: "Newest", value: "newest" },
   ];
+
+  const status: any[] = [
+    { name: "Active", code: true },
+    { name: "Inactive", code: false },
+  ];
+
+  useEffect(() => {
+    const fetchVouchers = async () => {
+      try {
+        const data = await getAllVouchers();
+        setVouchers(data);
+        setFilteredVouchers(data);
+        setTotalRecords(data.length);
+      } catch (error) {
+        console.error("Error fetching vouchers:", error);
+      }
+    };
+
+    fetchVouchers();
+  }, []);
+
+  useEffect(() => {
+    filterVouchers();
+  }, [searchTerm, selectedStatus, fromDate, toDate, selectedOption]);
+
+  const filterVouchers = () => {
+    let filtered = vouchers;
+
+    if (searchTerm) {
+      filtered = filtered.filter((voucher) =>
+        voucher.discountName.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (selectedStatus.length > 0) {
+      const statusCodes = selectedStatus.map((status) => status.code);
+      filtered = filtered.filter((voucher) => statusCodes.includes(voucher.active));
+    }
+
+    if (fromDate && toDate) {
+      filtered = filtered.filter(
+        (voucher) =>
+          new Date(voucher.startDate) >= fromDate &&
+          new Date(voucher.endDate) <= toDate
+      );
+    } else if (fromDate) {
+      filtered = filtered.filter(
+        (voucher) => new Date(voucher.startDate) >= fromDate
+      );
+    } else if (toDate) {
+      filtered = filtered.filter(
+        (voucher) => new Date(voucher.endDate) <= toDate
+      );
+    }
+
+    if (selectedOption === "newest") {
+      filtered = filtered.sort(
+        (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+      );
+    } else if (selectedOption === "oldest") {
+      filtered = filtered.sort(
+        (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+      );
+    }
+
+    setFilteredVouchers(filtered);
+    setTotalRecords(filtered.length);
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleStatusChange = (e: { value: any[] }) => {
+    setSelectedStatus(e.value);
+  };
 
   const handleFromDateChange = (e: { value: Date | null | undefined }) => {
     setFromDate(e.value || null); // Sets to null if value is undefined
@@ -28,16 +109,20 @@ export const DiscountList = () => {
     setToDate(e.value || null); // Sets to null if value is undefined
   };
 
+  const handleOptionChange = (e: { value: any }) => {
+    setSelectedOption(e.value);
+  };
+
   const onPageChange = (event: any) => {
     setFirst(event.first);
     setRows(event.rows);
-    //  fetchCategories(event.first, event.rows, searchTerm);
   };
+
   return (
     <>
       <div className="flex flex-col gap-8">
         <div className="flex items-start justify-between gap-6">
-          <h3 className="text-[32px] font-medium">Discounts</h3>
+          <h3 className="text-[32px] font-medium">Vouchers</h3>
         </div>
 
         <div className="">
@@ -54,16 +139,16 @@ export const DiscountList = () => {
                         placeholder="Search name"
                         className="w-full bg-transparent py-[17px] pl-10 pr-3 text-sm text-black focus:ring-0"
                         value={searchTerm}
-                        // onChange={handleSearchChange}
+                        onChange={handleSearchChange}
                       />
                     </div>
                   </div>
 
                   <div className="">
                     <MultiSelect
-                      // value={selectedStatus}
-                      // onChange={(e) => setSelectedStatus(e.value)}
-                      // options={status}
+                      value={selectedStatus}
+                      onChange={handleStatusChange}
+                      options={status}
                       optionLabel="name"
                       placeholder="Select Status"
                       maxSelectedLabels={3}
@@ -80,7 +165,7 @@ export const DiscountList = () => {
                       showIcon
                       className="custom-calendar-admin h-[54px] w-full rounded-lg border border-gray150 px-4 py-2 font-inter text-sm shadow-adminInputShadow"
                       inputClassName="shadow-none"
-                      placeholder="To"
+                      placeholder="From"
                     />
                   </div>
                   <div>
@@ -91,7 +176,7 @@ export const DiscountList = () => {
                       showIcon
                       className="custom-calendar-admin h-[54px] w-full rounded-lg border border-gray150 px-4 py-2 font-inter text-sm shadow-adminInputShadow"
                       inputClassName="shadow-none"
-                      placeholder="From"
+                      placeholder="To"
                     />
                   </div>
 
@@ -99,7 +184,7 @@ export const DiscountList = () => {
                     <Dropdown
                       value={selectedOption}
                       options={options}
-                      onChange={(e) => setSelectedOption(e.value)}
+                      onChange={handleOptionChange}
                       className="custom-icon-color w-full min-w-36 rounded-lg border border-gray150 px-4 py-2 !font-inter text-sm shadow-adminInputShadow"
                       dropdownIcon="pi pi-chevron-down"
                       panelClassName="custom-dropdown-panel"
@@ -115,7 +200,7 @@ export const DiscountList = () => {
                     <thead>
                       <tr className="text-left">
                         <th className="p-5 text-xs font-light">Name</th>
-                        <th className="p-5 text-xs font-light">Amount</th>
+                        <th className="p-5 text-xs font-light">Discount Percent</th>
                         <th className="p-5 text-xs font-light">Start</th>
                         <th className="p-5 text-xs font-light">End</th>
                         <th className="p-5 text-xs font-light">Status</th>
@@ -123,29 +208,17 @@ export const DiscountList = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      <DiscountRow
-                        amount={0}
-                        id={"12"}
-                        name={"Fallout Day Sale"}
-                        dateStart={"2024-11-11"}
-                        dateEnd={"2024-12-01"}
-                      />
-                      <DiscountRow
-                        amount={0}
-                        id={"12"}
-                        status={true}
-                        name={"Fallout Day Sale"}
-                        dateStart={"2024-11-11"}
-                        dateEnd={"2024-12-01"}
-                      />
-                      <DiscountRow
-                        amount={0}
-                        id={"12"}
-                        status={false}
-                        name={"Fallout Day Sale"}
-                        dateStart={"2024-11-11"}
-                        dateEnd={"2024-12-01"}
-                      />
+                    {filteredVouchers.slice(first, first + rows).map((voucher) => (
+                        <VoucherRow
+                          key={voucher.sysIdVoucher}
+                          discountPercent={voucher.discountPercent}
+                          sysIdVoucher={voucher.sysIdVoucher}
+                          discountName={voucher.discountName}
+                          startDate={voucher.startDate}
+                          endDate={voucher.endDate}
+                          active={voucher.active}
+                        />
+                      ))}
                     </tbody>
                   </table>
                 </div>
