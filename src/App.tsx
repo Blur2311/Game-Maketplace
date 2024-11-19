@@ -47,6 +47,7 @@ import { InvoiceList } from "./layout/AdminPage/InvoiceManagePage/InvoiceList";
 import { InvoiceDetail } from "./layout/AdminPage/InvoiceManagePage/InvoiceDetail";
 import { VoucherList } from "./layout/AdminPage/VoucherManagePage/VoucherList";
 import { VoucherCU } from "./layout/AdminPage/VoucherManagePage/VoucherCU";
+import { ConfirmDialog } from "primereact/confirmdialog";
 import { HomeAdmin } from "./layout/AdminPage/Home&AnaPage/HomeAdmin";
 import { Analytics } from "./layout/AdminPage/Home&AnaPage/Analytics";
 
@@ -133,6 +134,7 @@ function App() {
           </Routes>
         </BrowserRouter>
         <ToastContainer />
+        <ConfirmDialog />
       </div>
     </>
   );

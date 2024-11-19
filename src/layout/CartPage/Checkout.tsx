@@ -1,5 +1,5 @@
 import { Button } from "primereact/button";
-import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import { confirmDialog } from "primereact/confirmdialog";
 import { FloatLabel } from "primereact/floatlabel";
 import { InputText } from "primereact/inputtext";
 import { Toast } from "primereact/toast";
@@ -295,7 +295,6 @@ export const Checkout: React.FC<{ cartItem?: CartItem[] }> = ({ cartItem }) => {
           </div>
         </div>
       </div>
-      <ConfirmDialog />
     </>
   );
 };
