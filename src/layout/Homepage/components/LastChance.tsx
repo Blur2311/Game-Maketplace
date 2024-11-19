@@ -1,9 +1,9 @@
 import { Button } from "primereact/button";
 import { useEffect, useState } from "react";
 import { TbExclamationCircle } from "react-icons/tb";
-import { Link } from "react-router-dom";
 import apiClient from "../../../config/apiClient";
 import { formatDate } from "../../../utils/OtherUtils";
+import { sendVoucherToUser } from "../../../utils/VoucherUtils";
 
 export const LastChance = () => {
   const [items, setItems] = useState<any[]>([]);
@@ -33,6 +33,7 @@ export const LastChance = () => {
         discription: item.description,
         image: item.voucherBanner ?? "/image1.png",
         url: `/voucher/${item.codeVoucher}`,
+        codeVoucher: item.codeVoucher,
       };
     });
     setItems(newItems);
@@ -42,16 +43,17 @@ export const LastChance = () => {
     return items.map((item, index) => {
       return (
         <div key={index} className="flex-1">
-          <div className="relative overflow-hidden rounded-lg">
+          <div
+            className="relative overflow-hidden rounded-lg cursor-pointer"
+            onClick={() => sendVoucherToUser(item.codeVoucher)}
+          >
             <img
               src={item.image}
               alt=""
               className="transition duration-300 hover:brightness-125"
             />
             <div className="absolute bottom-0 left-0 right-0 flex items-center justify-center h-6 bg-mainCyan">
-              <Link to={item.url ?? "/"}>
-                <p className="text-xs font-bold text-black">CHECK NOW</p>
-              </Link>
+              <p className="text-xs font-bold text-black">CHECK NOW</p>
             </div>
           </div>
           <div className="mt-[20px] flex flex-col gap-[5px] text-white">

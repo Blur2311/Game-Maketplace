@@ -2,9 +2,6 @@ import { CarouselHome } from "./components/CarouselHome";
 import { ChatSupport } from "./components/ChatSupport";
 import { Hero } from "./components/Hero";
 import { LastChance } from "./components/LastChance";
-import { NewsHome } from "./components/NewsHome";
-import { Sale } from "./components/Sale";
-import { SaleCard } from "./components/SaleCard";
 import { Top5 } from "./components/Top5";
 
 export const Homepage: React.FC = () => {
@@ -14,11 +11,11 @@ export const Homepage: React.FC = () => {
       <CarouselHome name="Discover Something New" field="releaseDate" />
       <LastChance />
       <CarouselHome name="Trending" field="rating" />
-      <Sale />
+      {/* <Sale /> */}
       <Top5 />
       <CarouselHome name="Recently Updated" field="discountPercent" />
-      <NewsHome />
-      <div className="flex flex-col items-stretch justify-between gap-5 mt-16 mb-32 sm:flex-row">
+      {/* <NewsHome /> */}
+      {/* <div className="flex flex-col items-stretch justify-between gap-5 mt-16 mb-32 sm:flex-row">
         <SaleCard
           image={"sale.jpeg"}
           name={"Sales & Specials"}
@@ -46,7 +43,7 @@ export const Homepage: React.FC = () => {
           buttonName={"Browse"}
           url={""}
         />
-      </div>
+      </div> */}
       <ChatSupport />
     </>
   );

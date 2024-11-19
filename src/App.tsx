@@ -45,6 +45,7 @@ import { NewPassword } from "./layout/RegisterPage&ForgotPassword/ForgotPassword
 import { CustomerDetail } from "./layout/AdminPage/CustomerManagePage/CustomerDetail";
 import { InvoiceList } from "./layout/AdminPage/InvoiceManagePage/InvoiceList";
 import { InvoiceDetail } from "./layout/AdminPage/InvoiceManagePage/InvoiceDetail";
+import { ConfirmDialog } from "primereact/confirmdialog";
 
 function App() {
   return (
@@ -122,6 +123,7 @@ function App() {
           </Routes>
         </BrowserRouter>
         <ToastContainer />
+        <ConfirmDialog />
       </div>
     </>
   );
