@@ -28,6 +28,8 @@ import { ProductDetail } from "./layout/ProductDetailPage/ProductDetail";
 import { Registration } from "./layout/RegisterPage&ForgotPassword/Registration";
 import { VerifyOTP } from "./layout/RegisterPage&ForgotPassword/VerifyOTP";
 import { ReviewHistory } from "./layout/ReviewHistoryPage/ReviewHistory";
+import { Chat } from "./layout/ChatPage/Chat";
+import { ChatManage } from "./layout/AdminPage/ChatManagePage/ChatManage";
 import { SignIn } from "./layout/SignInPage/SignIn";
 import { TransactionList } from "./layout/TransactionPage/TransactionList";
 import { UserProfile } from "./layout/UserProfilePage/UserProfile";
@@ -77,6 +79,7 @@ function App() {
               <Route path="discount/detail/:id" element={<DiscountCU />} />
 
               <Route path="account-info" element={<AdminAccInfo />} />
+              <Route path="chat-manage" element={<ChatManage />} />
               <Route path="settings" element={<AdminSetting />} />
             </Route>
 
@@ -110,6 +113,7 @@ function App() {
               <Route path="transaction" element={<TransactionList />} />
               <Route path="security" element={<ChangePW />} />
               <Route path="review-history" element={<ReviewHistory />} />
+              <Route path="chat" element={<Chat />} />
             </Route>
 
             <Route path="/sign-in" element={<SignIn />} />

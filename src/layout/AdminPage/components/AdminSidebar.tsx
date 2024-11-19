@@ -6,6 +6,7 @@ import { Link, NavLink } from "react-router-dom";
 import { CustomSidebar } from "./CustomSidebar";
 import { TbFileInvoice } from "react-icons/tb";
 import { FaRegCircleUser } from "react-icons/fa6";
+import { AiOutlineWechat } from "react-icons/ai";
 
 type AdminSidebarProps = {
   onLinkClick: () => void;
@@ -146,6 +147,20 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onLinkClick }) => {
                     >
                       <FaRegCircleUser className="text-xl" />
                       <p className="text-sm font-medium">Account</p>
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to={`/admin/chat-manage`}
+                      onClick={onLinkClick}
+                      className={({ isActive }) => {
+                        return isActive
+                          ? "flex h-10 items-center gap-2 rounded-lg bg-mainYellow px-[16px] py-[6px] text-white"
+                          : "flex h-10 items-center gap-2 rounded-lg bg-transparent px-[16px] py-[6px] text-textAdminGray transition duration-300 ease-in-out hover:bg-bgCheckBox hover:text-white";
+                      }}
+                    >
+                      <AiOutlineWechat className="text-xl" />
+                      <p className="text-sm font-medium">Chat-Manage</p>
                     </NavLink>
                   </li>
                   <li>
