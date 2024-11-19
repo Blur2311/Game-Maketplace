@@ -10,6 +10,7 @@ import { MultiSelect } from "primereact/multiselect";
 import { Dropdown } from "primereact/dropdown";
 import { Game } from "../../../model/GameModel";
 import { Category } from "../../../model/CategoryModel";
+import { fetchCategories, fetchGames } from "./service/GameListService";
 
 export const GameList = () => {
   const [first, setFirst] = useState(0);
@@ -32,82 +33,50 @@ export const GameList = () => {
     { name: "Inactive", code: "false" },
   ];
 
-  const onPageChange = (event: any) => {
+  const onPageChange = async (event: any) => {
     setFirst(event.first);
     setRows(event.rows);
-    fetchGames(event.first, event.rows, searchTerm, selectedCategories, selectedStatus, selectedOption);
-  };
-
-  const fetchCategories = () => {
-    apiClient
-      .get("/api/categories")
-      .then((response) => {
-        const allCategories = response.data.data;
-        // console.log("All categories:", allCategories);
-        
-        if (Array.isArray(allCategories)) {
-          for (let i = 0; i < allCategories.length; i++) {
-            allCategories[i].name = allCategories[i].categoryName;
-            allCategories[i].code = allCategories[i].sysIdCategory;
-          }
-          setCategories(allCategories);
-        } else {
-          console.error("API response is not an array:", allCategories);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching categories:", error);
-      });
-  };
-
-  const fetchGames = (first: number, rows: number, searchTerm: string, selectedCategories: number[], selectedStatus: string[], selectedOption: string) => {
-    apiClient
-      .get("/api/games")
-      .then((response) => {
-        const allGames = response.data.data;
-        console.log("All games:", allGames);
-        if (Array.isArray(allGames)) {
-
-          let filteredGames = allGames.filter((game: Game) =>
-            game.gameName.toLowerCase().includes(searchTerm.toLowerCase()),
-          );
-
-          if (selectedCategories.length > 0) {
-            filteredGames = filteredGames.filter((game: Game) =>
-              game.categoryDetails.some((category: any) =>
-                selectedCategories.includes(category.sysIdCategory),
-              ),
-            );
-          }
-
-          if (selectedStatus.length > 0) {
-            filteredGames = filteredGames.filter((game: Game) =>
-              selectedStatus.includes(game.isActive.toString()),
-            );
-          }
-
-          if (selectedOption === "newest") {
-            filteredGames.sort((a: Game, b: Game) => new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime());
-          } else {
-            filteredGames.sort((a: Game, b: Game) => new Date(a.releaseDate).getTime() - new Date(b.releaseDate).getTime());
-          }
-
-          setTotalRecords(filteredGames.length);
-          const paginatedGames = filteredGames.slice(first, first + rows);
-          setGames(paginatedGames);
-        } else {
-          console.error("API response is not an array:", allGames);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching games:", error);
-      });
+    const { paginatedGames, totalRecords } = await fetchGames(
+      event.first,
+      event.rows,
+      searchTerm,
+      selectedCategories,
+      selectedStatus,
+      selectedOption,
+    );
+    setGames(paginatedGames);
+    setTotalRecords(totalRecords);
   };
 
   useEffect(() => {
-    fetchCategories();
-     fetchGames(first, rows, searchTerm, selectedCategories, selectedStatus, selectedOption);
-    }, [first, rows, searchTerm, selectedCategories, selectedStatus, selectedOption]);
+    const loadCategoriesAndGames = async () => {
+      try {
+        const categories = await fetchCategories();
+        setCategories(categories);
+        const { paginatedGames, totalRecords } = await fetchGames(
+          first,
+          rows,
+          searchTerm,
+          selectedCategories,
+          selectedStatus,
+          selectedOption,
+        );
+        setGames(paginatedGames);
+        setTotalRecords(totalRecords);
+      } catch (error) {
+        console.error("Error loading categories and games:", error);
+      }
+    };
+
+    loadCategoriesAndGames();
+  }, [
+    first,
+    rows,
+    searchTerm,
+    selectedCategories,
+    selectedStatus,
+    selectedOption,
+  ]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -185,7 +154,7 @@ export const GameList = () => {
                           value={selectedOption}
                           options={options}
                           onChange={handleOptionChange}
-                          className="custom-icon-color shadow-adminInputShadow w-full min-w-36 rounded-lg border border-gray150 px-4 py-2 !font-inter text-sm"
+                          className="custom-icon-color w-full min-w-36 rounded-lg border border-gray150 px-4 py-2 !font-inter text-sm shadow-adminInputShadow"
                           dropdownIcon="pi pi-chevron-down"
                           panelClassName="custom-dropdown-panel"
                         />
@@ -223,6 +192,7 @@ export const GameList = () => {
                           isActive={game.isActive}
                           quantity={game.quantity}
                           media={game.media}
+                          releaseDate={game.releaseDate}
                         />
                       ))}
                     </tbody>
