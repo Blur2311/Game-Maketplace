@@ -7,7 +7,10 @@ import { useState } from "react";
 import { TiArrowLeft } from "react-icons/ti";
 import { NavLink, useParams, useNavigate } from "react-router-dom";
 import FileUploadComponent from "./components/FileUpload";
-import { createVoucher, generateRandomString } from "./service/VoucherCUService";
+import {
+  createVoucher,
+  generateRandomString,
+} from "./service/VoucherCUService";
 
 export const VoucherCU = () => {
   const { id } = useParams<{ id?: string }>(); // Nhận tham số id tùy chọn
@@ -74,14 +77,22 @@ export const VoucherCU = () => {
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
     if (!discountName) newErrors.discountName = "Name is required";
-    if (!shortDescription) newErrors.shortDescription = "Short description is required";
-    if (discountPercent === null || discountPercent <= 0 || discountPercent >= 100)
+    if (!shortDescription)
+      newErrors.shortDescription = "Short description is required";
+    if (
+      discountPercent === null ||
+      discountPercent <= 0 ||
+      discountPercent >= 100
+    )
       newErrors.discountPercent = "Discount percent must be between 0 and 100";
-    if (quantity === null || quantity <= 0) newErrors.quantity = "Quantity must be greater than 0";
-    if (maxDiscount === null || maxDiscount < 0) newErrors.maxDiscount = "Max discount must be greater than or equal to 0";
+    if (quantity === null || quantity <= 0)
+      newErrors.quantity = "Quantity must be greater than 0";
+    if (maxDiscount === null || maxDiscount < 0)
+      newErrors.maxDiscount = "Max discount must be greater than or equal to 0";
     if (!fromDate) newErrors.fromDate = "Start date is required";
     if (!toDate) newErrors.toDate = "End date is required";
-    if (fromDate && toDate && fromDate > toDate) newErrors.toDate = "End date must be greater than or equal to start date";
+    if (fromDate && toDate && fromDate > toDate)
+      newErrors.toDate = "End date must be greater than or equal to start date";
     if (files.length === 0) newErrors.files = "At least one file is required";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -108,7 +119,7 @@ export const VoucherCU = () => {
       files: base64Files,
     };
     console.log("Voucher DTO:", voucherDTO);
-    
+
     try {
       await createVoucher(voucherDTO);
       navigate("/admin/voucher/list");
@@ -119,7 +130,7 @@ export const VoucherCU = () => {
 
   return (
     <>
-      <div className="">
+      <div className="px-6 py-16">
         <div className="mb-8 flex flex-col gap-6">
           <NavLink
             to={"/admin/customer/list"}
@@ -150,7 +161,11 @@ export const VoucherCU = () => {
                     <label>
                       Name <span className="text-red-500">*</span>
                     </label>
-                    {errors.discountName && <p className="mt-1 text-xs text-red-500">{errors.discountName}</p>}
+                    {errors.discountName && (
+                      <p className="mt-1 text-xs text-red-500">
+                        {errors.discountName}
+                      </p>
+                    )}
                   </FloatLabel>
 
                   <FloatLabel className="col-span-12 text-sm">
@@ -162,7 +177,11 @@ export const VoucherCU = () => {
                     <label>
                       Short description <span className="text-red-500">*</span>
                     </label>
-                    {errors.shortDescription && <p className="mt-1 text-xs text-red-500">{errors.shortDescription}</p>}
+                    {errors.shortDescription && (
+                      <p className="mt-1 text-xs text-red-500">
+                        {errors.shortDescription}
+                      </p>
+                    )}
                   </FloatLabel>
 
                   <FloatLabel className="col-span-12 text-sm">
@@ -177,7 +196,11 @@ export const VoucherCU = () => {
                     <label>
                       Discount percent <span className="text-red-500">*</span>
                     </label>
-                    {errors.discountPercent && <p className="mt-1 text-xs text-red-500">{errors.discountPercent}</p>}
+                    {errors.discountPercent && (
+                      <p className="mt-1 text-xs text-red-500">
+                        {errors.discountPercent}
+                      </p>
+                    )}
                   </FloatLabel>
 
                   <FloatLabel className="col-span-12 text-sm">
@@ -191,7 +214,11 @@ export const VoucherCU = () => {
                     <label>
                       Quantity <span className="text-red-500">*</span>
                     </label>
-                    {errors.quantity && <p className="mt-1 text-xs text-red-500">{errors.quantity}</p>}
+                    {errors.quantity && (
+                      <p className="mt-1 text-xs text-red-500">
+                        {errors.quantity}
+                      </p>
+                    )}
                   </FloatLabel>
 
                   <FloatLabel className="col-span-12 text-sm">
@@ -205,7 +232,11 @@ export const VoucherCU = () => {
                     <label>
                       Max Discount <span className="text-red-500">*</span>
                     </label>
-                    {errors.maxDiscount && <p className="mt-1 text-xs text-red-500">{errors.maxDiscount}</p>}
+                    {errors.maxDiscount && (
+                      <p className="mt-1 text-xs text-red-500">
+                        {errors.maxDiscount}
+                      </p>
+                    )}
                   </FloatLabel>
 
                   <FloatLabel className="col-span-12 text-sm">
@@ -220,7 +251,11 @@ export const VoucherCU = () => {
                     <label>
                       Start date <span className="text-red-500">*</span>
                     </label>
-                    {errors.fromDate && <p className="mt-1 text-xs text-red-500">{errors.fromDate}</p>}
+                    {errors.fromDate && (
+                      <p className="mt-1 text-xs text-red-500">
+                        {errors.fromDate}
+                      </p>
+                    )}
                   </FloatLabel>
 
                   <FloatLabel className="col-span-12 text-sm">
@@ -235,7 +270,11 @@ export const VoucherCU = () => {
                     <label>
                       End date <span className="text-red-500">*</span>
                     </label>
-                    {errors.toDate && <p className="mt-1 text-xs text-red-500">{errors.toDate}</p>}
+                    {errors.toDate && (
+                      <p className="mt-1 text-xs text-red-500">
+                        {errors.toDate}
+                      </p>
+                    )}
                   </FloatLabel>
 
                   <div className="col-span-12 text-sm">
@@ -266,7 +305,9 @@ export const VoucherCU = () => {
                   existingFiles={files}
                   isUpdateMode={isUpdateMode}
                 />
-                {errors.files && <p className="mt-1 text-xs text-red-500">{errors.files}</p>}
+                {errors.files && (
+                  <p className="mt-1 text-xs text-red-500">{errors.files}</p>
+                )}
               </div>
             </div>
           </div>

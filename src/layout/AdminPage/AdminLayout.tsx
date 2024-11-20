@@ -9,12 +9,12 @@ export const AdminLayout = () => {
   return (
     <>
       <div className="relative flex h-full">
-        <div className="hidden lg:block">
+        <div className="fixed left-0 top-0 hidden h-full lg:block">
           <AdminSidebar onLinkClick={() => {}} />
         </div>
-        <div className="flex-1 bg-white">
+        <div className="min-h-screen flex-1 bg-white lg:ml-[280px]">
           <AdminNavBar />
-          <div className="h-full min-h-svh bg-white px-6 py-16">
+          <div className="bg-white">
             <Outlet />
           </div>
         </div>

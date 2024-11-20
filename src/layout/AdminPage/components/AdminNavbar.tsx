@@ -31,7 +31,7 @@ export const AdminNavBar = () => {
             visible={visible}
             onHide={toggleSidebar}
             position="left"
-            className="custom-sidebar bg-bgMainColor"
+            className="custom-sidebar w-[280px] bg-bgMainColor"
           >
             <AdminSidebar onLinkClick={toggleSidebar} />
           </Sidebar>

@@ -76,7 +76,7 @@ export const Analytics = () => {
 
   return (
     <>
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-8 px-6 py-16">
         <h3 className="text-[32px] font-medium">Analytics</h3>
 
         <div className="rounded-[20px] p-6 shadow-adminBoxshadow">

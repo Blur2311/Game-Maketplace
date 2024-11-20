@@ -15,13 +15,14 @@ type AdminSidebarProps = {
 export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onLinkClick }) => {
   return (
     <>
-      <div className="h-max min-h-screen min-w-[280px] shadow-navBoxshadow">
+      <div className="h-screen w-[280px] overflow-y-auto shadow-navBoxshadow">
         <div className="p-4">
           <Link to={"/"}>
             <img src="/logo.png" alt="" className="h-8" />
           </Link>
         </div>
-        <div className="mb-5 h-screen min-h-60 overflow-y-auto rounded p-4">
+
+        <div className="rounded p-4">
           <ul className="flex flex-col gap-4">
             <li className="flex flex-col gap-2">
               <div className="">
@@ -43,7 +44,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onLinkClick }) => {
                       <p className="text-sm font-medium">Home</p>
                     </NavLink>
                   </li>
-                  {/* <li>
+                  <li>
                     <NavLink
                       to={`/admin/analytic`}
                       onClick={onLinkClick}
@@ -56,7 +57,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onLinkClick }) => {
                       <LuBarChart4 className="text-xl" />
                       <p className="text-sm font-medium">Analytics</p>
                     </NavLink>
-                  </li> */}
+                  </li>
                 </ul>
               </div>
             </li>
@@ -78,7 +79,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onLinkClick }) => {
                       onLinkClick={onLinkClick}
                     />
                   </li>
-                  {/* <li>
+                  <li>
                     <CustomSidebar
                       Icon={FiUsers}
                       names={"Customers"}
@@ -89,8 +90,8 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onLinkClick }) => {
                       location={"/admin/customer"}
                       onLinkClick={onLinkClick}
                     />
-                  </li> */}
-                  {/* <li>
+                  </li>
+                  <li>
                     <CustomSidebar
                       Icon={TbFileInvoice}
                       names={"Invoices"}
@@ -100,7 +101,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onLinkClick }) => {
                       location={"/admin/invoice"}
                       onLinkClick={onLinkClick}
                     />
-                  </li> */}
+                  </li>
                   <li>
                     <CustomSidebar
                       Icon={FiPercent}
@@ -137,6 +138,20 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onLinkClick }) => {
                 <ul className="flex flex-col gap-2">
                   <li>
                     <NavLink
+                      to={`/admin/chat-manage`}
+                      onClick={onLinkClick}
+                      className={({ isActive }) => {
+                        return isActive
+                          ? "flex h-10 items-center gap-2 rounded-lg bg-mainYellow px-[16px] py-[6px] text-white"
+                          : "flex h-10 items-center gap-2 rounded-lg bg-transparent px-[16px] py-[6px] text-textAdminGray transition duration-300 ease-in-out hover:bg-bgCheckBox hover:text-white";
+                      }}
+                    >
+                      <AiOutlineWechat className="text-xl" />
+                      <p className="text-sm font-medium">Chat Support</p>
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
                       to={`/admin/account-info`}
                       onClick={onLinkClick}
                       className={({ isActive }) => {
@@ -149,20 +164,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onLinkClick }) => {
                       <p className="text-sm font-medium">Account</p>
                     </NavLink>
                   </li>
-                  <li>
-                    <NavLink
-                      to={`/admin/chat-manage`}
-                      onClick={onLinkClick}
-                      className={({ isActive }) => {
-                        return isActive
-                          ? "flex h-10 items-center gap-2 rounded-lg bg-mainYellow px-[16px] py-[6px] text-white"
-                          : "flex h-10 items-center gap-2 rounded-lg bg-transparent px-[16px] py-[6px] text-textAdminGray transition duration-300 ease-in-out hover:bg-bgCheckBox hover:text-white";
-                      }}
-                    >
-                      <AiOutlineWechat className="text-xl" />
-                      <p className="text-sm font-medium">Chat-Manage</p>
-                    </NavLink>
-                  </li>
+
                   <li>
                     <NavLink
                       to={`/admin/settings`}

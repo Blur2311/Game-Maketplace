@@ -37,7 +37,7 @@ export const CustomerDetail = () => {
   };
   return (
     <>
-      <div className="">
+      <div className="px-6 py-16">
         <div className="mb-8 flex flex-col gap-6">
           <NavLink
             to={"/admin/customer/list"}
@@ -65,7 +65,7 @@ export const CustomerDetail = () => {
               <div className="rounded-[20px] shadow-adminBoxshadow">
                 <div className="">
                   <div className="mb-4 flex items-center px-6 py-8">
-                    <div className="shadow-adminIconshadow mr-4 flex h-10 w-10 items-center justify-center rounded-full">
+                    <div className="mr-4 flex h-10 w-10 items-center justify-center rounded-full shadow-adminIconshadow">
                       <FiUser className="text-2xl" />
                     </div>
                     <p className="flex-1 text-lg font-medium">Basic details</p>
@@ -125,7 +125,7 @@ export const CustomerDetail = () => {
               <div className="rounded-[20px] shadow-adminBoxshadow">
                 <div className="px-6 py-8">
                   <div className="mb-8 flex items-center gap-4">
-                    <div className="shadow-adminIconshadow flex h-10 w-10 items-center justify-center rounded-full">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full shadow-adminIconshadow">
                       <IoWarningOutline className="text-2xl" />
                     </div>
                     <p className="text-lg font-medium">Security</p>
@@ -150,7 +150,7 @@ export const CustomerDetail = () => {
             <div className="rounded-[20px] shadow-adminBoxshadow">
               <div className="px-6 py-8">
                 <div className="mb-8 flex items-center gap-4">
-                  <div className="shadow-adminIconshadow flex h-10 w-10 items-center justify-center rounded-full">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full shadow-adminIconshadow">
                     <PiShoppingCartSimple className="text-2xl" />
                   </div>
                   <p className="text-lg font-medium">Payments</p>
@@ -193,7 +193,7 @@ export const CustomerDetail = () => {
                   <div className="rounded-lg border p-4">
                     <div className="flex flex-wrap items-center justify-between gap-4">
                       <div className="flex-1">
-                        <div className="shadow-adminInputShadow relative w-full min-w-[211px] rounded-lg border border-gray150 bg-transparent hover:border-black">
+                        <div className="relative w-full min-w-[211px] rounded-lg border border-gray150 bg-transparent shadow-adminInputShadow hover:border-black">
                           <i className="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 transform text-gray100"></i>
                           <InputText
                             placeholder="Search"
@@ -212,7 +212,7 @@ export const CustomerDetail = () => {
                             optionLabel="name"
                             placeholder="Select Status"
                             maxSelectedLabels={2}
-                            className="shadow-adminInputShadow w-full rounded-lg border border-gray150 px-4 py-2 font-inter text-sm"
+                            className="w-full rounded-lg border border-gray150 px-4 py-2 font-inter text-sm shadow-adminInputShadow"
                             itemClassName="!font-inter"
                           />
                         </div>
@@ -221,7 +221,7 @@ export const CustomerDetail = () => {
                             value={selectedOption}
                             options={options}
                             onChange={(e) => setSelectedOption(e.value)}
-                            className="custom-icon-color shadow-adminInputShadow w-full min-w-36 rounded-lg border border-gray150 px-4 py-2 !font-inter text-sm"
+                            className="custom-icon-color w-full min-w-36 rounded-lg border border-gray150 px-4 py-2 !font-inter text-sm shadow-adminInputShadow"
                             dropdownIcon="pi pi-chevron-down"
                             panelClassName="custom-dropdown-panel"
                           />

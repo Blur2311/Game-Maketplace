@@ -52,6 +52,7 @@ import { VoucherCU } from "./layout/AdminPage/VoucherManagePage/VoucherCU";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import { HomeAdmin } from "./layout/AdminPage/Home&AnaPage/HomeAdmin";
 import { Analytics } from "./layout/AdminPage/Home&AnaPage/Analytics";
+import { ChatManageV2 } from "./layout/AdminPage/ChatManagePage/ChatManageV2";
 
 function App() {
   return (
@@ -77,7 +78,6 @@ function App() {
               <Route path="customer/detail/:id" element={<CustomerDetail />} />
 
               <Route path="invoice/list" element={<InvoiceList />} />
-              {/* <Route path="invoice/create" element={<GameCU />} /> */}
               <Route path="invoice/detail/:id" element={<InvoiceDetail />} />
 
               <Route path="voucher/list" element={<VoucherList />} />
@@ -85,7 +85,7 @@ function App() {
               <Route path="voucher/detail/:id" element={<VoucherCU />} />
 
               <Route path="account-info" element={<AdminAccInfo />} />
-              <Route path="chat-manage" element={<ChatManage />} />
+              <Route path="chat-manage" element={<ChatManageV2 />} />
               <Route path="settings" element={<AdminSetting />} />
             </Route>
 

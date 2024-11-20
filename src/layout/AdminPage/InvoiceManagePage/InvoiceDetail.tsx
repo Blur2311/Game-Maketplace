@@ -13,7 +13,7 @@ export const InvoiceDetail = () => {
 
   return (
     <>
-      <div className="">
+      <div className="px-6 py-16">
         <div className="">
           <div className="mb-8 flex flex-col gap-6">
             <NavLink

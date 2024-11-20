@@ -54,38 +54,42 @@ export const VoucherList = () => {
 
     if (searchTerm) {
       filtered = filtered.filter((voucher) =>
-        voucher.discountName.toLowerCase().includes(searchTerm.toLowerCase())
+        voucher.discountName.toLowerCase().includes(searchTerm.toLowerCase()),
       );
     }
 
     if (selectedStatus.length > 0) {
       const statusCodes = selectedStatus.map((status) => status.code);
-      filtered = filtered.filter((voucher) => statusCodes.includes(voucher.active));
+      filtered = filtered.filter((voucher) =>
+        statusCodes.includes(voucher.active),
+      );
     }
 
     if (fromDate && toDate) {
       filtered = filtered.filter(
         (voucher) =>
           new Date(voucher.startDate) >= fromDate &&
-          new Date(voucher.endDate) <= toDate
+          new Date(voucher.endDate) <= toDate,
       );
     } else if (fromDate) {
       filtered = filtered.filter(
-        (voucher) => new Date(voucher.startDate) >= fromDate
+        (voucher) => new Date(voucher.startDate) >= fromDate,
       );
     } else if (toDate) {
       filtered = filtered.filter(
-        (voucher) => new Date(voucher.endDate) <= toDate
+        (voucher) => new Date(voucher.endDate) <= toDate,
       );
     }
 
     if (selectedOption === "newest") {
       filtered = filtered.sort(
-        (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+        (a, b) =>
+          new Date(b.startDate).getTime() - new Date(a.startDate).getTime(),
       );
     } else if (selectedOption === "oldest") {
       filtered = filtered.sort(
-        (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+        (a, b) =>
+          new Date(a.startDate).getTime() - new Date(b.startDate).getTime(),
       );
     }
 
@@ -120,7 +124,7 @@ export const VoucherList = () => {
 
   return (
     <>
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-8 px-6 py-16">
         <div className="flex items-start justify-between gap-6">
           <h3 className="text-[32px] font-medium">Vouchers</h3>
         </div>
@@ -200,7 +204,9 @@ export const VoucherList = () => {
                     <thead>
                       <tr className="text-left">
                         <th className="p-5 text-xs font-light">Name</th>
-                        <th className="p-5 text-xs font-light">Discount Percent</th>
+                        <th className="p-5 text-xs font-light">
+                          Discount Percent
+                        </th>
                         <th className="p-5 text-xs font-light">Start</th>
                         <th className="p-5 text-xs font-light">End</th>
                         <th className="p-5 text-xs font-light">Status</th>
@@ -208,17 +214,21 @@ export const VoucherList = () => {
                       </tr>
                     </thead>
                     <tbody>
-                    {filteredVouchers.slice(first, first + rows).map((voucher) => (
-                        <VoucherRow
-                          key={voucher.sysIdVoucher}
-                          discountPercent={voucher.discountPercent}
-                          sysIdVoucher={voucher.sysIdVoucher}
-                          discountName={voucher.discountName}
-                          startDate={voucher.startDate}
-                          endDate={voucher.endDate}
-                          active={voucher.active}
-                        />
-                      ))}
+                      {filteredVouchers
+                        .slice(first, first + rows)
+                        .map((voucher) => (
+                          <VoucherRow
+                            key={voucher.sysIdVoucher}
+                            discountPercent={voucher.discountPercent}
+                            sysIdVoucher={voucher.sysIdVoucher}
+                            discountName={voucher.discountName}
+                            startDate={voucher.startDate}
+                            endDate={voucher.endDate}
+                            active={voucher.active}
+                            maxDiscount={0}
+                            codeVoucher={""}
+                          />
+                        ))}
                     </tbody>
                   </table>
                 </div>
