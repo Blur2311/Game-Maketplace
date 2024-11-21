@@ -8,11 +8,32 @@ import { Sidebar } from "primereact/sidebar";
 import { Button } from "primereact/button";
 import { AdminSidebar } from "./AdminSidebar";
 import { FaRegCircleUser } from "react-icons/fa6";
+import { NotificationBar } from "./NotificationBar";
 
 export const AdminNavBar = () => {
-  const op = useRef<OverlayPanel>(null);
+  const opNotifications = useRef<OverlayPanel>(null); // Dùng cho nút chuông
+  const opUserMenu = useRef<OverlayPanel>(null); // Dùng cho menu người dùng
   const username = getUsernameFromToken();
   const [visible, setVisible] = useState(false);
+  const [notifications, setNotifications] = useState([
+    {
+      id: 1,
+      avatar: "/cat.jpeg",
+      name: "Jie Yan",
+      action: "added a new product",
+      job: "Remote React / React Native Developer",
+      time: "2023-11-20T10:33:00",
+    },
+    {
+      id: 2,
+      avatar: "/cat.jpeg",
+      name: "Huy Dep Giai",
+      action: "just sent a message",
+      job: "",
+      time: "2023-01-01T10:33:00",
+    },
+  ]);
+  const [unread, setUnread] = useState(true);
 
   const toggleSidebar = () => {
     setVisible(!visible);
@@ -37,11 +58,55 @@ export const AdminNavBar = () => {
           </Sidebar>
         </div>
         <div className="flex h-10 cursor-pointer items-center gap-2">
-          <BsBellFill className="text-xl" />
+          <div className="relative">
+            {/* Nút chuông */}
+            <button
+              onClick={(e) => {
+                setUnread(false); // Đặt trạng thái unread về false
+                opNotifications.current?.toggle(e); // Bật/tắt OverlayPanel
+              }}
+              className="relative rounded-full p-2 hover:bg-gray-200"
+            >
+              <BsBellFill className="text-xl" />
+              {unread && (
+                <span className="absolute right-0 top-0 h-3 w-3 rounded-full bg-red-500 text-xs text-white"></span>
+              )}
+            </button>
+
+            {/* Overlay Panel */}
+            <OverlayPanel
+              className="custom-admin-navbar w-80 rounded-lg border border-[#dcdfe4] bg-white p-0 font-inter shadow-navBoxshadow backdrop-blur-lg"
+              ref={opNotifications}
+            >
+              <div className="flex items-center justify-between gap-4 px-6 py-4">
+                <h3 className="text-lg font-medium">Notifications</h3>
+                <Button
+                  className="rounded-lg p-2 hover:bg-gray-100"
+                  icon="pi pi-envelope"
+                  tooltip="Mark all as read"
+                />
+              </div>
+              <ul>
+                {notifications.map((notification) => (
+                  <NotificationBar
+                    key={notification.id}
+                    id={notification.id}
+                    avatar={notification.avatar}
+                    name={notification.name}
+                    action={notification.action}
+                    job={notification.job}
+                    time={notification.time}
+                  />
+                ))}
+              </ul>
+            </OverlayPanel>
+          </div>
+
           <div className="h-full w-[1px] bg-[#dcdfe4]"></div>
+
           <div
             className="flex items-center gap-3 hover:opacity-80"
-            onClick={(e) => op.current?.toggle(e)}
+            onClick={(e) => opUserMenu.current?.toggle(e)}
           >
             <img src="/cat.jpeg" alt="" className="h-10 w-10 rounded-full" />
             {/* Không có hình ảnh thì hiển thị cái này
@@ -53,8 +118,8 @@ export const AdminNavBar = () => {
               /> */}
           </div>
           <OverlayPanel
-            ref={op}
-            className="custom-admin-navbar min-w-56 rounded-xl border border-[#dcdfe4] bg-white p-0 font-inter shadow-navBoxshadow backdrop-blur-lg"
+            ref={opUserMenu}
+            className="custom-admin-navbar min-w-56 rounded-lg border border-[#dcdfe4] bg-white p-0 font-inter shadow-navBoxshadow backdrop-blur-lg"
           >
             <div className="border-b border-[#dcdfe4] p-4">
               <p className="">Full Name</p>
