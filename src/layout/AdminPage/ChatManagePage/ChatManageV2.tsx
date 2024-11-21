@@ -55,7 +55,7 @@ export const ChatManageV2 = () => {
           </div>
         </Sidebar>
         <div
-          className={`w-[320px] border-r transition-all duration-[225ms] ease-[cubic-bezier(0,0,0.2,1)] ${sideChat ? "ml-[-320px]" : ""}`}
+          className={`hidden w-[320px] border-r transition-all duration-[225ms] ease-[cubic-bezier(0,0,0.2,1)] lg:block ${sideChat ? "ml-[-320px]" : ""}`}
         >
           <RightSideChat />
         </div>
