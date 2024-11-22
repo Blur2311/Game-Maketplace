@@ -167,14 +167,14 @@ export const GameCU = () => {
       discountPercent,
       thumbnailUrl,
       logoUrl,
-      imageUrls
+      imageUrls,
     );
     if (Object.keys(newErrors).length > 0) {
       setError(newErrors);
       return;
     }
     setLoading(true);
-  
+
     try {
       const base64Thumbnail = thumbnail
         ? await convertFileToBase64(thumbnail)
@@ -187,9 +187,9 @@ export const GameCU = () => {
           } else {
             return convertFileToBase64(image);
           }
-        })
+        }),
       );
-  
+
       // Build DTO
       const gameDTO = {
         gameName,
@@ -206,9 +206,13 @@ export const GameCU = () => {
           ...(base64Thumbnail
             ? [{ mediaName: "thumbnail", mediaUrl: base64Thumbnail }]
             : thumbnailUrl
-            ? [{ mediaName: "thumbnail", mediaUrl: thumbnailUrl }]
-            : []),
-          ...(base64Logo ? [{ mediaName: "logo", mediaUrl: base64Logo }] : logoUrl ? [{ mediaName: "logo", mediaUrl: logoUrl }] : []),
+              ? [{ mediaName: "thumbnail", mediaUrl: thumbnailUrl }]
+              : []),
+          ...(base64Logo
+            ? [{ mediaName: "logo", mediaUrl: base64Logo }]
+            : logoUrl
+              ? [{ mediaName: "logo", mediaUrl: logoUrl }]
+              : []),
           ...base64Images.map((image, index) => ({
             mediaName: `p${index + 1}`,
             mediaUrl: image,
@@ -220,16 +224,16 @@ export const GameCU = () => {
           generateRandomString(5),
         releaseDate: new Date().toLocaleDateString("en-CA"),
       };
-  
+
       console.log("Game DTO:", gameDTO);
-  
+
       let response;
       if (isUpdateMode && sysIdGame) {
         response = await updateGame(sysIdGame, gameDTO);
       } else {
         response = await saveGame(gameDTO);
       }
-  
+
       console.log("Game saved:", response.data);
       navigate("/admin/game/list");
     } catch (error) {
@@ -242,7 +246,7 @@ export const GameCU = () => {
 
   return (
     <>
-      <div className="">
+      <div className="px-6 py-16">
         <div className="mb-8 flex flex-col gap-6">
           <NavLink
             to={"/admin/game/list"}

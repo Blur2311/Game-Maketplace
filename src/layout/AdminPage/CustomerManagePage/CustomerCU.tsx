@@ -22,7 +22,7 @@ export const CustomerCU = () => {
 
   return (
     <>
-      <div className="">
+      <div className="px-6 py-16">
         <div className="mb-8 flex flex-col gap-6">
           <NavLink
             to={"/admin/customer/list"}
@@ -79,7 +79,7 @@ export const CustomerCU = () => {
 
               <FloatLabel className="col-span-12 text-sm md:col-span-6">
                 <InputText
-                  className="shadow-adminInputShadow w-full rounded-lg border bg-transparent p-4 ps-[10px] hover:border-black"
+                  className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black"
                   // value={gameName || ""}
                   // onChange={(e) => {
                   //   setGameName(e.target.value);
@@ -94,7 +94,7 @@ export const CustomerCU = () => {
 
               <FloatLabel className="col-span-12 text-sm md:col-span-6">
                 <InputText
-                  className="shadow-adminInputShadow w-full rounded-lg border bg-transparent p-4 ps-[10px] hover:border-black"
+                  className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black"
                   // value={gameName || ""}
                   // onChange={(e) => {
                   //   setGameName(e.target.value);
@@ -109,7 +109,7 @@ export const CustomerCU = () => {
 
               <FloatLabel className="col-span-12 text-sm md:col-span-6">
                 <InputText
-                  className="shadow-adminInputShadow w-full rounded-lg border bg-transparent p-4 ps-[10px] hover:border-black"
+                  className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black"
                   // value={gameName || ""}
                   // onChange={(e) => {
                   //   setGameName(e.target.value);
@@ -124,7 +124,7 @@ export const CustomerCU = () => {
 
               <FloatLabel className="col-span-12 text-sm md:col-span-6">
                 <InputText
-                  className="shadow-adminInputShadow w-full rounded-lg border bg-transparent p-4 ps-[10px] hover:border-black"
+                  className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black"
                   // value={gameName || ""}
                   // onChange={(e) => {
                   //   setGameName(e.target.value);

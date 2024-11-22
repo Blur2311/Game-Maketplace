@@ -101,7 +101,7 @@ export const GameList = () => {
 
   return (
     <>
-      <div className="">
+      <div className="px-6 py-16">
         <div className="flex items-start justify-between gap-6">
           <h3 className="text-[32px] font-medium">Games</h3>
           <RightSideButton Icon={MdAddBox} link={"/admin/game/create"} />

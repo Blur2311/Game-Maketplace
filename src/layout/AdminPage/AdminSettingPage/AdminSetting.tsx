@@ -15,14 +15,14 @@ export const AdminSetting = () => {
 
   return (
     <>
-      <div className="">
+      <div className="px-6 py-16">
         <h1 className="text-[32px] font-medium">Settings</h1>
         <div className="mt-6 grid grid-cols-12 gap-x-4 gap-y-8">
           <div className="col-span-12">
             <div className="rounded-[20px] shadow-adminBoxshadow">
               <div className="px-6 py-8">
                 <div className="mb-8 flex items-center gap-4">
-                  <div className="shadow-adminIconshadow flex h-10 w-10 items-center justify-center rounded-full">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full shadow-adminIconshadow">
                     <PiPassword className="text-2xl" />
                   </div>
                   <p className="text-lg font-medium">Change password</p>
@@ -73,7 +73,7 @@ export const AdminSetting = () => {
             <div className="rounded-[20px] shadow-adminBoxshadow">
               <div className="px-6 py-8">
                 <div className="mb-8 flex items-center gap-4">
-                  <div className="shadow-adminIconshadow flex h-10 w-10 items-center justify-center rounded-full">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full shadow-adminIconshadow">
                     <FaRegBell className="text-2xl" />
                   </div>
                   <p className="text-lg font-medium">Notifications</p>
@@ -118,7 +118,7 @@ export const AdminSetting = () => {
             <div className="rounded-[20px] shadow-adminBoxshadow">
               <div className="px-6 py-8">
                 <div className="mb-8 flex items-center gap-4">
-                  <div className="shadow-adminIconshadow flex h-10 w-10 items-center justify-center rounded-full">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full shadow-adminIconshadow">
                     <IoWarningOutline className="text-2xl" />
                   </div>
                   <p className="text-lg font-medium">Delete account</p>

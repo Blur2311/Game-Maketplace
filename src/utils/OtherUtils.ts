@@ -1,5 +1,7 @@
 export const formatCurrency = (amount: number) => {
-  return `₫${Math.round(amount).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+  return `₫${Math.round(amount)
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
 };
 
 export const calculateSalePrice = (
@@ -28,8 +30,34 @@ export const formatDate = (dateString: string): string => {
 
 export const formatDateFromLocalDate = (dateString: string): string => {
   const date = new Date(dateString);
-  const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'short', day: 'numeric' };
-  return date.toLocaleDateString('en-US', options);
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  };
+  return date.toLocaleDateString("en-US", options);
+};
+
+export const formatDateFromLocalDateTime = (dateString: string): string => {
+  const date = new Date(dateString);
+
+  // Định dạng ngày (tháng viết tắt và ngày)
+  const optionsDate: Intl.DateTimeFormatOptions = {
+    month: "short",
+    day: "numeric",
+  };
+
+  // Định dạng thời gian (giờ, phút, AM/PM)
+  const optionsTime: Intl.DateTimeFormatOptions = {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  };
+
+  const formattedDate = date.toLocaleDateString("en-US", optionsDate); // "Nov 20"
+  const formattedTime = date.toLocaleTimeString("en-US", optionsTime); // "10:33 AM"
+
+  return `${formattedDate}, ${formattedTime}`;
 };
 
 /**
@@ -43,7 +71,7 @@ export const manageButtonStateDuringApiCall = async (
   apiCall: Function,
   setButtonDisabled: Function,
   onSuccess: Function,
-  onError: Function
+  onError: Function,
 ) => {
   try {
     // Disable the button to prevent multiple clicks

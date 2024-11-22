@@ -8,15 +8,15 @@ export const AdminLayout = () => {
 
   return (
     <>
-      <div className="relative flex h-full">
-        <div className="hidden lg:block">
+      <div className="relative flex min-h-full flex-col">
+        <div className="fixed left-0 top-0 z-50 hidden h-full bg-bgMainColor lg:block">
           <AdminSidebar onLinkClick={() => {}} />
         </div>
-        <div className="flex-1 bg-white">
+        <div className="z-10 flex flex-1 flex-col bg-white lg:ml-[280px]">
           <AdminNavBar />
-          <div className="h-full min-h-svh bg-white px-6 py-16">
+          <main className="flex flex-1 flex-col bg-white">
             <Outlet />
-          </div>
+          </main>
         </div>
       </div>
     </>

@@ -152,7 +152,7 @@ export const VoucherCU = () => {
 
   return (
     <>
-      <div className="">
+      <div className="px-6 py-16">
         <div className="mb-8 flex flex-col gap-6">
           <NavLink
             to={"/admin/customer/list"}

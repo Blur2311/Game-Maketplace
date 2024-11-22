@@ -91,7 +91,7 @@ export const HomeAdmin = () => {
 
   return (
     <>
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-8 px-6 py-16">
         <h3 className="text-[32px] font-medium">Overview</h3>
 
         <div className="grid grid-cols-12 gap-8">

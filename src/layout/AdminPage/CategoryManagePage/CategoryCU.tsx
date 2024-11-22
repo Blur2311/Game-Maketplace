@@ -8,7 +8,11 @@ import { useEffect, useState } from "react";
 import apiClient from "../../../config/apiClient";
 import { NavLink } from "react-router-dom";
 import { TiArrowLeft } from "react-icons/ti";
-import { fetchCategoryById, saveCategory, CategoryDTO } from "./service/CategoryService"; // Import các hàm từ categoryService
+import {
+  fetchCategoryById,
+  saveCategory,
+  CategoryDTO,
+} from "./service/CategoryService"; // Import các hàm từ categoryService
 
 export const CategoryCU = () => {
   const { id } = useParams<{ id?: string }>(); // Nhận tham số id tùy chọn
@@ -56,7 +60,7 @@ export const CategoryCU = () => {
 
   return (
     <>
-      <div className="">
+      <div className="px-6 py-16">
         <div className="mb-8 flex flex-col gap-6">
           <NavLink
             to={"/admin/category/list"}
@@ -77,7 +81,7 @@ export const CategoryCU = () => {
             <div className="grid grid-cols-12 gap-x-6 gap-y-8 pb-8">
               <FloatLabel className="col-span-12 text-sm">
                 <InputText
-                  className="shadow-adminInputShadow w-full rounded-lg border bg-transparent p-4 ps-[10px] hover:border-black"
+                  className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black"
                   value={categoryName}
                   onChange={(e) => {
                     setCategoryName(e.target.value);
@@ -93,7 +97,7 @@ export const CategoryCU = () => {
               <FloatLabel className="col-span-12 text-sm">
                 <InputTextarea
                   rows={5}
-                  className="shadow-adminInputShadow w-full rounded-lg border bg-transparent p-4 ps-[10px] hover:border-black"
+                  className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                 />

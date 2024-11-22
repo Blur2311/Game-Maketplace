@@ -11,7 +11,7 @@ export const AdminAccInfo = () => {
 
   return (
     <>
-      <div className="">
+      <div className="px-6 py-16">
         <h1 className="text-[32px] font-medium">Account</h1>
         <div className="mt-6 grid grid-cols-12 gap-x-4 gap-y-8">
           <div className="col-span-12 md:col-span-4">
@@ -68,7 +68,7 @@ export const AdminAccInfo = () => {
             <div className="rounded-[20px] shadow-adminBoxshadow">
               <div className="px-6 py-8">
                 <div className="mb-8 flex items-center gap-4">
-                  <div className="shadow-adminIconshadow flex h-10 w-10 items-center justify-center rounded-full">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full shadow-adminIconshadow">
                     <FiUser className="text-2xl" />
                   </div>
                   <p className="text-lg font-medium">Basic details</p>
@@ -76,7 +76,7 @@ export const AdminAccInfo = () => {
                 <div className="grid grid-cols-12 gap-x-6 gap-y-8 pb-8">
                   <FloatLabel className="col-span-12 text-sm sm:col-span-6">
                     <InputText
-                      className="shadow-adminInputShadow w-full rounded-lg border bg-transparent p-4 ps-[10px] hover:border-black focus:border-black"
+                      className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black focus:border-black"
                       // value={description}
                       // onChange={(e) => setDescription(e.target.value)}
                     />
@@ -86,7 +86,7 @@ export const AdminAccInfo = () => {
                   </FloatLabel>
                   <FloatLabel className="col-span-12 text-sm sm:col-span-6">
                     <InputText
-                      className="shadow-adminInputShadow w-full rounded-lg border bg-transparent p-4 ps-[10px] hover:border-black focus:border-black"
+                      className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black focus:border-black"
                       // value={description}
                       // onChange={(e) => setDescription(e.target.value)}
                     />
@@ -96,7 +96,7 @@ export const AdminAccInfo = () => {
                   </FloatLabel>
                   <FloatLabel className="col-span-12 text-sm sm:col-span-6">
                     <InputText
-                      className="shadow-adminInputShadow w-full rounded-lg border bg-transparent p-4 ps-[10px] hover:border-black focus:border-black"
+                      className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black focus:border-black"
                       // value={description}
                       // onChange={(e) => setDescription(e.target.value)}
                     />
@@ -106,7 +106,7 @@ export const AdminAccInfo = () => {
                   </FloatLabel>
                   <FloatLabel className="col-span-12 text-sm sm:col-span-6">
                     <InputText
-                      className="shadow-adminInputShadow w-full rounded-lg border bg-transparent p-4 ps-[10px] hover:border-black focus:border-black"
+                      className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black focus:border-black"
                       // value={description}
                       // onChange={(e) => setDescription(e.target.value)}
                     />
@@ -114,7 +114,7 @@ export const AdminAccInfo = () => {
                   </FloatLabel>
                   <FloatLabel className="col-span-12 text-sm sm:col-span-6">
                     <InputText
-                      className="shadow-adminInputShadow w-full rounded-lg border bg-transparent p-4 ps-[10px] hover:border-black focus:border-black"
+                      className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black focus:border-black"
                       // value={description}
                       // onChange={(e) => setDescription(e.target.value)}
                     />
@@ -122,7 +122,7 @@ export const AdminAccInfo = () => {
                   </FloatLabel>
                   <FloatLabel className="col-span-12 text-sm sm:col-span-6">
                     <InputText
-                      className="shadow-adminInputShadow w-full rounded-lg border bg-transparent p-4 ps-[10px] hover:border-black focus:border-black"
+                      className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black focus:border-black"
                       // value={description}
                       // onChange={(e) => setDescription(e.target.value)}
                     />
