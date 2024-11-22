@@ -54,7 +54,7 @@ export const verifyOtp = async (
   if (href.includes("forgot-password")) {
     endPoint = "/api/accounts/forgot-password/verify-otp";
   } else {
-    endPoint = "/api/accounts/verify-otp";
+    endPoint = "/api/accounts/verify-registration-otp";
   }
   try {
     const response = await apiClient.post(
