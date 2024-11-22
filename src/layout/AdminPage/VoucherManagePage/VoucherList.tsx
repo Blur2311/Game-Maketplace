@@ -47,6 +47,7 @@ export const VoucherList = () => {
 
   useEffect(() => {
     filterVouchers();
+    localStorage.removeItem("selectedVoucher");
   }, [searchTerm, selectedStatus, fromDate, toDate, selectedOption]);
 
   const filterVouchers = () => {
@@ -214,21 +215,23 @@ export const VoucherList = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredVouchers
-                        .slice(first, first + rows)
-                        .map((voucher) => (
-                          <VoucherRow
-                            key={voucher.sysIdVoucher}
-                            discountPercent={voucher.discountPercent}
-                            sysIdVoucher={voucher.sysIdVoucher}
-                            discountName={voucher.discountName}
-                            startDate={voucher.startDate}
-                            endDate={voucher.endDate}
-                            active={voucher.active}
-                            maxDiscount={0}
-                            codeVoucher={""}
-                          />
-                        ))}
+                    {filteredVouchers.slice(first, first + rows).map((voucher) => (
+                        <VoucherRow
+                          key={voucher.sysIdVoucher}
+                          discountPercent={voucher.discountPercent}
+                          sysIdVoucher={voucher.sysIdVoucher}
+                          discountName={voucher.discountName}
+                          startDate={voucher.startDate}
+                          endDate={voucher.endDate}
+                          active={voucher.active}
+                          maxDiscount={voucher.maxDiscount}
+                          codeVoucher={voucher.codeVoucher}
+                          description={voucher.description}
+                          quantity={voucher.quantity}
+                          files={voucher.files}
+                          voucherBanner={voucher.voucherBanner}
+                        />
+                      ))}
                     </tbody>
                   </table>
                 </div>

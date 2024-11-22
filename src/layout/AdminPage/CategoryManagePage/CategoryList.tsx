@@ -51,6 +51,7 @@ export const CategoryList = () => {
 
   useEffect(() => {
     fetchCategories(first, rows, searchTerm);
+    localStorage.removeItem("selectedCategory");
   }, [first, rows, searchTerm]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
