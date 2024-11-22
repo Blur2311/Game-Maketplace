@@ -69,6 +69,7 @@ export const GameList = () => {
     };
 
     loadCategoriesAndGames();
+    localStorage.removeItem("selectedGame");
   }, [
     first,
     rows,
@@ -193,6 +194,7 @@ export const GameList = () => {
                           quantity={game.quantity}
                           media={game.media}
                           releaseDate={game.releaseDate}
+                          slug={game.slug}
                         />
                       ))}
                     </tbody>

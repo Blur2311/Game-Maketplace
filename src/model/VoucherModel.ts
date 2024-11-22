@@ -7,4 +7,8 @@ export interface Voucher {
   endDate: string;
   maxDiscount: number;
   codeVoucher: string;
+  description : string;
+  quantity: number;
+  files: File | string;
+  voucherBanner: string;
 }

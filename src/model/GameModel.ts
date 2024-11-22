@@ -13,4 +13,5 @@ export interface Game {
   quantity: number;
   releaseDate: Date;
   media: Media[];
+  slug: string;
 }

@@ -47,6 +47,7 @@ export const VoucherList = () => {
 
   useEffect(() => {
     filterVouchers();
+    localStorage.removeItem("selectedVoucher");
   }, [searchTerm, selectedStatus, fromDate, toDate, selectedOption]);
 
   const filterVouchers = () => {
@@ -217,6 +218,12 @@ export const VoucherList = () => {
                           startDate={voucher.startDate}
                           endDate={voucher.endDate}
                           active={voucher.active}
+                          maxDiscount={voucher.maxDiscount}
+                          codeVoucher={voucher.codeVoucher}
+                          description={voucher.description}
+                          quantity={voucher.quantity}
+                          files={voucher.files}
+                          voucherBanner={voucher.voucherBanner}
                         />
                       ))}
                     </tbody>

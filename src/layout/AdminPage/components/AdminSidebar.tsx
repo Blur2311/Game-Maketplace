@@ -42,7 +42,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onLinkClick }) => {
                       <p className="text-sm font-medium">Home</p>
                     </NavLink>
                   </li>
-                  {/* <li>
+                  <li>
                     <NavLink
                       to={`/admin/analytic`}
                       onClick={onLinkClick}
@@ -55,7 +55,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onLinkClick }) => {
                       <LuBarChart4 className="text-xl" />
                       <p className="text-sm font-medium">Analytics</p>
                     </NavLink>
-                  </li> */}
+                  </li>
                 </ul>
               </div>
             </li>
@@ -77,7 +77,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onLinkClick }) => {
                       onLinkClick={onLinkClick}
                     />
                   </li>
-                  {/* <li>
+                  <li>
                     <CustomSidebar
                       Icon={FiUsers}
                       names={"Customers"}
@@ -88,8 +88,8 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onLinkClick }) => {
                       location={"/admin/customer"}
                       onLinkClick={onLinkClick}
                     />
-                  </li> */}
-                  {/* <li>
+                  </li>
+                  <li>
                     <CustomSidebar
                       Icon={TbFileInvoice}
                       names={"Invoices"}
@@ -99,7 +99,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onLinkClick }) => {
                       location={"/admin/invoice"}
                       onLinkClick={onLinkClick}
                     />
-                  </li> */}
+                  </li>
                   <li>
                     <CustomSidebar
                       Icon={FiPercent}
