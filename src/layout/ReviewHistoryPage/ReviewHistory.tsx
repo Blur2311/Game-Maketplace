@@ -26,7 +26,7 @@ export const ReviewHistory = () => {
     if (!username) return;
     try {
       const response = await apiClient.get(
-        `/api/comments/filter-comment?username=${username}`,
+        `/api/comments/get-comment-by-username?username=${username}`,
       );
       setReviews(response.data.data);
       setFilteredReviews(response.data.data);
@@ -38,7 +38,10 @@ export const ReviewHistory = () => {
   const filterReviews = () => {
     if (!dates) return setFilteredReviews(reviews);
     const filtered = reviews.filter((review) => {
-      return isDateValid(review.commentDate, dates[0], dates[1]);
+      return (
+        isDateValid(review.commentDate, dates[0], dates[1]) &&
+        review.context.includes(description)
+      );
     });
     setSelectedDates(dates);
     setFilteredReviews(filtered);
@@ -108,7 +111,9 @@ export const ReviewHistory = () => {
                       <th className="p-5 text-xs font-light">Date</th>
                       <th className="p-5 text-xs font-light">Game</th>
                       <th className="p-5 text-xs font-light">Description</th>
-                      <th className="p-5 text-xs font-light">Rated</th>
+                      <th className="p-5 text-xs font-light text-right">
+                        Rated
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -119,6 +124,7 @@ export const ReviewHistory = () => {
                         game={review.gameDTO?.gameName ?? ""}
                         description={review.context}
                         rated={review.star}
+                        slug={review.gameDTO?.slug ?? ""}
                       />
                     ))}
                   </tbody>

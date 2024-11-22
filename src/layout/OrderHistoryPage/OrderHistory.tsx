@@ -2,19 +2,79 @@ import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";
 import { FloatLabel } from "primereact/floatlabel";
 import { InputText } from "primereact/inputtext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import apiClient from "../../config/apiClient";
+import { TransactionHistoryDTO } from "../../model/TransactionHistoryModel";
+import { getUsernameFromToken } from "../../utils/AuthUtils";
+import { formatDateToDDMMYYYY, isDateValid } from "../../utils/OtherUtils";
 import { OrderHistoryRow } from "./components/OrderHistoryRow";
 
 export const OrderHistory = () => {
+  const [description, setDescription] = useState<string>("");
   const [dates, setDates] = useState<Date[] | null>(null);
+  const [selectedDates, setSelectedDates] = useState<Date[] | null>(null);
+  const [transactions, setTransactions] = useState<TransactionHistoryDTO[]>([]);
+  const [filteredTransactions, setFilteredTransactions] = useState<
+    TransactionHistoryDTO[]
+  >([]);
+  const [length, setLength] = useState<number>(5);
 
   const handleDateChange = (e: any) => {
     setDates(e.value);
   };
+
+  const fetchTransactions = async () => {
+    const username = getUsernameFromToken();
+    if (!username) return;
+    try {
+      const response = await apiClient.get(
+        `/api/transactions/get-orders-transaction?username=${username}`,
+      );
+      setTransactions(response.data.data);
+      setFilteredTransactions(response.data.data);
+    } catch (error) {
+      console.error("Failed to fetch transactions", error);
+    }
+  };
+
+  const filterTransactions = () => {
+    if (!dates) return setFilteredTransactions(transactions);
+    const filtered = transactions.filter((transaction) => {
+      return (
+        isDateValid(transaction.paymentTime.toString(), dates[0], dates[1]) &&
+        transaction.description.includes(description)
+      );
+    });
+    setSelectedDates(dates);
+    setFilteredTransactions(filtered);
+  };
+
+  const handleDescriptionChange = (e: any) => {
+    setDescription(e.target.value);
+    const filtered = transactions.filter((transaction) => {
+      let isMatch = transaction.description.includes(e.target.value);
+      if (selectedDates) {
+        isMatch =
+          isMatch &&
+          isDateValid(
+            transaction.paymentTime.toString(),
+            selectedDates[0],
+            selectedDates[1],
+          );
+      }
+      return isMatch;
+    });
+    setFilteredTransactions(filtered);
+  };
+
+  useEffect(() => {
+    fetchTransactions();
+  }, []);
+
   return (
     <>
       <div className="pl-5">
-        <div className="rounded bg-white p-10">
+        <div className="p-10 bg-white rounded">
           <h1 className="text-3xl">Order History</h1>
           <h6 className="mt-[15px] text-sm font-light">
             Display the information of the products you have purchased.
@@ -22,7 +82,10 @@ export const OrderHistory = () => {
           <div className="mt-[30px]">
             <div className="flex items-center justify-between">
               <FloatLabel className="text-sm">
-                <InputText className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]" />
+                <InputText
+                  onChange={(e) => handleDescriptionChange(e)}
+                  className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
+                />
                 <label>Description</label>
               </FloatLabel>
               <div className="flex items-center gap-2">
@@ -40,6 +103,7 @@ export const OrderHistory = () => {
                   icon="pi pi-filter"
                   size="large"
                   className="h-[50px] w-[50px] bg-mainYellow text-base font-bold text-slate-900"
+                  onClick={filterTransactions}
                 />
               </div>
             </div>
@@ -53,42 +117,47 @@ export const OrderHistory = () => {
                       <th className="p-5 text-xs font-light">Date</th>
                       <th className="p-5 text-xs font-light">ID</th>
                       <th className="p-5 text-xs font-light">Description</th>
-                      <th className="p-5 text-xs font-light">Price</th>
+                      <th className="p-5 text-xs font-light text-right">
+                        Price
+                      </th>
                       <th className="p-5 text-xs font-light">Status</th>
                       <th className=""></th>
                     </tr>
                   </thead>
                   <tbody>
-                    <OrderHistoryRow
-                      date={"2/2/2024"}
-                      id={"5841931"}
-                      description={"Doors - Paradox"}
-                      price={190000}
-                      status={"Finish"}
-                    />
-                    <OrderHistoryRow
-                      date={"2/2/2024"}
-                      id={"5841931"}
-                      description={"Doors - Paradox"}
-                      price={190000}
-                      status={"Finish"}
-                    />
-                    <OrderHistoryRow
-                      date={"2/2/2024"}
-                      id={"5841931"}
-                      description={"Doors - Paradox"}
-                      price={190000}
-                      status={"Finish"}
-                    />
+                    {filteredTransactions
+                      .slice(0, length)
+                      .map((transaction) => (
+                        <OrderHistoryRow
+                          key={transaction.sysIdPayment}
+                          id={transaction.sysIdPayment.toString()}
+                          date={formatDateToDDMMYYYY(
+                            transaction.paymentTime.toString(),
+                          )}
+                          description={transaction.description}
+                          price={transaction.amount}
+                          status={transaction.status ? "Finish" : "Pending"}
+                        />
+                      ))}
                   </tbody>
                 </table>
-                <div className="mt-3 flex justify-center">
+                <div className="flex justify-center mt-3">
                   <Button
-                    label="SHOW MORE"
+                    hidden={
+                      filteredTransactions.length <= 5 ||
+                      length >= filteredTransactions.length
+                    }
+                    label={"SHOW MORE"}
                     size="large"
                     className="mt-5 h-[50px] w-[150px] bg-gray250 text-xs font-bold text-slate-900"
-                    // onClick={handleLogin}
-                    // disabled={isLockedOut}
+                    onClick={() => setLength(length + 5)}
+                  />
+                  <Button
+                    hidden={length <= 5}
+                    label={"SHOW LESS"}
+                    size="large"
+                    className="mt-5 h-[50px] w-[150px] bg-gray250 text-xs font-bold text-slate-900"
+                    onClick={() => setLength(length - 5)}
                   />
                 </div>
               </div>

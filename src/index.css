@@ -45,25 +45,25 @@ body {
 }
 
 .hero-thumbnail-img {
-  @apply object-cover w-8 h-[2.875rem];
+  @apply h-[2.875rem] w-8 object-cover;
 }
 
 .hero-mini-game-description {
   -webkit-line-clamp: 2;
   max-height: 2.875rem;
-  line-height: 1rem;  
-  @apply text-sm font-light text-white text-overflow-ellipsis;
+  line-height: 1rem;
+  @apply text-overflow-ellipsis text-sm font-light text-white;
 }
 
 .hero-thumbnail-img-xl {
-  @apply object-cover w-10 h-[3.6rem];
+  @apply h-[3.6rem] w-10 object-cover;
 }
 
 .text-overflow-ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-box-orient: vertical;  
+  -webkit-box-orient: vertical;
 }
 
 .text-overflow-ellipsis-1-line {
@@ -77,5 +77,9 @@ body {
 }
 
 .top5-items-image {
-  @apply object-cover min-w-[5.625rem] min-h-[7.5rem] max-w-[5.625rem] max-h-[7.5rem];
+  @apply max-h-[7.5rem] min-h-[7.5rem] min-w-[5.625rem] max-w-[5.625rem] object-cover;
+}
+
+td {
+  max-width: 12rem;
 }

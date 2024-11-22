@@ -4,6 +4,12 @@ export const formatCurrency = (amount: number) => {
     .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
 };
 
+export const formatCurrencyFlip = (amount: number) => {
+  return `${Math.round(amount)
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}₫`;
+};
+
 export const calculateSalePrice = (
   originalPrice: number,
   discountPercentage: number,
@@ -60,6 +66,21 @@ export const formatDateFromLocalDateTime = (dateString: string): string => {
   return `${formattedDate}, ${formattedTime}`;
 };
 
+export const formatDateTime = (dateString: string): string => {
+  const date = new Date(dateString);
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+    timeZone: 'Asia/Bangkok' // GMT+7
+  };
+  return date.toLocaleDateString('en-US', options);
+};
+
 export const normalizeDate = (date: Date): Date => {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 };
@@ -72,10 +93,10 @@ export const formatDateToDDMMYYYY = (dateString: string): string => {
   return `${day}/${month}/${year}`;
 };
 
-export const isDateValid = (iDate: string, sDate: Date, eDate: Date) : boolean => {
+export const isDateValid = (iDate: string, sDate: Date, eDate: Date | null): boolean => {
   const date = normalizeDate(new Date(iDate));
   const startDate = normalizeDate(sDate);
-  const endDate = normalizeDate(eDate);
+  const endDate = normalizeDate(eDate ?? sDate);
 
   return (date >= startDate && date <= endDate);
 }

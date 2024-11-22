@@ -1,10 +1,10 @@
 import { Toast } from "primereact/toast";
 import { FaCreditCard } from "react-icons/fa";
 import apiClient from "../config/apiClient";
+import { User } from "./AuthUtils";
 import { CartItem } from "./CartUtils";
 import { showErrorToast, showInfoToast, showSuccessToast } from "./ErrorHandlingUtils";
 import { formatCurrency } from "./OtherUtils";
-import { User } from "./AuthUtils";
 
 /**
  * Handles actions after payment based on URL parameters.
@@ -118,14 +118,14 @@ export const handleUserBalancePayment = async (
     let payload: Order = {
       orderCode: currentUser.username + currentISODateTime,
       orderDate: currentISODateTime,
-      totalPayment: afterTaxes,
+      totalPayment: -afterTaxes,
       voucherCode: usedDiscountCode,
       username: currentUser.username ?? "",
       userId: currentUser.sysIdUser ?? 0,
       orders: cartItems,
     };
     // console.log(payload);
-    
+
     showInfoToast(toast, "This process would take a minute, please wait...", 7777);
     const response = await apiClient.post(`/api/orders/handle-payment`, payload);
     if (response.data.status === "OK") {
@@ -199,7 +199,7 @@ export const paymentOptions = [
     value: "VNPAY",
   },
 ];
-  
+
 export type Order = {
   orderCode: string;
   totalPayment: number;
@@ -210,7 +210,7 @@ export type Order = {
   orders: CartItem[];
 };
 
-export const recharge = async (afterTaxes:number, currentUser: User) => {
+export const recharge = async (afterTaxes: number, currentUser: User) => {
   let amount = Math.round(afterTaxes - (currentUser?.balance ?? 0));
   let payload = {
     amount: amount,
