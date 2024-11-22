@@ -1,4 +1,5 @@
 import { Button } from "primereact/button";
+import { confirmDialog } from "primereact/confirmdialog";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Rating } from "primereact/rating";
 import { useEffect, useState } from "react";
@@ -13,7 +14,11 @@ interface ReviewProps {
   setComments: (comments: CommentDTO[]) => void;
 }
 
-export const Review: React.FC<ReviewProps> = ({ gameId, comments, setComments }) => {
+export const Review: React.FC<ReviewProps> = ({
+  gameId,
+  comments,
+  setComments,
+}) => {
   const [rating, setRating] = useState(0);
   const [reviewText, setReviewText] = useState("");
 
@@ -38,29 +43,39 @@ export const Review: React.FC<ReviewProps> = ({ gameId, comments, setComments })
   };
 
   const clearForm = () => {
-    setReviewText('');
-    setRating(0);    
-  }
+    setReviewText("");
+    setRating(0);
+  };
 
   const handleSubmit = async () => {
     if (!isCommentValid()) return;
     const comment: CommentDTO = {
-      usersDTO: {username: getDecodeToken()?.sub ?? ''},
+      usersDTO: { username: getDecodeToken()?.sub ?? "" },
       context: reviewText,
       commentDate: new Date().toISOString(),
       gameId,
       star: rating,
     };
 
-    try {
-      await apiClient.post("/api/comments", comment);
-      toast.success("Review submitted successfully");
-      clearForm();
-      setComments([comment, ...comments]);  
-    } catch (error: any) {
-      console.error("Error submitting review:", error);
-      toast.error(error.response.data.message ?? "Failed to submit review");
-    }
+    confirmDialog({
+      header: `🌟 We Value Your Feedback! 🌟`,
+      message: "Before you submit your review, please take a moment to share your thoughts meaningfully. Your insights help us improve and make the game even better for everyone!",
+      acceptClassName: "custom-accept-button",
+      rejectClassName: "custom-reject-button",
+      acceptLabel: "Submit my review",
+      rejectLabel: "Cancel",
+      accept: async () => {
+        try {
+          await apiClient.post("/api/comments", comment);
+          toast.success("Review submitted successfully");
+          clearForm();
+          setComments([comment, ...comments]);
+        } catch (error: any) {
+          console.error("Error submitting review:", error);
+          toast.error(error.response.data.message ?? "Failed to submit review");
+        }
+      },
+    });
   };
 
   return (

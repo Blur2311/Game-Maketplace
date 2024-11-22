@@ -18,9 +18,14 @@ export type Voucher = {
   active: boolean;
 };
 
-export const sendVoucherToUser = async (codeVoucher:string) => {
+export const sendVoucherToUser = async (codeVoucher: string) => {
   if (!isTokenValid()) {
     toast.warn("You have to log in to perform this action");
+    return;
+  }
+
+  let isNotUsed = await validateVoucher(codeVoucher);
+  if (!isNotUsed) {
     return;
   }
 
@@ -35,7 +40,7 @@ export const sendVoucherToUser = async (codeVoucher:string) => {
     accept: async () => {
       try {
         toast.info("It may take a minute for you to receive the email, hang on tight!");
-        const response = await apiClient.post(`/api/vouchers/send/${codeVoucher}`);        
+        const response = await apiClient.post(`/api/vouchers/send/${codeVoucher}`);
         if (response.status === 200) {
           toast.success("You can check your email for the voucher right now!");
         } else {
@@ -46,4 +51,14 @@ export const sendVoucherToUser = async (codeVoucher:string) => {
       }
     },
   });
-}; 
+};
+
+export const validateVoucher = async (codeVoucher: string): Promise<boolean> => {
+  try {
+    const response = await apiClient.post(`/api/vouchers/validate/${codeVoucher}`);
+    return response.status === 200;
+  } catch (error) {
+    toast.error("You may have used this voucher, don't be so greedy tho..");
+    return false;
+  }
+}
