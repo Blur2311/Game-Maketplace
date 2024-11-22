@@ -13,11 +13,11 @@ export const ReviewHistoryRow: React.FC<ReviewHistoryRowProps> = ({
 }) => {
   return (
     <>
-      <tr className="border-borderRow border-b bg-white text-xs font-light">
+      <tr className="text-xs font-light bg-white border-b border-borderRow">
         <td className="px-5 py-[25px]">{date}</td>
         <td className="px-5 py-[25px]">{game}</td>
         <td className="px-5 py-[25px]">{description}</td>
-        <td className="px-5 py-[25px]">{rated}</td>
+        <td className="px-5 py-[25px]">{rated}⭐</td>
       </tr>
     </>
   );

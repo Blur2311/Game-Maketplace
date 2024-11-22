@@ -2,10 +2,22 @@ import { jwtDecode } from 'jwt-decode';
 import apiClient from '../config/apiClient';
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+
 interface DecodedToken {
   sub: string;
   exp: number;
-}
+};
+
+export type User = {
+  sysIdUser: number;
+  username: string;
+  email: string;
+  role: string;
+  hoVaTen: string;
+  balance: number;
+  avatar: string;
+  joinTime: string;
+};
 
 export const isTokenValid = (): boolean => {
   try {
@@ -98,15 +110,4 @@ export const getCurrentUser = async (): Promise< User | null> => {
     console.error('Failed to get current user:', error);
     return null;
   }
-};
-
-export type User = {
-  sysIdUser: number;
-  username: string;
-  email: string;
-  role: string;
-  hoVaTen: string;
-  balance: number;
-  avatar: string;
-  joinTime: string;
 };

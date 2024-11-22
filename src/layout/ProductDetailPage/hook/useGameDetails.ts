@@ -10,6 +10,7 @@ export interface CommentDTO {
     usersDTO?: UsersDTO;
     gameId: number;
     star: number;
+    gameDTO?: GameDTO;
 }
 
 export interface UsersDTO {

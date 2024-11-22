@@ -2,19 +2,70 @@ import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";
 import { FloatLabel } from "primereact/floatlabel";
 import { InputText } from "primereact/inputtext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import apiClient from "../../config/apiClient";
+import { getUsernameFromToken } from "../../utils/AuthUtils";
+import { formatDateToDDMMYYYY, isDateValid } from "../../utils/OtherUtils";
+import { CommentDTO } from "../ProductDetailPage/hook/useGameDetails";
 import { ReviewHistoryRow } from "./components/ReviewHistoryRow";
 
 export const ReviewHistory = () => {
+  const [description, setDescription] = useState<string>("");
   const [dates, setDates] = useState<Date[] | null>(null);
+  const [selectedDates, setSelectedDates] = useState<Date[] | null>(null);
+  const [reviews, setReviews] = useState<CommentDTO[]>([]);
+  const [filteredReviews, setFilteredReviews] = useState<CommentDTO[]>([]);
+  const [length, setLength] = useState<number>(5);
 
   const handleDateChange = (e: any) => {
     setDates(e.value);
   };
+
+  const fetchReviews = async () => {
+    const username = getUsernameFromToken();
+    if (!username) return;
+    try {
+      const response = await apiClient.get(
+        `/api/comments/filter-comment?username=${username}`,
+      );
+      setReviews(response.data.data);
+      setFilteredReviews(response.data.data);
+    } catch (error) {
+      console.error("Failed to fetch reviews", error);
+    }
+  };
+
+  const filterReviews = () => {
+    if (!dates) return setFilteredReviews(reviews);
+    const filtered = reviews.filter((review) => {
+      return isDateValid(review.commentDate, dates[0], dates[1]);
+    });
+    setSelectedDates(dates);
+    setFilteredReviews(filtered);
+  };
+
+  const handleDescriptionChange = (e: any) => {
+    setDescription(e.target.value);
+    const filtered = reviews.filter((review) => {
+      let isMatch = review.context.includes(e.target.value);
+      if (selectedDates) {
+        isMatch =
+          isMatch &&
+          isDateValid(review.commentDate, selectedDates[0], selectedDates[1]);
+      }
+      return isMatch;
+    });
+    setFilteredReviews(filtered);
+  };
+
+  useEffect(() => {
+    fetchReviews();
+  }, []);
+
   return (
     <>
       <div className="pl-5">
-        <div className="rounded bg-white p-10">
+        <div className="p-10 bg-white rounded">
           <h1 className="text-3xl">My Review</h1>
           <h6 className="mt-[15px] text-sm font-light">
             Reviews you have written.
@@ -22,7 +73,10 @@ export const ReviewHistory = () => {
           <div className="mt-[30px]">
             <div className="flex items-center justify-between">
               <FloatLabel className="text-sm">
-                <InputText className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]" />
+                <InputText
+                  className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
+                  onChange={(e) => handleDescriptionChange(e)}
+                />
                 <label>Description</label>
               </FloatLabel>
               <div className="flex items-center gap-2">
@@ -40,6 +94,7 @@ export const ReviewHistory = () => {
                   icon="pi pi-filter"
                   size="large"
                   className="h-[50px] w-[50px] bg-mainYellow text-base font-bold text-slate-900"
+                  onClick={filterReviews}
                 />
               </div>
             </div>
@@ -57,47 +112,34 @@ export const ReviewHistory = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    <ReviewHistoryRow
-                      date={"2/2/2024"}
-                      game={"Assassin's Creed II"}
-                      description={
-                        "An epic story of family, vengeance and conspiracy set in the pristine, yet brutal, backdrop of a Renaissance Italy."
-                      }
-                      rated={5}
-                    />
-                    <ReviewHistoryRow
-                      date={"2/2/2024"}
-                      game={"Assassin's Creed II"}
-                      description={
-                        "An epic story of family, vengeance and conspiracy set in the pristine, yet brutal, backdrop of a Renaissance Italy."
-                      }
-                      rated={5}
-                    />
-                    <ReviewHistoryRow
-                      date={"2/2/2024"}
-                      game={"Assassin's Creed II"}
-                      description={
-                        "An epic story of family, vengeance and conspiracy set in the pristine, yet brutal, backdrop of a Renaissance Italy."
-                      }
-                      rated={5}
-                    />
-                    <ReviewHistoryRow
-                      date={"2/2/2024"}
-                      game={"Assassin's Creed II"}
-                      description={
-                        "An epic story of family, vengeance and conspiracy set in the pristine, yet brutal, backdrop of a Renaissance Italy."
-                      }
-                      rated={5}
-                    />
+                    {filteredReviews.slice(0, length).map((review) => (
+                      <ReviewHistoryRow
+                        key={review.sysIdComment}
+                        date={formatDateToDDMMYYYY(review.commentDate)}
+                        game={review.gameDTO?.gameName ?? ""}
+                        description={review.context}
+                        rated={review.star}
+                      />
+                    ))}
                   </tbody>
                 </table>
-                <div className="mt-3 flex justify-center">
+                <div className="flex justify-center gap-5 mt-3">
                   <Button
-                    label="SHOW MORE"
+                    hidden={
+                      filteredReviews.length <= 5 ||
+                      length >= filteredReviews.length
+                    }
+                    label={"SHOW MORE"}
                     size="large"
                     className="mt-5 h-[50px] w-[150px] bg-gray250 text-xs font-bold text-slate-900"
-                    // onClick={handleLogin}
-                    // disabled={isLockedOut}
+                    onClick={() => setLength(length + 5)}
+                  />
+                  <Button
+                    hidden={length <= 5}
+                    label={"SHOW LESS"}
+                    size="large"
+                    className="mt-5 h-[50px] w-[150px] bg-gray250 text-xs font-bold text-slate-900"
+                    onClick={() => setLength(length - 5)}
                   />
                 </div>
               </div>

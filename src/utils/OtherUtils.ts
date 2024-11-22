@@ -60,6 +60,26 @@ export const formatDateFromLocalDateTime = (dateString: string): string => {
   return `${formattedDate}, ${formattedTime}`;
 };
 
+export const normalizeDate = (date: Date): Date => {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+};
+
+export const formatDateToDDMMYYYY = (dateString: string): string => {
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
+export const isDateValid = (iDate: string, sDate: Date, eDate: Date) : boolean => {
+  const date = normalizeDate(new Date(iDate));
+  const startDate = normalizeDate(sDate);
+  const endDate = normalizeDate(eDate);
+
+  return (date >= startDate && date <= endDate);
+}
+
 /**
  * Manages button state during an API call.
  * @param {Function} apiCall - The API call function.
