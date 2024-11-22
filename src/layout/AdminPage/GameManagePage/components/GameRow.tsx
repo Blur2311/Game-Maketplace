@@ -16,6 +16,7 @@ export const GameRow: React.FC<Game> = ({
   isActive,
   quantity,
   media,
+  slug,
 }) => {
   const handleDetailClick = () => {
     const gameData = {
@@ -29,6 +30,7 @@ export const GameRow: React.FC<Game> = ({
       isActive,
       quantity,
       media,
+      slug,
     };
     localStorage.setItem("selectedGame", JSON.stringify(gameData));
   };

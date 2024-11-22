@@ -7,7 +7,6 @@ import { IoArrowForward } from "react-icons/io5";
 import {
   IoIosCheckmarkCircle,
   IoIosCloseCircle,
-  IoIosTime,
 } from "react-icons/io";
 import { Voucher } from "../../../../model/VoucherModel";
 
@@ -20,7 +19,31 @@ export const VoucherRow: React.FC<VoucherRowProps> = ({
   discountName,
   startDate,
   endDate,
+  maxDiscount,
+  codeVoucher,
+  description,
+  quantity,
+  files,
+  voucherBanner
 }) => {
+  const handleDetailClick = () => {
+    const voucher = {
+      discountPercent,
+      active,
+      sysIdVoucher,
+      discountName,
+      startDate,
+      endDate,
+      maxDiscount,
+      codeVoucher,
+      description,
+      quantity,
+      files,
+      voucherBanner,
+    };
+    localStorage.setItem("selectedVoucher", JSON.stringify(voucher));
+  };
+
   return (
     <>
       <tr className="border-b border-borderRow bg-white text-xs font-light">
@@ -41,7 +64,7 @@ export const VoucherRow: React.FC<VoucherRowProps> = ({
             <div
               className={`flex h-6 items-center justify-center gap-1 rounded-full border px-2 font-medium`}
             >
-               {active ? (
+              {active ? (
                 <>
                   <IoIosCheckmarkCircle size={16} className="text-green-500" />
                   <span>Active</span>
@@ -60,6 +83,7 @@ export const VoucherRow: React.FC<VoucherRowProps> = ({
             <Link
               to={`/admin/voucher/detail/${sysIdVoucher}`}
               className={"rounded-lg p-2 hover:bg-gray-100"}
+              onClick={handleDetailClick}
             >
               <IoArrowForward size={24} />
             </Link>

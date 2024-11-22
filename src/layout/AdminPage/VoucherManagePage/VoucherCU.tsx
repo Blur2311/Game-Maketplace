@@ -3,36 +3,66 @@ import { FloatLabel } from "primereact/floatlabel";
 import { InputNumber } from "primereact/inputnumber";
 import { InputText } from "primereact/inputtext";
 import { Checkbox, CheckboxChangeEvent } from "primereact/checkbox";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TiArrowLeft } from "react-icons/ti";
 import { NavLink, useParams, useNavigate } from "react-router-dom";
 import FileUploadComponent from "./components/FileUpload";
 import {
   createVoucher,
+  updateVoucher,
   generateRandomString,
+  convertFileToBase64,
+  validateForm,
 } from "./service/VoucherCUService";
 
 export const VoucherCU = () => {
   const { id } = useParams<{ id?: string }>(); // Nhận tham số id tùy chọn
   const isUpdateMode = Boolean(id);
   const navigate = useNavigate();
-  const [fromDate, setFromDate] = useState<Date | null>(null);
-  const [toDate, setToDate] = useState<Date | null>(null);
+  const [codeVoucher, setCodeVoucher] = useState<string>("");
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
   const [active, setActive] = useState<boolean>(true);
   const [maxDiscount, setMaxDiscount] = useState<number | null>(null);
   const [files, setFiles] = useState<(File | string)[]>([]);
+  const [voucherBanner, setVoucherBanner] = useState<string | null>(null);
   const [discountName, setDiscountName] = useState<string>("");
-  const [shortDescription, setShortDescription] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
   const [discountPercent, setDiscountPercent] = useState<number | null>(null);
   const [quantity, setQuantity] = useState<number | null>(null);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  const handleFromDateChange = (e: { value: Date | null | undefined }) => {
-    setFromDate(e.value || null); // Sets to null if value is undefined
+  useEffect(() => {
+    if (isUpdateMode && id) {
+      const storedVoucher = localStorage.getItem("selectedVoucher");
+      if (storedVoucher) {
+        try {
+          const voucher = JSON.parse(storedVoucher);
+
+          setCodeVoucher(voucher.codeVoucher);
+          setDiscountName(voucher.discountName);
+          setDescription(voucher.description);
+          setDiscountPercent(voucher.discountPercent);
+          setQuantity(voucher.quantity);
+          setMaxDiscount(voucher.maxDiscount);
+          setStartDate(new Date(voucher.startDate));
+          setEndDate(new Date(voucher.endDate));
+          setActive(voucher.active);
+          setFiles(voucher.voucherBanner ? [voucher.voucherBanner] : []);
+          setVoucherBanner(voucher.voucherBanner || null);
+        } catch (error) {
+          console.error("Invalid voucher data:", error);
+        }
+      }
+    }
+  }, [id, isUpdateMode]);
+
+  const handleStartDateChange = (e: { value: Date | null | undefined }) => {
+    setStartDate(e.value || null); // Sets to null if value is undefined
   };
 
-  const handleToDateChange = (e: { value: Date | null | undefined }) => {
-    setToDate(e.value || null); // Sets to null if value is undefined
+  const handleEndDateChange = (e: { value: Date | null | undefined }) => {
+    setEndDate(e.value || null); // Sets to null if value is undefined
   };
 
   const handleActiveChange = (e: CheckboxChangeEvent) => {
@@ -51,10 +81,8 @@ export const VoucherCU = () => {
     setDiscountName(e.target.value);
   };
 
-  const handleShortDescriptionChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setShortDescription(e.target.value);
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDescription(e.target.value);
   };
 
   const handleDiscountPercentChange = (e: { value: number | null }) => {
@@ -65,66 +93,60 @@ export const VoucherCU = () => {
     setQuantity(e.value);
   };
 
-  const convertFileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (error) => reject(error);
-    });
-  };
-
-  const validateForm = () => {
-    const newErrors: { [key: string]: string } = {};
-    if (!discountName) newErrors.discountName = "Name is required";
-    if (!shortDescription)
-      newErrors.shortDescription = "Short description is required";
-    if (
-      discountPercent === null ||
-      discountPercent <= 0 ||
-      discountPercent >= 100
-    )
-      newErrors.discountPercent = "Discount percent must be between 0 and 100";
-    if (quantity === null || quantity <= 0)
-      newErrors.quantity = "Quantity must be greater than 0";
-    if (maxDiscount === null || maxDiscount < 0)
-      newErrors.maxDiscount = "Max discount must be greater than or equal to 0";
-    if (!fromDate) newErrors.fromDate = "Start date is required";
-    if (!toDate) newErrors.toDate = "End date is required";
-    if (fromDate && toDate && fromDate > toDate)
-      newErrors.toDate = "End date must be greater than or equal to start date";
-    if (files.length === 0) newErrors.files = "At least one file is required";
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
   const handleSubmit = async () => {
-    if (!validateForm()) return;
-
-    let base64Files: string[] = [];
-    if (files.length > 0 && files[0] instanceof File) {
-      base64Files = [await convertFileToBase64(files[0] as File)];
-    }
-
-    const voucherDTO = {
-      codeVoucher: "VOU-" + generateRandomString(5),
+    const voucherData = {
       discountName,
-      shortDescription,
+      description,
       discountPercent,
       quantity,
       maxDiscount,
-      fromDate: fromDate ? fromDate.toISOString().split("T")[0] : null,
-      toDate: toDate ? toDate.toISOString().split("T")[0] : null,
-      active,
-      files: base64Files,
+      startDate,
+      endDate,
+      files,
     };
-    console.log("Voucher DTO:", voucherDTO);
+
+    const newErrors = validateForm(voucherData, isUpdateMode);
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
+
+    let base64Files: string[] = [];
+    let fileName: string | undefined;
+    if (files.length > 0 && files[0] instanceof File) {
+      base64Files = [await convertFileToBase64(files[0] as File)];
+      fileName = (files[0] as File).name;
+    }
+
+    const voucherDTO = {
+      codeVoucher: isUpdateMode ? codeVoucher : "V-" + generateRandomString(6),
+      discountName,
+      description,
+      discountPercent,
+      quantity,
+      maxDiscount,
+      startDate: startDate
+        ? new Date(startDate.getTime() - startDate.getTimezoneOffset() * 60000)
+            .toISOString()
+            .split("T")[0]
+        : null,
+      endDate: endDate
+        ? new Date(endDate.getTime() - endDate.getTimezoneOffset() * 60000)
+            .toISOString()
+            .split("T")[0]
+        : null,
+      active,
+      files: base64Files.length > 0 ? base64Files : undefined, // Only include files if there are new files
+      fileName: fileName,
+    };
 
     try {
-      await createVoucher(voucherDTO);
+      if (isUpdateMode && id) {
+        await updateVoucher(parseInt(id), voucherDTO);
+      } else {
+        await createVoucher(voucherDTO);
+      }
       navigate("/admin/voucher/list");
     } catch (error) {
-      console.error("Error creating voucher:", error);
+      console.error("Error creating/updating voucher:", error);
     }
   };
 
@@ -171,15 +193,15 @@ export const VoucherCU = () => {
                   <FloatLabel className="col-span-12 text-sm">
                     <InputText
                       className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black"
-                      value={shortDescription}
-                      onChange={handleShortDescriptionChange}
+                      value={description}
+                      onChange={handleDescriptionChange}
                     />
                     <label>
-                      Short description <span className="text-red-500">*</span>
+                      Description <span className="text-red-500">*</span>
                     </label>
-                    {errors.shortDescription && (
+                    {errors.description && (
                       <p className="mt-1 text-xs text-red-500">
-                        {errors.shortDescription}
+                        {errors.description}
                       </p>
                     )}
                   </FloatLabel>
@@ -241,9 +263,9 @@ export const VoucherCU = () => {
 
                   <FloatLabel className="col-span-12 text-sm">
                     <Calendar
-                      value={fromDate}
-                      onChange={handleFromDateChange}
-                      dateFormat="yy-mm-dd"
+                      value={startDate}
+                      onChange={handleStartDateChange}
+                      dateFormat="dd-mm-yy"
                       showIcon
                       className="custom-calendar-admin h-[54px] w-full rounded-lg border px-4 py-2 font-inter text-sm shadow-adminInputShadow"
                       inputClassName="shadow-none"
@@ -251,18 +273,18 @@ export const VoucherCU = () => {
                     <label>
                       Start date <span className="text-red-500">*</span>
                     </label>
-                    {errors.fromDate && (
+                    {errors.startDate && (
                       <p className="mt-1 text-xs text-red-500">
-                        {errors.fromDate}
+                        {errors.startDate}
                       </p>
                     )}
                   </FloatLabel>
 
                   <FloatLabel className="col-span-12 text-sm">
                     <Calendar
-                      value={toDate}
-                      onChange={handleToDateChange}
-                      dateFormat="yy-mm-dd"
+                      value={endDate}
+                      onChange={handleEndDateChange}
+                      dateFormat="dd-mm-yy"
                       showIcon
                       className="custom-calendar-admin h-[54px] w-full rounded-lg border px-4 py-2 font-inter text-sm shadow-adminInputShadow"
                       inputClassName="shadow-none"
@@ -270,9 +292,9 @@ export const VoucherCU = () => {
                     <label>
                       End date <span className="text-red-500">*</span>
                     </label>
-                    {errors.toDate && (
+                    {errors.endDate && (
                       <p className="mt-1 text-xs text-red-500">
-                        {errors.toDate}
+                        {errors.endDate}
                       </p>
                     )}
                   </FloatLabel>
@@ -297,13 +319,14 @@ export const VoucherCU = () => {
           <div className="rounded-[20px] px-6 pb-8 pt-4 shadow-adminBoxshadow">
             <div className="grid grid-cols-12 gap-6">
               <div className="col-span-12 sm:col-span-4">
-                <h6 className="text-lg font-medium">Discount cover</h6>
+                <h6 className="text-lg font-medium">Voucher cover</h6>
               </div>
               <div className="col-span-12 sm:col-span-8">
                 <FileUploadComponent
                   onFilesChange={handleFilesChange}
                   existingFiles={files}
                   isUpdateMode={isUpdateMode}
+                  voucherBanner={voucherBanner}
                 />
                 {errors.files && (
                   <p className="mt-1 text-xs text-red-500">{errors.files}</p>

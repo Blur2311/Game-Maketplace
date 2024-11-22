@@ -52,6 +52,7 @@ export const GameCU = () => {
   const [images, setImages] = useState<(File | string)[]>([]);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [media, setMedia] = useState([]);
+  const [slug, setSlug] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<{ [key: string]: string }>({});
@@ -103,6 +104,7 @@ export const GameCU = () => {
               .map((m: any) => m.mediaUrl),
           );
           setMedia(game.media || []);
+          setSlug(game.slug || "");
         } catch (error) {
           console.error("Invalid game data:", error);
         }
@@ -261,7 +263,7 @@ export const GameCU = () => {
         <div className="grid grid-cols-12 items-start gap-8">
           <div
             className={`${
-              isUpdateMode ? "md:col-span-12" : "col-span-12"
+              isUpdateMode ? "md:col-span-8" : "col-span-12"
             } order-2 col-span-12 rounded-[20px] shadow-adminBoxshadow md:order-1`}
           >
             <div className="px-6 pt-4">
@@ -479,6 +481,56 @@ export const GameCU = () => {
               />
             </div>
           </div>
+
+          {isUpdateMode && (
+            <div className="order-1 col-span-12 rounded-[20px] shadow-adminBoxshadow md:order-2 md:col-span-4">
+              <div className="px-6 pt-4">
+                <div className="flex flex-col gap-8 pb-8">
+                  <h6 className="text-lg font-medium">Preview</h6>
+                </div>
+                <div className="flex flex-col gap-4 pb-8">
+                {thumbnailUrl ? (
+                    <img
+                      src={thumbnailUrl}
+                      alt="Thumbnail"
+                      className="w-[100px] rounded-lg"
+                    />
+                  ) : (
+                    <p>No thumbnail available</p>
+                  )}
+                  <div className="">
+                    <p className="text-sm text-textSecond">{gameName}</p>
+                  </div>
+                  {discountPercent ? (
+                    <div className="flex items-center gap-2">
+                      <div className="rounded-full bg-mainCyan px-2 py-[2px] text-xs text-black">
+                        -{discountPercent}%
+                      </div>
+                      <p className="text-sm line-through">
+                        {formatCurrency(price || 0)}
+                      </p>
+                      <p className="text-sm">
+                        {formatCurrency(
+                          Math.round(
+                            calculateSalePrice(price || 0, discountPercent),
+                          ),
+                        )}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-sm">{formatCurrency(price || 0)}</p>
+                  )}
+                  <Link
+                    to={`/product?game=${slug}`}
+                    className="text-sm font-medium text-mainCyan"
+                  >
+                    View Product
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
+
         </div>
       </div>
     </>

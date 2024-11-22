@@ -7,6 +7,7 @@ interface FileUploadComponentProps {
   single?: boolean;
   existingFiles?: (File | string)[];
   isUpdateMode?: boolean;
+  voucherBanner?: string | null;
 }
 
 const FileUploadComponent: React.FC<FileUploadComponentProps> = ({
@@ -14,12 +15,15 @@ const FileUploadComponent: React.FC<FileUploadComponentProps> = ({
   single = true, // Default to single file upload
   existingFiles = [],
   isUpdateMode = false,
+  voucherBanner,
 }) => {
   const [files, setFiles] = useState<(File | string)[]>(existingFiles);
 
   useEffect(() => {
-    setFiles(existingFiles);
-  }, [existingFiles]);
+    if (isUpdateMode && existingFiles.length > 0) {
+      setFiles(existingFiles);
+    }
+  }, [existingFiles, isUpdateMode]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(event.target.files || []);
