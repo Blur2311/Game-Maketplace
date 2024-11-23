@@ -1,12 +1,12 @@
 import { Button } from "primereact/button";
 import { FloatLabel } from "primereact/floatlabel";
 import { InputText } from "primereact/inputtext";
-// import { Password } from "primereact/password";
 import { Toast } from "primereact/toast";
 import React, { useCallback, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import apiClient from "../../config/apiClient";
 import { showErrorToast, showInfoToast } from "../../utils/ErrorHandlingUtils";
+import { isValidEmail } from "../../utils/OtherUtils";
 
 export const ForgotPassword: React.FC = React.memo(() => {
   const [email, setEmail] = useState("");
@@ -15,7 +15,8 @@ export const ForgotPassword: React.FC = React.memo(() => {
   const navigate = useNavigate();
 
   const handleSubmit = useCallback(async () => {
-    if (!email) {
+    if (!email || !isValidEmail(email)) {
+      showErrorToast(toast, "Please enter a valid email address.");
       return;
     }
 
@@ -60,8 +61,8 @@ export const ForgotPassword: React.FC = React.memo(() => {
           <p className="mb-6 max-w-[360px] text-justify text-[0.925rem] text-mainYellow hover:text-white">
             To reset your password, please enter your email address below
           </p>
-          <div className="flex w-full flex-col items-center gap-6">
-            <FloatLabel className="mt-2 w-full text-sm">
+          <div className="flex flex-col items-center w-full gap-6">
+            <FloatLabel className="w-full mt-2 text-sm">
               <InputText
                 id="Email"
                 className={`h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]`}
@@ -73,7 +74,7 @@ export const ForgotPassword: React.FC = React.memo(() => {
             <Button
               label="SEND OTP"
               size="large"
-              className="h-14 w-full bg-mainYellow text-base font-bold text-slate-900"
+              className="w-full text-base font-bold h-14 bg-mainYellow text-slate-900"
               onClick={handleSubmit}
               disabled={isSubmitting}
             />
