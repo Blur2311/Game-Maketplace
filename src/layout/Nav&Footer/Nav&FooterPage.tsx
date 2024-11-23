@@ -24,8 +24,10 @@ export const NavSidebarPage: React.FC = () => {
   return (
     <>
       <div className="mx-auto max-w-[1440px]">
-        <Navbar />
-        <div className="bg-bgProfile h-full min-h-screen">
+        <div className="sticky top-0 z-50 bg-bgMainColor">
+          <Navbar />
+        </div>
+        <div className="h-full min-h-screen bg-bgProfile">
           <div className="w-full px-3 lg:mx-auto lg:w-11/12">
             <div className="flex py-20">
               <div className="w-1/4">

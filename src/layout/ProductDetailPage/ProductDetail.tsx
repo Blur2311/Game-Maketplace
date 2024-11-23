@@ -27,14 +27,15 @@ import useGameDetails from "./hook/useGameDetails";
 import "./ProductDetail.css";
 
 export const ProductDetail = () => {
-  const { gameDetails, recommendations, comments, setComments, error } = useGameDetails();
+  const { gameDetails, recommendations, comments, setComments, error } =
+    useGameDetails();
   const { addGameToCart, handleBuyNow } = useCart();
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(3);
   const msgs = useRef<Messages>(null);
 
   useEffect(() => {
-    console.log("comments", comments);    
+    console.log("comments", comments);
     if (!comments || comments.length === 0) {
       showInfoMessages(msgs, "Be the first to review this game!");
     } else {
@@ -64,12 +65,12 @@ export const ProductDetail = () => {
             value={gameDetails.rating}
             readOnly
             cancel={false}
-            className="gap-1 custom-rating"
+            className="custom-rating gap-1"
           />
           {gameDetails.rating}
         </div>
         <div className="mb-5 mt-[30px] flex items-center gap-[30px] pb-2">
-          <div className="py-2 border-b-2 border-mainCyan">
+          <div className="border-b-2 border-mainCyan py-2">
             <p>Overview</p>
           </div>
         </div>
@@ -96,7 +97,7 @@ export const ProductDetail = () => {
                 </div>
               </div>
               {gameDetails.features && (
-                <div className="flex-1 pl-5 border-l border-grayBorder">
+                <div className="flex-1 border-l border-grayBorder pl-5">
                   <p className="mb-2 text-sm font-light text-textType">Types</p>
                   <div className="flex flex-wrap items-center gap-2">
                     {gameDetails.features.split("\n").map((feature, index) => (
@@ -111,7 +112,7 @@ export const ProductDetail = () => {
             <ReadMore text={gameDetails.about} maxLength={200} />
           </div>
           <div className="">
-            <div className="flex items-center justify-between mb-6">
+            <div className="mb-6 flex items-center justify-between">
               <h6 className="text-xl font-semibold">
                 {gameDetails.gameName} Related Products
               </h6>
@@ -121,10 +122,10 @@ export const ProductDetail = () => {
                 totalRecords={100} // Độ dài dữ liệu
                 template=" PrevPageLink  NextPageLink"
                 onPageChange={onPageChange}
-                className="px-0 custom-pagi-browser bg-bgMainColor"
+                className="custom-pagi-browser bg-bgMainColor px-0"
               />
             </div>
-            <div className="flex items-start justify-evenly">
+            <div className="flex items-stretch justify-evenly">
               {recommendations &&
                 recommendations.map((recommendation, index) => (
                   <ProductCard key={index} {...recommendation} />
@@ -132,17 +133,21 @@ export const ProductDetail = () => {
             </div>
           </div>
           <div className="mt-12">
-            <Review gameId={gameDetails.sysIdGame} comments={comments} setComments={setComments} />
+            <Review
+              gameId={gameDetails.sysIdGame}
+              comments={comments}
+              setComments={setComments}
+            />
           </div>
           <div className="my-12">
-            <div className="w-full text-white rounded-lg">
-              <div className="flex items-center justify-between mb-6">
+            <div className="w-full rounded-lg text-white">
+              <div className="mb-6 flex items-center justify-between">
                 <h2 className="text-xl font-semibold">
                   {gameDetails.gameName} Ratings & Reviews
                 </h2>
                 {comments && comments.length > 3 && (
                   <Link to="#" className="flex items-center font-light">
-                    See All Reviews <i className="ml-2 pi pi-external-link"></i>
+                    See All Reviews <i className="pi pi-external-link ml-2"></i>
                   </Link>
                 )}
               </div>
@@ -159,7 +164,7 @@ export const ProductDetail = () => {
                     />
                   ))}
               </div>
-              <div className="flex card justify-content-center">
+              <div className="card justify-content-center flex">
                 <Messages ref={msgs} />
               </div>
             </div>
@@ -172,7 +177,7 @@ export const ProductDetail = () => {
               alt=""
               className="rounded"
             />
-            <div className="flex items-center w-full gap-2 justify-evenly">
+            <div className="flex w-full items-center justify-evenly gap-2">
               {gameDetails.discountPercent ? (
                 <>
                   <div className="rounded-full bg-mainCyan px-2 py-[2px] text-xs text-black">
@@ -180,7 +185,7 @@ export const ProductDetail = () => {
                       "-" + gameDetails.discountPercent}
                     %
                   </div>
-                  <p className="text-sm line-through text-textType">
+                  <p className="text-sm text-textType line-through">
                     {formatCurrency(gameDetails.price)}
                   </p>
                   <p className="text-base font-bold text-white">
@@ -193,7 +198,7 @@ export const ProductDetail = () => {
                   </p>
                 </>
               ) : (
-                <p className="w-full text-base font-bold text-center text-white">
+                <p className="w-full text-center text-base font-bold text-white">
                   {formatCurrency(
                     calculateSalePrice(
                       gameDetails.price,
@@ -223,7 +228,7 @@ export const ProductDetail = () => {
                 className="h-[50px] w-full rounded-[10px] bg-grayBorder text-sm font-medium transition duration-300 hover:bg-gray200"
               />
             </div>
-            <div className="flex flex-col w-full text-sm font-light text-textType">
+            <div className="flex w-full flex-col text-sm font-light text-textType">
               <div className="flex items-center justify-between border-b border-bgCheckBox py-[10px]">
                 <p>Rewards</p>
                 <p className="text-white">Earn 5% Back</p>

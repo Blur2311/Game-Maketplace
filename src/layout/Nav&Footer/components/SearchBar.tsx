@@ -21,7 +21,13 @@ export const SearchBar = () => {
     { label: "Cart", value: "5", link: "/cart" },
   ];
   const handleAddToCart = () => {
-    const item: CartItem = { slug: "dying-light-2-stay-human", quantity: 3 };
+    const item: CartItem = {
+      slug: "dying-light-2-stay-human",
+      quantity: 3,
+      name: "",
+      price: 0,
+      mediaUrl: "",
+    };
     addToCart(item);
   };
   const optionTemplate = (option: any) => {
@@ -34,16 +40,16 @@ export const SearchBar = () => {
   return (
     <>
       <div className="sticky top-0 z-50 h-[100px] bg-bgMainColor">
-        <div className="flex items-center justify-between w-11/12 h-full mx-auto lg:w-3/4">
+        <div className="mx-auto flex h-full w-11/12 items-center justify-between lg:w-3/4">
           <div className="flex items-center">
             <div className="relative rounded-full bg-gray300">
-              <i className="absolute transform -translate-y-1/2 pi pi-search left-3 top-1/2 text-gray100"></i>
+              <i className="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 transform text-gray100"></i>
               <InputText
                 placeholder="Search store"
                 className="bg-transparent p-3 pl-10 text-xs text-white focus:ring-0 md:w-[230px]"
               />
             </div>
-            <div className="hidden ml-5 lg:block">
+            <div className="ml-5 hidden lg:block">
               <ul className="flex items-center gap-8 text-sm font-normal text-gray150">
                 <li className="">
                   <NavLink
@@ -77,7 +83,7 @@ export const SearchBar = () => {
                 </li>
               </ul>
             </div>
-            <div className="block ml-5 lg:hidden">
+            <div className="ml-5 block lg:hidden">
               <Dropdown
                 value={selectedItem}
                 options={options}

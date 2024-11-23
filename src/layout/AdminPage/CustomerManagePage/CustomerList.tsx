@@ -1,17 +1,40 @@
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
-import { MultiSelect } from "primereact/multiselect";
 import { Paginator } from "primereact/paginator";
 import { MdAddBox } from "react-icons/md";
 import { RightSideButton } from "../../../components/RightSideButton";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CustomerRow } from "./components/CustomerRow";
+import { getAllUsers, filterAndSortUsers } from "./service/CustomerListService";
+import { User } from "../../../model/UsersModel";
 
 export const CustomerList = () => {
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(10);
   const [totalRecords, setTotalRecords] = useState(100);
   const [selectedOption, setSelectedOption] = useState<any | null>("oldest");
+  const [customers, setCustomers] = useState<User[]>([]);
+  const [filteredCustomers, setFilteredCustomers] = useState<User[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getAllUsers();
+        setCustomers(data);
+        setTotalRecords(data.length);
+        setFilteredCustomers(filterAndSortUsers(data, searchTerm, selectedOption));
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    setFilteredCustomers(filterAndSortUsers(customers, searchTerm, selectedOption));
+  }, [searchTerm, selectedOption, customers]);
 
   const options: any[] = [
     { label: "Oldest", value: "oldest" },
@@ -21,7 +44,10 @@ export const CustomerList = () => {
   const onPageChange = (event: any) => {
     setFirst(event.first);
     setRows(event.rows);
-    //  fetchCategories(event.first, event.rows, searchTerm);
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
   };
 
   return (
@@ -44,8 +70,8 @@ export const CustomerList = () => {
                           <InputText
                             placeholder="Search by name"
                             className="w-full bg-transparent py-[17px] pl-10 pr-3 text-sm text-black focus:ring-0"
-                            // value={searchTerm}
-                            // onChange={handleSearchChange}
+                            value={searchTerm}
+                            onChange={handleSearchChange}
                           />
                         </div>
                       </div>
@@ -77,12 +103,9 @@ export const CustomerList = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      <CustomerRow
-                        name={"Huy Pham"}
-                        avatar="/cat.jpeg"
-                        email={"hhuydz23001@gmail.com"}
-                        date={"2024-01-01"}
-                      />
+                      {filteredCustomers.slice(first, first + rows).map((customer) => (
+                        <CustomerRow key={customer.sysIdUser} user={customer} />
+                      ))}
                     </tbody>
                   </table>
                 </div>
