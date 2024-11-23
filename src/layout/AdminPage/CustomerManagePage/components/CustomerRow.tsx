@@ -1,42 +1,36 @@
 import { Link } from "react-router-dom";
-import { formatDate } from "../../../../utils/OtherUtils";
+import { User } from "../../../../model/UsersModel";
+import { format } from "date-fns";
 
 type CustomerRowProps = {
-  name: string;
-  avatar: string;
-  email: string;
-  date: string;
+  user: User;
 };
 
-export const CustomerRow: React.FC<CustomerRowProps> = ({
-  name,
-  avatar,
-  email,
-  date,
-}) => {
+export const CustomerRow: React.FC<CustomerRowProps> = ({ user }) => {
+  const { sysIdUser, hoVaTen, avatar, email, dob } = user;
+
+  const formattedDob = dob ? format(new Date(dob), "dd-MM-yyyy") : "";
+
   return (
-    <>
-      <tr className="border-b border-borderRow bg-white text-xs font-light">
-        <td className={`px-5 py-[25px]`}>
-          <div className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full">
-              <img src={avatar} alt="" className="" />
-            </div>
-            <p>{name}</p>
+    <tr className="border-b border-borderRow bg-white text-xs font-light">
+      <td className={`px-5 py-[25px]`}>
+        <div className="flex items-center gap-2">
+          <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full">
+            <img src={avatar || ""} alt={hoVaTen} className="" />
           </div>
-        </td>
-        <td className={`px-5 py-[25px]`}>{email}</td>
-        <td className={`px-5 py-[25px]`}>{formatDate(date)}</td>
-        <td className={`px-5 py-[25px]`}>
-          <Link
-            to={`/admin/customer/detail/${name}`}
-            className="text-black underline"
-            // onClick={handleDetailClick}
-          >
-            Detail
-          </Link>
-        </td>
-      </tr>
-    </>
+          <p>{hoVaTen}</p>
+        </div>
+      </td>
+      <td className={`px-5 py-[25px]`}>{email}</td>
+      <td className={`px-5 py-[25px]`}>{formattedDob}</td>
+      <td className={`px-5 py-[25px]`}>
+        <Link
+          to={`/admin/customer/detail/${sysIdUser}`}
+          className="text-black underline"
+        >
+          Detail
+        </Link>
+      </td>
+    </tr>
   );
 };

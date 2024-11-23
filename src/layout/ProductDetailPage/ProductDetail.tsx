@@ -124,7 +124,7 @@ export const ProductDetail = () => {
                 className="px-0 custom-pagi-browser bg-bgMainColor"
               />
             </div>
-            <div className="flex items-start justify-evenly">
+            <div className="flex items-stretch  justify-evenly">
               {recommendations &&
                 recommendations.map((recommendation, index) => (
                   <ProductCard key={index} {...recommendation} />
