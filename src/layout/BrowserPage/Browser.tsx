@@ -136,7 +136,7 @@ export const BrowserPage = () => {
       if (currentFilters.maxPrice !== undefined) params.append('minPrice', currentFilters.maxPrice.toString());
       if (currentFilters.genre) params.append('category', currentFilters.genre);
 
-      const url = `/api/games/browser?${params.toString()}`;
+      const url = `/api/games/p/browser?${params.toString()}`;
       const response = await apiClient.get<{ content: Game[], totalPages: number, totalElements: number, number: number }>(url);
       setGames(response.data.content);
       setLoading(false);
@@ -158,7 +158,7 @@ export const BrowserPage = () => {
     const fetchGames = async () => {
       try {
         setLoading(true);
-        const response = await apiClient.get<{ content: Game[], totalElements: number, totalPages: number, size: number }>('/api/games/browser?page=0&size=12');
+        const response = await apiClient.get<{ content: Game[], totalElements: number, totalPages: number, size: number }>('/api/games/p/browser?page=0&size=12');
         setGames(response.data.content);
         setLoading(false);
         setTotalRecords(response.data.totalElements);
@@ -198,7 +198,7 @@ export const BrowserPage = () => {
       if (minPrice !== undefined) params.append('maxPrice', minPrice.toString());
       if (genre) params.append('category', genre);
 
-      const url = `/api/games/browser?${params.toString()}`;
+      const url = `/api/games/p/browser?${params.toString()}`;
       const response = await apiClient.get<{ content: Game[], totalElements: number, totalPages: number, size: number }>(url);
       setGames(response.data.content);
       setTotalRecords(response.data.totalElements);
@@ -230,7 +230,7 @@ export const BrowserPage = () => {
   const fetchGames = async () => {
     try {
       setLoading(true);
-      const response = await apiClient.get<{ content: Game[], totalElements: number, totalPages: number, size: number }>('/api/games/browser?page=0&size=12');
+      const response = await apiClient.get<{ content: Game[], totalElements: number, totalPages: number, size: number }>('/api/games/p/browser?page=0&size=12');
       setGames(response.data.content);
       setLoading(false);
     } catch (err) {
@@ -286,7 +286,7 @@ export const BrowserPage = () => {
       if (currentFilters.maxPrice !== undefined) params.append('maxPrice', currentFilters.maxPrice.toString());
       if (currentFilters.genre) params.append('category', currentFilters.genre);
   
-      const url = `/api/games/browser?${params.toString()}`;
+      const url = `/api/games/p/browser?${params.toString()}`;
       const response = await apiClient.get<{ content: Game[], totalPages: number, totalElements: number, number: number }>(url);
       setGames(response.data.content);
       setLoading(false);

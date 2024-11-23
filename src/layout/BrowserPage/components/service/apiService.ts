@@ -3,7 +3,7 @@ import type { Game } from "../../../../utils/BrowserUtils";
 
 export const fetchGames = async (page = 0, size = 12) => {
   const response = await apiClient.get<{ content: Game[], totalElements: number, totalPages: number, size: number }>(
-    `/api/games/browser?page=${page}&size=${size}`
+    `/api/games/p/browser?page=${page}&size=${size}`
   );
   return response.data;
 };
@@ -17,7 +17,7 @@ export const searchGames = async (name: string, minPrice?: number, maxPrice?: nu
   if (genre) params.append("category", genre);
 
   const response = await apiClient.get<{ content: Game[], totalElements: number, totalPages: number, size: number }>(
-    `/api/games/browser?${params.toString()}`
+    `/api/games/p/browser?${params.toString()}`
   );
   return response.data;
 };

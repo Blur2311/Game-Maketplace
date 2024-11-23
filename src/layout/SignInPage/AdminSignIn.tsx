@@ -83,7 +83,7 @@ export const AdminSignIn: React.FC = React.memo(() => {
       localStorage.removeItem("email");
 
       setTimeout(() => {
-        navigate(decodeToken.role === "CUSTOMER" ? "/" : "/admin");
+        navigate(decodeToken.role === "CUSTOMER" ? "/" : "/admin/home");
       }, 3000);
     } catch (error) {
       const attempts = getLoginAttempts() + 1;
