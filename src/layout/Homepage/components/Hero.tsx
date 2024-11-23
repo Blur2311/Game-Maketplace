@@ -141,18 +141,16 @@ export const Hero = () => {
     <>
       <div className="">
         <div className="flex flex-col items-center gap-5 mb-10 md:flex-row">
-          <a
-            href="#"
+          <Link to="/product?game=Black_Myth_Wukong"
             className="flex-1 transition duration-300 hover:brightness-125"
           >
-            <img src="/image1.png" alt="" className="rounded-xl" />
-          </a>
-          <a
-            href="#"
+            <img src="/wukong.webp" alt="" className="rounded-xl hot-img" />
+          </Link>
+          <Link to="/product?game=The_Scourge__Tai_ng"
             className="flex-1 transition duration-300 hover:brightness-125"
           >
-            <img src="/image2.png" alt="" className="rounded-xl" />
-          </a>
+            <img src="/scourge.webp" alt="" className="rounded-xl hot-img" />
+          </Link>
         </div>
         <Galleria
           value={items}

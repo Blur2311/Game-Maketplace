@@ -77,9 +77,24 @@ body {
 }
 
 .top5-items-image {
-  @apply max-h-[7.5rem] min-h-[7.5rem] min-w-[5.625rem] max-w-[5.625rem] object-cover;
+  @apply max-h-[7.5rem] min-h-[7.5rem] min-w-[5.625rem] max-w-[5.625rem];
+  object-fit: cover;
 }
 
 td {
   max-width: 12rem;
+}
+
+.hot-img {
+  height: 16rem;
+  object-fit: cover;
+  width: 100%;
+}
+
+.max-block-fit {
+  max-block-size: fit-content;
+}
+
+.game-thumbnail-img {
+  @apply h-[18rem] w-full object-cover transition duration-300 hover:brightness-125;
 }
