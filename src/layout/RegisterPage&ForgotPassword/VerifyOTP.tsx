@@ -1,8 +1,7 @@
 import { Button } from "primereact/button";
-// import { Password } from "primereact/password";
 import { InputOtp } from "primereact/inputotp";
 import { Toast } from "primereact/toast";
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { resendOtp, verifyOtp } from "../../utils/VerifyOTPUtils";
 import "./VerifyOTP.css";
@@ -50,9 +49,9 @@ export const VerifyOTP: React.FC = React.memo(() => {
   const handleSubmit = useCallback(async () => {
     if (isTokenValid) {
       setIsSubmitDisabled(true);
-      await verifyOtp(token, email, toast, navigate);
+      await verifyOtp(token, email, navigate, "", "", "", toast);
       setTimeout(() => {
-        setIsSubmitDisabled(false); // Re-enable the submit button after 5 seconds
+        setIsSubmitDisabled(false);
       }, 5000);
     }
   }, [isTokenValid, token, email, navigate]);
@@ -90,9 +89,7 @@ export const VerifyOTP: React.FC = React.memo(() => {
                   }
                 }}
               >
-                {isLinkDisabled
-                  ? `Resend OTP (${countdown}s)`
-                  : "Resend OTP"}
+                {isLinkDisabled ? `Resend OTP (${countdown}s)` : "Resend OTP"}
               </a>
               <Button
                 label="CONFIRM"

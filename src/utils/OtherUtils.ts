@@ -101,6 +101,12 @@ export const isDateValid = (iDate: string, sDate: Date, eDate: Date | null): boo
   return (date >= startDate && date <= endDate);
 }
 
+export const isValidEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+
 /**
  * Manages button state during an API call.
  * @param {Function} apiCall - The API call function.

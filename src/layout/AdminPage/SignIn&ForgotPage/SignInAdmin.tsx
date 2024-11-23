@@ -3,25 +3,25 @@ import { FloatLabel } from "primereact/floatlabel";
 import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
 import { Toast } from "primereact/toast";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
-  showInfoToast,
   showErrorToast,
+  showInfoToast,
 } from "../../../utils/ErrorHandlingUtils";
 import {
-  getLoginAttempts,
   getLastFailedLoginTime,
-  LOCKOUT_THRESHOLD,
+  getLoginAttempts,
   LOCKOUT_DURATION,
+  LOCKOUT_THRESHOLD,
   loginUser,
-  setLoginAttempts,
   setLastFailedLoginTime,
+  setLoginAttempts,
 } from "../../../utils/SignInUtils";
 import {
   validateEmail,
-  validateUsername,
   validatePassword,
+  validateUsername,
 } from "../../../utils/ValidationUtils";
 
 export const SignInAdmin = () => {
@@ -102,13 +102,14 @@ export const SignInAdmin = () => {
   }, [isLockedOut, username, password, navigate]);
   return (
     <>
+      <Toast ref={toast} position="top-right" />
       <div className="grid min-h-screen lg:grid-cols-2">
         <div className="flex flex-col bg-white">
           <div className="p-6">
             <img src="/logo.png" alt="" className="h-8" />
           </div>
-          <div className="flex flex-1 items-center justify-center p-6">
-            <div className="mb-40 flex flex-col items-center justify-center gap-10">
+          <div className="flex items-center justify-center flex-1 p-6">
+            <div className="flex flex-col items-center justify-center gap-10 mb-40">
               <div className="w-full text-left">
                 <h1 className="text-[32px] font-medium">Sign In</h1>
               </div>
@@ -140,7 +141,7 @@ export const SignInAdmin = () => {
                 </div>
                 <div className="w-full text-slate-300">
                   <Link
-                    to="/forgot-password"
+                    to="/admin/forgot-password"
                     className="text-sm font-medium text-mainYellow hover:underline"
                   >
                     Forgot password?
@@ -149,7 +150,7 @@ export const SignInAdmin = () => {
                 <Button
                   label="Sign In"
                   size="large"
-                  className="shadow-buttonShadow h-10 w-full rounded-xl bg-mainYellow text-sm font-semibold text-white"
+                  className="w-full h-10 text-sm font-semibold text-white rounded-xl bg-mainYellow shadow-buttonShadow"
                   onClick={handleLogin}
                   disabled={isLockedOut}
                 />
@@ -171,7 +172,7 @@ export const SignInAdmin = () => {
             </div>
             <div className="relative flex justify-center">
               <div
-                className="absolute left-1/2 top-1/3 z-0 h-96 w-96 -translate-x-1/2 -translate-y-1/2 transform rounded-full"
+                className="absolute z-0 transform -translate-x-1/2 -translate-y-1/2 rounded-full left-1/2 top-1/3 h-96 w-96"
                 style={{
                   background:
                     "radial-gradient(circle, rgba(255, 255, 255, 0.3) 20%, rgba(255, 255, 255, 0.01) 60%, rgba(255, 255, 255, 0) 100%)",
