@@ -34,14 +34,14 @@ export const ChatSupport: React.FC = () => {
       <Dialog
         visible={isDialogVisible}
         onHide={toggleDialog}
-        header="Hỗ Trợ Trực Tuyến"
+        header="Chat Support"
         className="fixed bottom-0 right-0 p-0 m-0 font-inter"
         style={{ width: "300px" }}
       >
         <div className="flex flex-col gap-4">
           {/* Tin nhắn trả lời từ hỗ trợ */}
           <div className="max-w-full p-3 text-xs bg-gray-200 rounded-lg">
-            Xin chào! Tôi có thể giúp gì cho bạn?
+            Hello there! How can I help you today? 😊
           </div>
 
           {/* Ô nhập tin nhắn */}
@@ -50,7 +50,7 @@ export const ChatSupport: React.FC = () => {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={3}
-              placeholder="Nhập tin nhắn của bạn..."
+              placeholder="Type your message here..."
               className="w-full p-2 border border-gray-300 rounded-lg"
             />
             <button
@@ -59,7 +59,7 @@ export const ChatSupport: React.FC = () => {
               className="flex w-full items-center justify-center gap-2 rounded-[4px] bg-mainYellow p-2 font-bold text-black"
             >
               <i className="pi pi-send"></i>
-              Gửi
+              Send
             </button>
           </div>
         </div>
