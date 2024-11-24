@@ -11,7 +11,7 @@ export const Homepage: React.FC = () => {
       <Hero />
       <CarouselHome name="Discover Something New" field="releaseDate" />
       <LastChance />
-      <CarouselHome name="Trending" field="rating" />
+      <CarouselHome name="Trending" field="sysIdGame" />
       {/* <Sale /> */}
       <Top5 />
       <CarouselHome name="Recently Updated" field="discountPercent" />

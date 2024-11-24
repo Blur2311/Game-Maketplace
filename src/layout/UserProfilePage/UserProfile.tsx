@@ -7,7 +7,7 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { useState, useEffect, ChangeEvent } from "react";
 import { jwtDecode } from "jwt-decode";
 import apiClient from "../../config/apiClient";
-import { signOut } from "../../utils/AuthUtils";
+import { signOut, useAuthCheck } from "../../utils/AuthUtils";
 import { RadioButton } from "primereact/radiobutton";
 
 export const UserProfile = () => {
@@ -20,6 +20,8 @@ export const UserProfile = () => {
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [CheckLogin, setCheckLogin] = useState<number>(0);
+
+  useAuthCheck([]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -152,14 +154,14 @@ export const UserProfile = () => {
   return (
     <>
       <div className="pl-5">
-        <div className="rounded bg-white p-10">
+        <div className="p-10 bg-white rounded">
           <h1 className="text-3xl">Account Settings</h1>
           <h6 className="mt-[15px] text-sm font-light">
             Manage your account's details.
           </h6>
           <h5 className="mt-[30px] text-lg font-bold">Account Information</h5>
-          <div className="mt-5 flex items-start">
-            <div className="flex flex-1 flex-col gap-5">
+          <div className="flex items-start mt-5">
+            <div className="flex flex-col flex-1 gap-5">
               <div className="flex items-center">
                 <p className="min-w-[150px] text-sm font-semibold">Username:</p>
                 <p className="text-sm font-light">
@@ -192,7 +194,7 @@ export const UserProfile = () => {
                 </p>
               </div>
             </div>
-            <div className="flex flex-1 flex-col gap-5">
+            <div className="flex flex-col flex-1 gap-5">
               <div className="flex items-center">
                 <p className="min-w-[150px] text-sm font-semibold">Email:</p>
                 <p className="text-sm font-light underline">
@@ -222,7 +224,7 @@ export const UserProfile = () => {
           </div>
           <div className="mt-10">
             <div className="flex items-center gap-5">
-              <div className="flex flex-1 items-center gap-2">
+              <div className="flex items-center flex-1 gap-2">
                 <FloatLabel className="flex-1 text-sm">
                   <InputText
                     id="Username"
@@ -243,7 +245,7 @@ export const UserProfile = () => {
                   // disabled={isLockedOut}
                 />
               </div>
-              <div className="flex flex-1 items-center gap-2">
+              <div className="flex items-center flex-1 gap-2">
                 <FloatLabel className="flex-1 text-sm">
                   <InputText
                     id="Email"
@@ -334,10 +336,10 @@ export const UserProfile = () => {
                   />
                   <label htmlFor="email">Email</label>
                 </FloatLabel>
-                <div className="card justify-content-center flex">
+                <div className="flex card justify-content-center">
                   <div className="flex flex-wrap gap-3">
                     {/* Radio Button for Male */}
-                    <div className="align-items-center flex">
+                    <div className="flex align-items-center">
                       <RadioButton
                         inputId="genderMale"
                         name="gender"
@@ -351,7 +353,7 @@ export const UserProfile = () => {
                     </div>
 
                     {/* Radio Button for Female */}
-                    <div className="align-items-center flex">
+                    <div className="flex align-items-center">
                       <RadioButton
                         inputId="genderFemale"
                         name="gender"
@@ -374,7 +376,7 @@ export const UserProfile = () => {
                   // disabled={isLockedOut}
                 />
               </div>
-              <div className="flex flex-1 items-center justify-center">
+              <div className="flex items-center justify-center flex-1">
                 <div className="relative">
                   {/* Cái này có sẵn ấn vào hình mở input xog ấn nút để submit
                     xog cho nó loading nhìn cho giống real */}
@@ -382,7 +384,7 @@ export const UserProfile = () => {
                     <input
                       type="file"
                       onChange={handleChangeFile}
-                      className="absolute inset-0 z-50 cursor-pointer opacity-0"
+                      className="absolute inset-0 z-50 opacity-0 cursor-pointer"
                     />
 
                     {/* trong thời gian đợi nó submit thì cập nhật trạg thái true cho nó load nhìn cho đẹp */}
@@ -401,7 +403,7 @@ export const UserProfile = () => {
                       //   // src={photoURL || "/girl.png"}  Thay thế bằng URL ảnh placeholder nếu cần
                       //   // src={userData?.avatar || "/user image.webp"} // nhớ xoá dòng này
                       //   alt="Uploaded"
-                      //   className="h-full w-full rounded-full border-4 border-slate-900 object-cover"
+                      //   className="object-cover w-full h-full border-4 rounded-full border-slate-900"
                       // />
 
                       <>
@@ -412,7 +414,7 @@ export const UserProfile = () => {
                               : avatar || "/user image.webp"
                           }
                           alt="Uploaded"
-                          className="h-full w-full rounded-full border border-dashed border-black object-cover p-1"
+                          className="object-cover w-full h-full p-1 border border-black border-dashed rounded-full"
                         />
                         <div className="absolute left-1/2 top-1/2 flex h-[95%] w-[95%] -translate-x-1/2 -translate-y-1/2 transform items-center justify-center gap-2 rounded-full bg-black bg-opacity-40 text-lg text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                           <MdOutlineCameraAlt />
@@ -430,7 +432,7 @@ export const UserProfile = () => {
                     <Button
                       icon="pi pi-camera"
                       tooltip="Upload image"
-                      className="shadow-whiteInShadow flex h-10 w-10 items-center justify-center rounded-full border-4 border-white bg-mainYellow"
+                      className="flex items-center justify-center w-10 h-10 border-4 border-white rounded-full shadow-whiteInShadow bg-mainYellow"
                     />
                   </div>
                 </div>
