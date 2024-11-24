@@ -98,12 +98,20 @@ export const Hero = () => {
     return (
       <div
         className={`h-full w-full rounded-3xl bg-cover bg-center font-inter shadow-navBoxshadow`}
-        style={{ backgroundImage: `url("${item.image}")` }}
+        style={{
+          backgroundImage: `
+      linear-gradient(to right, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0) 120%),
+      url("${item.image}")
+    `,
+        }}
       >
-        <div className="flex flex-col items-start justify-end w-full h-full p-5 gap-11">
-          <div className="text-white">
+        <div className="flex h-full w-full flex-col items-start justify-end gap-11 p-5">
+          <div
+            className="text-white"
+            style={{ textShadow: "0.5px 0.5px 0.5px rgba(0, 0, 0, 0.25)" }}
+          >
             <h6 className="mb-3 font-medium">{item.name}</h6>
-            <p className="text-base font-light max-w-80">{item.content}</p>
+            <p className="max-w-80 text-base font-light">{item.content}</p>
           </div>
           <div className="flex gap-4">
             <Link to={item.slug ?? "/"}>
@@ -115,7 +123,7 @@ export const Hero = () => {
             <Button
               label="Add to Wishlist"
               icon="pi pi-plus-circle"
-              className="px-3 py-3 text-sm text-white bg-transparent rounded-lg hover:bg-gray200 hover:bg-opacity-50"
+              className="rounded-lg bg-transparent px-3 py-3 text-sm text-white hover:bg-gray200 hover:bg-opacity-50"
             />
           </div>
         </div>
@@ -130,9 +138,9 @@ export const Hero = () => {
           <img
             src={item.imageThumbnail}
             alt=""
-            className="rounded-lg hero-thumbnail-img xl:w-10"
+            className="hero-thumbnail-img rounded-lg xl:w-10"
           />
-          <p className="flex-1 hero-mini-game-description">{item.name}</p>
+          <p className="hero-mini-game-description flex-1">{item.name}</p>
         </div>
       </div>
     );
@@ -140,7 +148,7 @@ export const Hero = () => {
   return (
     <>
       <div className="">
-        <div className="flex flex-col items-center gap-5 mb-10 md:flex-row">
+        <div className="mb-10 flex flex-col items-center gap-5 md:flex-row">
           <a
             href="#"
             className="flex-1 transition duration-300 hover:brightness-125"
@@ -166,7 +174,7 @@ export const Hero = () => {
           transitionInterval={5000}
           showIndicators={false}
           showItemNavigators={false}
-          className="hidden w-full custom-galleria md:block"
+          className="custom-galleria hidden w-full md:block"
         />
       </div>
     </>

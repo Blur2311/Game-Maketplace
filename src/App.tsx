@@ -95,7 +95,7 @@ function App() {
 
             <Route path="/" element={<NavFooterPage />}>
               {/* Route mặc định là "home" */}
-              <Route index element={<Homepage />} />
+              <Route index element={<Navigate to="/home" />} />
               <Route path="home" element={<Homepage />} />
               <Route path="browser" element={<BrowserPage />} />
               <Route path="product" element={<ProductDetail />} />
