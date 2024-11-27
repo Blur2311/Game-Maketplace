@@ -13,11 +13,10 @@ import {
 type InvoiceRowProps = {
   amount: number;
   status?: boolean;
-  id: string;
+  id: number;
   name: string;
   avatar: string;
-  dateStart: string;
-  dateEnd: string;
+  date: string;
 };
 
 export const InvoiceRow: React.FC<InvoiceRowProps> = ({
@@ -26,8 +25,7 @@ export const InvoiceRow: React.FC<InvoiceRowProps> = ({
   id,
   name,
   avatar,
-  dateStart,
-  dateEnd,
+  date,
 }) => {
   return (
     <>
@@ -44,32 +42,19 @@ export const InvoiceRow: React.FC<InvoiceRowProps> = ({
           </div>
         </td>
         <td className={`px-5 py-[25px]`}>{formatCurrency(amount)}</td>
-        <td className={`px-5 py-[25px]`}>
-          {formatDateFromLocalDate(dateStart)}
-        </td>
-        <td className={`px-5 py-[25px]`}>{formatDateFromLocalDate(dateEnd)}</td>
+        <td className={`px-5 py-[25px]`}>{formatDateFromLocalDate(date)}</td>
         <td className={`px-5 py-[25px]`}>
           <div className="flex">
             <div
               className={`flex h-6 items-center justify-center gap-1 rounded-full border px-2 font-medium`}
             >
-              {status != null ? (
-                status ? (
-                  <IoIosCheckmarkCircle size={16} className="text-green-500" />
-                ) : (
-                  <IoIosCloseCircle size={16} className="text-red-500" />
-                )
+              {status ? (
+                <IoIosCheckmarkCircle size={16} className="text-green-500" />
               ) : (
-                <IoIosTime size={16} className="text-yellow-500" />
+                <IoIosCloseCircle size={16} className="text-yellow-500" />
               )}
 
-              <span>
-                {status != null
-                  ? status
-                    ? "Completed"
-                    : "Refunded"
-                  : "Pending"}
-              </span>
+              <span>{status ? "Completed" : "Pending"}</span>
             </div>
           </div>
         </td>

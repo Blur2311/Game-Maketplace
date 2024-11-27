@@ -6,6 +6,7 @@ type PaymentRowProps = {
   amount: number;
   status?: boolean;
   id: string;
+  orderCode: string;
   date: string;
 };
 
@@ -13,6 +14,7 @@ export const PaymentRow: React.FC<PaymentRowProps> = ({
   amount,
   status,
   id,
+  orderCode,
   date,
 }) => {
   return (
@@ -22,14 +24,13 @@ export const PaymentRow: React.FC<PaymentRowProps> = ({
         <td className={`px-5 py-[25px]`}>
           <div className="flex">
             <div
-              className={`flex h-6 items-center justify-center rounded-full px-2 font-medium ${status != null ? (status ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700") : "bg-yellow-100 text-yellow-700"}`}
+              className={`flex h-6 items-center justify-center rounded-full px-2 font-medium ${(status ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700")  }`}
             >
               <span>
-                {status != null
-                  ? status
+                {
+                   status
                     ? "Completed"
-                    : "Refunded"
-                  : "Pending"}
+                    : "Pending"}
               </span>
             </div>
           </div>
@@ -41,7 +42,7 @@ export const PaymentRow: React.FC<PaymentRowProps> = ({
             to={`/admin/invoice/detail/${id}`}
             className="link-tooltip text-black hover:underline" // Thêm class cho Tooltip
           >
-            {id}
+            {orderCode}
           </Link>
         </td>
         <td className={`px-5 py-[25px]`}>{formatDate(date)}</td>
