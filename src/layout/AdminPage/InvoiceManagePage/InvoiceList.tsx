@@ -2,26 +2,58 @@ import { MdAddBox } from "react-icons/md";
 import { RightSideButton } from "../../../components/RightSideButton";
 import { InputText } from "primereact/inputtext";
 import { Paginator } from "primereact/paginator";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { formatCurrency } from "../../../utils/OtherUtils";
 import { TbCheck, TbClockHour3, TbInvoice } from "react-icons/tb";
 import { Dropdown } from "primereact/dropdown";
 import { InvoiceRow } from "./components/InvoiceRow";
 import { MultiSelect } from "primereact/multiselect";
 import { Calendar } from "primereact/calendar";
+import { fetchInvoices, filterInvoices } from "./components/service/InvoiceListService";
+import { InvoiceModel } from "../../../model/InvoiceModel";
 
 export const InvoiceList = () => {
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(10);
   const [totalRecords, setTotalRecords] = useState(0);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchInvoiceID, setSearchInvoiceID] = useState("");
+  const [searchCustomer, setSearchCustomer] = useState("");
   const [selectedOption, setSelectedOption] = useState<any | null>("oldest");
   const [fromDate, setFromDate] = useState<Date | null>(null);
   const [toDate, setToDate] = useState<Date | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<boolean[]>([]);
+  const [invoices, setInvoices] = useState<InvoiceModel[]>([]);
+  const [filteredInvoices, setFilteredInvoices] = useState<InvoiceModel[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchInvoices();
+        setInvoices(data);
+        setFilteredInvoices(data);
+        setTotalRecords(data.length);
+      } catch (error) {
+        console.error("Error fetching invoices:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const filtered = filterInvoices(invoices, searchInvoiceID, searchCustomer, selectedStatus, fromDate, toDate);
+    setFilteredInvoices(filtered);
+    setTotalRecords(filtered.length);
+  }, [searchInvoiceID, searchCustomer, selectedStatus, fromDate, toDate, invoices]);
 
   const options: any[] = [
     { label: "Oldest", value: "oldest" },
     { label: "Newest", value: "newest" },
+  ];
+
+  const statusOptions = [
+    { label: "Completed", value: true },
+    { label: "Pending", value: false },
   ];
 
   const handleFromDateChange = (e: { value: Date | null | undefined }) => {
@@ -32,11 +64,19 @@ export const InvoiceList = () => {
     setToDate(e.value || null); // Sets to null if value is undefined
   };
 
+  const handleSearchInvoiceIDChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInvoiceID(e.target.value);
+  };
+
+  const handleSearchCustomerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchCustomer(e.target.value);
+  };
+
   const onPageChange = (event: any) => {
     setFirst(event.first);
     setRows(event.rows);
-    //  fetchCategories(event.first, event.rows, searchTerm);
   };
+
   return (
     <>
       <div className="flex flex-col gap-8 px-6 py-16">
@@ -53,9 +93,9 @@ export const InvoiceList = () => {
               <div className="">
                 <p className="text-sm text-textSecond">Total</p>
                 <h6 className="text-lg font-medium">
-                  {formatCurrency(3213123)}
+                  {formatCurrency(filteredInvoices.reduce((total, invoice) => total + invoice.price, 0))}
                 </h6>
-                <p className="text-sm text-textSecond">from 12 invoices</p>
+                <p className="text-sm text-textSecond">from {filteredInvoices.length} invoices</p>
               </div>
             </div>
           </div>
@@ -67,9 +107,9 @@ export const InvoiceList = () => {
               <div className="">
                 <p className="text-sm text-textSecond">Paid</p>
                 <h6 className="text-lg font-medium">
-                  {formatCurrency(3213123)}
+                  {formatCurrency(filteredInvoices.filter(invoice => invoice.paymentStatus).reduce((total, invoice) => total + invoice.price, 0))}
                 </h6>
-                <p className="text-sm text-textSecond">from 12 invoices</p>
+                <p className="text-sm text-textSecond">from {filteredInvoices.filter(invoice => invoice.paymentStatus).length} invoices</p>
               </div>
             </div>
           </div>
@@ -81,9 +121,9 @@ export const InvoiceList = () => {
               <div className="">
                 <p className="text-sm text-textSecond">Pending</p>
                 <h6 className="text-lg font-medium">
-                  {formatCurrency(3213123)}
+                  {formatCurrency(filteredInvoices.filter(invoice => !invoice.paymentStatus).reduce((total, invoice) => total + invoice.price, 0))}
                 </h6>
-                <p className="text-sm text-textSecond">from 12 invoices</p>
+                <p className="text-sm text-textSecond">from {filteredInvoices.filter(invoice => !invoice.paymentStatus).length} invoices</p>
               </div>
             </div>
           </div>
@@ -113,18 +153,18 @@ export const InvoiceList = () => {
                       <InputText
                         placeholder="Search invoice ID"
                         className="w-full bg-transparent py-[17px] pl-10 pr-3 text-sm text-black focus:ring-0"
-                        value={searchTerm}
-                        // onChange={handleSearchChange}
+                        value={searchInvoiceID}
+                        onChange={handleSearchInvoiceIDChange}
                       />
                     </div>
                   </div>
 
                   <div className="">
                     <MultiSelect
-                      // value={selectedStatus}
-                      // onChange={(e) => setSelectedStatus(e.value)}
-                      // options={status}
-                      optionLabel="name"
+                      value={selectedStatus}
+                      onChange={(e) => setSelectedStatus(e.value)}
+                      options={statusOptions}
+                      optionLabel="label"
                       placeholder="Select Status"
                       maxSelectedLabels={3}
                       className="w-full rounded-lg border border-gray150 px-4 py-2 font-inter text-sm shadow-adminInputShadow"
@@ -138,8 +178,8 @@ export const InvoiceList = () => {
                       <InputText
                         placeholder="Search customer"
                         className="w-full bg-transparent py-[17px] pl-10 pr-3 text-sm text-black focus:ring-0"
-                        value={searchTerm}
-                        // onChange={handleSearchChange}
+                        value={searchCustomer}
+                        onChange={handleSearchCustomerChange}
                       />
                     </div>
                   </div>
@@ -152,7 +192,7 @@ export const InvoiceList = () => {
                       showIcon
                       className="custom-calendar-admin h-[54px] w-full rounded-lg border border-gray150 px-4 py-2 font-inter text-sm shadow-adminInputShadow"
                       inputClassName="shadow-none"
-                      placeholder="To"
+                      placeholder="From"
                     />
                   </div>
                   <div>
@@ -163,7 +203,7 @@ export const InvoiceList = () => {
                       showIcon
                       className="custom-calendar-admin h-[54px] w-full rounded-lg border border-gray150 px-4 py-2 font-inter text-sm shadow-adminInputShadow"
                       inputClassName="shadow-none"
-                      placeholder="From"
+                      placeholder="To"
                     />
                   </div>
                 </div>
@@ -186,32 +226,17 @@ export const InvoiceList = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      <InvoiceRow
-                        amount={12100}
-                        id={"INVOICE-120"}
-                        name={"Huy Pham"}
-                        avatar={"/cat.jpeg"}
-                        status={true}
-                        dateStart={"2023-01-01"}
-                        dateEnd={"2023-01-02"}
-                      />
-                      <InvoiceRow
-                        amount={12100}
-                        id={"INVOICE-120"}
-                        name={"Huy Pham"}
-                        avatar={"/cat.jpeg"}
-                        status={false}
-                        dateStart={"2023-01-01"}
-                        dateEnd={"2023-01-02"}
-                      />
-                      <InvoiceRow
-                        amount={12100}
-                        id={"INVOICE-120"}
-                        name={"Huy Pham"}
-                        avatar={"/cat.jpeg"}
-                        dateStart={"2023-01-01"}
-                        dateEnd={"2023-01-02"}
-                      />
+                      {filteredInvoices.slice(first, first + rows).map((invoice) => (
+                        <InvoiceRow
+                          key={invoice.sysIdOrder}
+                          amount={invoice.price}
+                          id={invoice.sysIdOrder}
+                          name={invoice.usersDTO.hoVaTen}
+                          avatar={invoice.usersDTO.avatar || "/default-avatar.png"}
+                          status={invoice.paymentStatus}
+                          date={invoice.orderDate}
+                        />
+                      ))}
                     </tbody>
                   </table>
                 </div>
@@ -220,7 +245,7 @@ export const InvoiceList = () => {
                     <Paginator
                       first={first} // bắt đầu từ đâu
                       rows={rows} // bao nhiêu cột hiển thị
-                      totalRecords={100} // Độ dài dữ liệu
+                      totalRecords={totalRecords} // Độ dài dữ liệu
                       template={{
                         layout: "CurrentPageReport PrevPageLink NextPageLink",
                         CurrentPageReport: (options: any) => (

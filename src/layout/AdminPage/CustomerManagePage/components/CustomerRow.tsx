@@ -7,9 +7,13 @@ type CustomerRowProps = {
 };
 
 export const CustomerRow: React.FC<CustomerRowProps> = ({ user }) => {
-  const { sysIdUser, hoVaTen, avatar, email, dob } = user;
+  const { sysIdUser, hoVaTen, avatar, email, dob, balance } = user;
 
   const formattedDob = dob ? format(new Date(dob), "dd-MM-yyyy") : "";
+
+  const handleDetailClick = () => {
+    localStorage.setItem("selectedUser", JSON.stringify(user));
+  };
 
   return (
     <tr className="border-b border-borderRow bg-white text-xs font-light">
@@ -27,6 +31,7 @@ export const CustomerRow: React.FC<CustomerRowProps> = ({ user }) => {
         <Link
           to={`/admin/customer/detail/${sysIdUser}`}
           className="text-black underline"
+          onClick={handleDetailClick}
         >
           Detail
         </Link>

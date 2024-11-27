@@ -34,6 +34,7 @@ export const CustomerList = () => {
 
   useEffect(() => {
     setFilteredCustomers(filterAndSortUsers(customers, searchTerm, selectedOption));
+    localStorage.removeItem("selectedUser");
   }, [searchTerm, selectedOption, customers]);
 
   const options: any[] = [
