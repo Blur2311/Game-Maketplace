@@ -27,14 +27,14 @@ import useGameDetails from "./hook/useGameDetails";
 import "./ProductDetail.css";
 
 export const ProductDetail = () => {
-  const { gameDetails, recommendations, comments, setComments, error } = useGameDetails();
+  const { gameDetails, recommendations, comments, setComments, error } =
+    useGameDetails();
   const { addGameToCart, handleBuyNow } = useCart();
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(3);
   const msgs = useRef<Messages>(null);
 
   useEffect(() => {
-    console.log("comments", comments);    
     if (!comments || comments.length === 0) {
       showInfoMessages(msgs, "Be the first to review this game!");
     } else {
@@ -118,13 +118,13 @@ export const ProductDetail = () => {
               <Paginator
                 first={first} // bắt đầu từ đâu
                 rows={rows} // bao nhiêu cột hiển thị
-                totalRecords={100} // Độ dài dữ liệu
+                totalRecords={recommendations.length} // Độ dài dữ liệu
                 template=" PrevPageLink  NextPageLink"
                 onPageChange={onPageChange}
                 className="px-0 custom-pagi-browser bg-bgMainColor"
               />
             </div>
-            <div className="flex items-stretch  justify-evenly">
+            <div className="flex items-stretch justify-evenly">
               {recommendations &&
                 recommendations.map((recommendation, index) => (
                   <ProductCard key={index} {...recommendation} />
@@ -132,7 +132,11 @@ export const ProductDetail = () => {
             </div>
           </div>
           <div className="mt-12">
-            <Review gameId={gameDetails.sysIdGame} comments={comments} setComments={setComments} />
+            <Review
+              gameId={gameDetails.sysIdGame}
+              comments={comments}
+              setComments={setComments}
+            />
           </div>
           <div className="my-12">
             <div className="w-full text-white rounded-lg">
@@ -175,7 +179,7 @@ export const ProductDetail = () => {
             <div className="flex items-center w-full gap-2 justify-evenly">
               {gameDetails.discountPercent ? (
                 <>
-                  <div className="rounded-full bg-mainCyan px-2 py-[2px] text-xs text-black">
+                  <div className="rounded-full bg-mainCyan max-block-fit px-2 py-[2px] text-xs text-black">
                     {gameDetails.discountPercent &&
                       "-" + gameDetails.discountPercent}
                     %
@@ -226,7 +230,7 @@ export const ProductDetail = () => {
             <div className="flex flex-col w-full text-sm font-light text-textType">
               <div className="flex items-center justify-between border-b border-bgCheckBox py-[10px]">
                 <p>Rewards</p>
-                <p className="text-white">Earn 5% Back</p>
+                <p className="text-white">Earn 1% Back</p>
               </div>
               <div className="flex items-center justify-between border-b border-bgCheckBox py-[10px]">
                 <p>Release Date</p>

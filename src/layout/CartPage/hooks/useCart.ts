@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import apiClient from '../../../config/apiClient';
-import { CartItem, GameDTO } from '../../../utils/CartUtils';
 import { isTokenValid } from '../../../utils/AuthUtils';
+import { CartItem, GameDTO } from '../../../utils/CartUtils';
 
 export const useCart = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -87,7 +87,7 @@ export const useCart = () => {
     const cartItem: CartItem = {
       slug: game.slug,
       name: game.gameName,
-      price: game.price,
+      price: Math.round(game.price * (1 - (game.discountPercent || 0) / 100)),
       quantity,
       mediaUrl: game.gameImage
     };
@@ -103,7 +103,7 @@ export const useCart = () => {
       slug: game.slug,
       quantity: 1,
       name: game.gameName,
-      price: game.price,
+      price: Math.round(game.price * (1 - (game.discountPercent || 0) / 100)),
       mediaUrl: game.gameImage
     };
     navigate("/checkout", { state: { cartItem: [{ ...cartItem }] } });

@@ -212,6 +212,7 @@ export type Order = {
 
 export const recharge = async (afterTaxes: number, currentUser: User) => {
   let amount = Math.round(afterTaxes - (currentUser?.balance ?? 0));
+  amount = amount < 20000 ? 20000 : amount;
   let payload = {
     amount: amount,
     bankCode: "NCB",

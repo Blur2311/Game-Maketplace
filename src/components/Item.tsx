@@ -35,7 +35,7 @@ export const Item: React.FC<ItemProps> = (item) => {
         >
           {item.sale ? (
             <>
-              <div className="rounded-full bg-mainCyan px-2 py-[2px] text-xs text-black">
+              <div className="rounded-full bg-mainCyan max-block-fit px-2 py-[2px] text-xs text-black">
                 -{item.sale}%
               </div>
               <p className="text-sm line-through text-textType">

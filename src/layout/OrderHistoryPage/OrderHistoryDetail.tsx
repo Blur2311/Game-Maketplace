@@ -31,7 +31,7 @@ export const OrderHistoryDetail = () => {
     const tax = (afterTaxes / 102) * 2;
     let total = 0;
     data.ordersDTOS.forEach((order) => {
-      total += order.price;
+      total += order.price * order.quantity;
     });
     const discount = total - afterTaxes / 1.02;
     const percent = (discount / total) * 100;
@@ -132,7 +132,7 @@ export const OrderHistoryDetail = () => {
                 }
                 name={order.gameName}
                 quantity={order.quantity}
-                price={order.price / order.quantity}
+                price={order.price}
                 slug={order.gameDTO?.slug || ""}
               />
             ))}

@@ -14,8 +14,8 @@ type WishlistItemProps = {
 export const WishlistItem: React.FC<WishlistItemProps> = (props) => {
   return (
     <>
-      <div className="w-full rounded bg-gray300 p-5 text-white shadow-sm">
-        <div className="flex h-full items-stretch gap-4">
+      <div className="w-full p-5 text-white rounded shadow-sm bg-gray300">
+        <div className="flex items-stretch h-full gap-4">
           <div className="">
             <img
               src={props.img}
@@ -23,8 +23,8 @@ export const WishlistItem: React.FC<WishlistItemProps> = (props) => {
               className="max-h-48 w-[130px] rounded"
             />
           </div>
-          <div className="h-full flex-1">
-            <div className="flex h-full flex-col justify-between">
+          <div className="flex-1 h-full">
+            <div className="flex flex-col justify-between h-full">
               <div className="">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -34,10 +34,10 @@ export const WishlistItem: React.FC<WishlistItemProps> = (props) => {
                   </div>
                   {props.sale ? (
                     <div className="flex items-center gap-2">
-                      <div className="rounded-full bg-mainCyan px-2 py-[2px] text-xs text-black">
+                      <div className="rounded-full bg-mainCyan max-block-fit px-2 py-[2px] text-xs text-black">
                         -{props.sale}%
                       </div>
-                      <p className="text-sm text-textType line-through">
+                      <p className="text-sm line-through text-textType">
                         {formatCurrency(props.price)}
                       </p>
                       <p className="font-semibold">
@@ -55,7 +55,7 @@ export const WishlistItem: React.FC<WishlistItemProps> = (props) => {
                   )}
                 </div>
 
-                <div className="mt-2 flex items-center justify-between">
+                <div className="flex items-center justify-between mt-2">
                   <h6 className="font-semibold">{props.name}</h6>
                   {props.sale && (
                     <p className="mt-2 text-xs font-normal text-textType">
@@ -67,11 +67,11 @@ export const WishlistItem: React.FC<WishlistItemProps> = (props) => {
               <div className="flex items-center justify-end gap-4">
                 <Button
                   label="Remove"
-                  className="rounded-md bg-transparent px-3 py-1 text-base font-normal text-textType hover:text-white"
+                  className="px-3 py-1 text-base font-normal bg-transparent rounded-md text-textType hover:text-white"
                 />
                 <Button
                   label="Add to Cart"
-                  className="rounded-md bg-mainYellow px-3 py-1 text-base font-normal text-black hover:brightness-110"
+                  className="px-3 py-1 text-base font-normal text-black rounded-md bg-mainYellow hover:brightness-110"
                 />
               </div>
             </div>

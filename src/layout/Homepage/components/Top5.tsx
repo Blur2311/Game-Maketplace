@@ -29,16 +29,14 @@ export const Top5 = () => {
 
   useEffect(() => {
     fetchTop("quantitySold", 5).then((result) => setTopSeller(result));
-    fetchTop("discountPercent", 5).then((result) =>
-      setTopTrending(result),
-    );
+    fetchTop("sysIdGame", 5).then((result) => setTopTrending(result));
     fetchTop("rating", 5).then((result) => setTopRated(result));
   }, []);
 
   return (
     <>
       <div className="flex items-start mt-16 overflow-scroll md:overflow-auto">
-        <div className="flex-1 border-r border-grayBorder">
+        <div className="flex-1 border-r border-grayBorder xl:max-w-[33%]">
           <div className="px-4">
             <button className="flex items-center mb-4 text-white group">
               <span className="mr-2 text-xl font-bold">Top Seller</span>
@@ -47,7 +45,7 @@ export const Top5 = () => {
             {renderTops(topSeller)}
           </div>
         </div>
-        <div className="flex-1 border-r border-grayBorder">
+        <div className="flex-1 border-r border-grayBorder xl:max-w-[33%]">
           <div className="px-4">
             <button className="flex items-center mb-4 text-white group">
               <span className="mr-2 text-xl font-bold">Top Trending</span>
@@ -56,7 +54,7 @@ export const Top5 = () => {
             {renderTops(topTrending)}
           </div>
         </div>
-        <div className="flex-1">
+        <div className="flex-1 xl:max-w-[33%]">
           <div className="px-4">
             <button className="flex items-center mb-4 text-white group">
               <span className="mr-2 text-xl font-bold">Top Rated</span>
