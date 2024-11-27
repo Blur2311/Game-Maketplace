@@ -45,11 +45,11 @@ const CartItem: React.FC<CartItemProps> = ({
                 <div className="flex gap-2">
                   {game.features.split("\n").map((feature, index) => {
                     return index < 2 ? (
-                      <div className="mb-2 inline-block rounded bg-[#343437] px-2 py-1 text-sm text-white">
+                      <div key={index} className="mb-2 inline-block rounded bg-[#343437] px-2 py-1 text-sm text-white">
                         {feature}
                       </div>
                     ) : index === 2 ? (
-                      <div className="mb-2 inline-block rounded bg-[#343437] px-2 py-1 text-sm text-white">
+                      <div key={index} className="mb-2 inline-block rounded bg-[#343437] px-2 py-1 text-sm text-white">
                         ...more
                       </div>
                     ) : null;
