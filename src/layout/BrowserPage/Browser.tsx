@@ -12,7 +12,7 @@ import { CustomCheckbox } from "./components/CheckboxCus";
 
 
 export const BrowserPage = () => {
-  const [price, setPrice] = useState<number | [number, number]>([9999999, 0]);
+  const [price, setPrice] = useState<number | [number, number]>([0, 9999999]);
   const [activeAccorGenre, setActiveAccorGenre] = useState<number | null>(null);
   const [activeAccorType, setActiveAccorType] = useState<number | null>(null);
   const [activeAccorPrice, setActiveAccorPrice] = useState<number | null>(null); // trạng thái cho Accordion Price
@@ -20,6 +20,7 @@ export const BrowserPage = () => {
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(12);
   const [totalRecords, setTotalRecords] = useState(0);
+  const [selectedGenre, setSelectedGenre] = useState<string>(''); // hoặc giá trị mặc định khác nếu cần
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({
     Action: false,
     Adventure: false,
@@ -46,13 +47,6 @@ export const BrowserPage = () => {
   });
   const [games, setGames] = useState<Game[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
-  const [currentFilters, setCurrentFilters] = useState<Filters>({
-    name: '',
-    minPrice: undefined,
-    maxPrice: undefined,
-    genre: undefined
-  });
   const [searchTerm, setSearchTerm] = useState('');
 
   // Hàm xử lý thay đổi trạng thái của checkbox
@@ -120,23 +114,54 @@ export const BrowserPage = () => {
   const onPageChange = async (event: any) => {
     setFirst(event.first);
     setRows(event.rows);
-  
+
     const newPage = event.first / event.rows;
-  
+
     try {
       setLoading(true);
-      const params = new URLSearchParams({
-        page: newPage.toString(),
-        size: rows.toString(), // Dùng số hàng đã được đặt
-      });
-  
-      // Thêm các bộ lọc từ `currentFilters` vào URL nếu có giá trị
-      if (currentFilters.name) params.append('name', currentFilters.name);
-      if (currentFilters.minPrice !== undefined) params.append('maxPrice', currentFilters.minPrice.toString());
-      if (currentFilters.maxPrice !== undefined) params.append('minPrice', currentFilters.maxPrice.toString());
-      if (currentFilters.genre) params.append('category', currentFilters.genre);
+      let filters: Filters | null = JSON.parse(localStorage.getItem('filters') || 'null');
+      if (!filters) {
+        filters = {
+          name: '',
+          minPrice: 0,
+          maxPrice: 9999999,
+          genre: '',
+          page: 0,
+          size: 12
+        };
 
+        // Chuyển đổi đối tượng `filters` thành chuỗi JSON
+        localStorage.setItem('filters', JSON.stringify(filters));
+      } else {
+        // Chuyển chuỗi JSON thành đối tượng
+        filters = filters;
+      }
+
+      filters.page = newPage;
+
+      const params = new URLSearchParams({
+        page: (filters.page ?? 0).toString(),
+        size: (filters.size ?? 0).toString()
+      });
+
+
+      if (filters.name) {
+        params.append('name', filters.name);
+      }
+
+      if (filters.minPrice) {
+        params.append('minPrice', filters.minPrice.toString());
+      }
+
+      if (filters.maxPrice) {
+        params.append('maxPrice', filters.maxPrice.toString());
+      }
+
+      if (filters.genre) {
+        params.append('category', filters.genre);
+      }
       const url = `/api/games/p/browser?${params.toString()}`;
+      localStorage.setItem('filters', JSON.stringify(filters));
       const response = await apiClient.get<{ content: Game[], totalPages: number, totalElements: number, number: number }>(url);
       setGames(response.data.content);
       setLoading(false);
@@ -144,6 +169,9 @@ export const BrowserPage = () => {
       setLoading(false);
     }
   };
+
+
+
 
   const headerTemplate = (title: string, isActive: boolean) => (
     <div
@@ -154,21 +182,6 @@ export const BrowserPage = () => {
     </div>
   );
 
-  useEffect(() => {
-    const fetchGames = async () => {
-      try {
-        setLoading(true);
-        const response = await apiClient.get<{ content: Game[], totalElements: number, totalPages: number, size: number }>('/api/games/p/browser?page=0&size=12');
-        setGames(response.data.content);
-        setLoading(false);
-        setTotalRecords(response.data.totalElements);
-      } catch (err) {
-        setLoading(false);
-      }
-    };
-    fetchGames();
-  }, []);
-
   const debounce = (func: Function, delay: number) => {
     let timeoutId: ReturnType<typeof setTimeout>;
     return (...args: any[]) => {
@@ -177,28 +190,56 @@ export const BrowserPage = () => {
     };
   };
 
+
   const searchGames = async (name: string, minPrice?: number, maxPrice?: number, genre?: string) => {
     try {
       setLoading(true);
+
+      let filters: Filters | null = JSON.parse(localStorage.getItem('filters') || 'null');
+      if (!filters) {
+        filters = {
+          name: '',
+          minPrice: 0,
+          maxPrice: 9999999,
+          genre: '',
+          page: 0,
+          size: 12
+        };
+
+        // Chuyển đổi đối tượng `filters` thành chuỗi JSON
+        localStorage.setItem('filters', JSON.stringify(filters));
+      } else {
+        // Chuyển chuỗi JSON thành đối tượng
+        filters = filters;
+      }
+
       const params = new URLSearchParams({
-        page: '0',
-        size: '12'
+        page: (filters.page ?? 0).toString(),
+        size: "12"
       });
 
-      setCurrentFilters((prevFilters) => ({
-        ...prevFilters,
-        name,
-        minPrice,
-        maxPrice,
-        genre,
-      }));
+      if (name) {
+        filters.name = name;
+        params.append('name', filters.name);
+      }
 
-      if (name) params.append('name', name);
-      if (maxPrice !== undefined) params.append('minPrice', maxPrice.toString());
-      if (minPrice !== undefined) params.append('maxPrice', minPrice.toString());
-      if (genre) params.append('category', genre);
+      if (minPrice) {
+        filters.minPrice = minPrice;
+        params.append('minPrice', filters.minPrice.toString());
+      }
+
+      if (maxPrice) {
+        filters.maxPrice = maxPrice;
+        params.append('maxPrice', filters.maxPrice.toString());
+      }
+
+      if (genre) {
+        filters.genre = genre;
+        params.append('category', filters.genre);
+      }
 
       const url = `/api/games/p/browser?${params.toString()}`;
+      localStorage.setItem('filters', JSON.stringify(filters));
       const response = await apiClient.get<{ content: Game[], totalElements: number, totalPages: number, size: number }>(url);
       setGames(response.data.content);
       setTotalRecords(response.data.totalElements);
@@ -209,59 +250,68 @@ export const BrowserPage = () => {
   };
 
   const debouncedSearch = useCallback(
-    debounce((term: string, minPrice?: number, maxPrice?: number, genre?: string) =>
-      searchGames(term, minPrice, maxPrice, genre), 300),
+    debounce((term: string, minPrice?: number, maxPrice?: number, genre?: string) => {
+      let filters: Filters = JSON.parse(localStorage.getItem('filters') || '{}');
+  
+      // Cập nhật giá trị bộ lọc
+      filters.name = term || filters.name || '';
+      filters.minPrice = minPrice ?? filters.minPrice ?? 0;
+      filters.maxPrice = maxPrice ?? filters.maxPrice ?? 9999999;
+      filters.genre = genre || filters.genre || '';
+  
+      // Lưu vào localStorage
+      localStorage.setItem('filters', JSON.stringify(filters));
+  
+      // Gửi request
+      searchGames(term, minPrice, maxPrice, genre);
+    }, 300),
     []
   );
 
-  useEffect(() => {
-    if (searchTerm || selectedGenre || (Array.isArray(price) && (price[0] !== 0 || price[1] !== 0))) {
-      let minPrice, maxPrice;
-      if (Array.isArray(price)) {
-        [minPrice, maxPrice] = price;
-      }
-      debouncedSearch(searchTerm, minPrice, maxPrice, selectedGenre || undefined);
-    } else {
-      fetchGames();
-    }
-  }, [searchTerm, price, selectedGenre, debouncedSearch]);
-  
-
-  const fetchGames = async () => {
-    try {
-      setLoading(true);
-      const response = await apiClient.get<{ content: Game[], totalElements: number, totalPages: number, size: number }>('/api/games/p/browser?page=0&size=12');
-      setGames(response.data.content);
-      setLoading(false);
-    } catch (err) {
-      setLoading(false);
-    }
-  };
-
   const resetFilters = () => {
     setSearchTerm('');
-    setPrice([9999999, 0]);
-    setSelectedGenre(null);
-    setActiveAccorGenre(null);
-    setActiveAccorPrice(null);
-    setCurrentFilters({
-      name: '',
-      minPrice: undefined,
-      maxPrice: undefined,
-      genre: undefined,
-    });
+    setPrice([0, 9999999]);
+
+    let filters: Filters | null = JSON.parse(localStorage.getItem('filters') || 'null');
+    if (filters) {
+      filters = {
+        name: '',
+        minPrice: 0,
+        maxPrice: 9999999,
+        genre: '',
+        page: 0,
+        size: 12
+      };
+      // Chuyển đổi đối tượng `filters` thành chuỗi JSON
+      localStorage.setItem('filters', JSON.stringify(filters));
+    }
+
+    setActiveAccorGenre(null)
     fetchGames();
   };
 
   const handleGenreChange = (genre: string) => {
+    // Cập nhật trạng thái genre
     setSelectedGenre(genre);
-    setCurrentFilters((prev) => ({ ...prev, genre })); 
+
+    // Đảm bảo filters không null và cập nhật nó
+    let filters: Filters = JSON.parse(localStorage.getItem('filters') || '{"genre":""}');
+    filters.genre = genre;
+
+    // Lưu filters vào localStorage
+    localStorage.setItem('filters', JSON.stringify(filters));
   };
+
+  useEffect(() => {
+    // Gọi fetchGames khi selectedGenre thay đổi
+    fetchGames();
+  }, [selectedGenre]);  // Khi selectedGenre thay đổi, fetchGames sẽ được gọi lại
+
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value;
     setSearchTerm(term);
-    setCurrentFilters((prev) => ({ ...prev, searchTerm: term })); 
+    debouncedSearch(term);
   };
 
   const onSliderChange = (e: { value: number | [number, number] }) => {
@@ -272,28 +322,118 @@ export const BrowserPage = () => {
     }
   };
 
+  const fetchGames = async () => {
+
+    let filters: Filters | null = JSON.parse(localStorage.getItem('filters') || 'null');
+    if (!filters) {
+      filters = {
+        name: '',
+        minPrice: 0,
+        maxPrice: 9999999,
+        genre: '',
+        page: 0,
+        size: 12
+      };
+
+      // Chuyển đổi đối tượng `filters` thành chuỗi JSON
+      localStorage.setItem('filters', JSON.stringify(filters));
+    } else {
+      // Chuyển chuỗi JSON thành đối tượng
+      filters = filters;
+    }
+
+
+    setLoading(true);
+
+    setFirst(filters.page ?? 0);
+
+    const params = new URLSearchParams({
+      page: (filters.page ?? 0).toString(),
+      size: "12"
+    });
+
+    if (filters.name) {
+      params.append('name', filters.name);
+    }
+
+    if (filters.minPrice !== undefined) {
+      params.append('minPrice', filters.minPrice.toString());
+    }
+
+    if (filters.maxPrice !== undefined) {
+      params.append('maxPrice', filters.maxPrice.toString());
+    }
+
+    if (filters.genre) {
+      params.append('category', filters.genre);
+    }
+
+
+    const url = `/api/games/p/browser?${params.toString()}`;
+    const response = await apiClient.get<{ content: Game[], totalPages: number, totalElements: number, number: number }>(url);
+    setGames(response.data.content);
+    setTotalRecords(response.data.totalElements);
+    // setLoading(false);
+  };
+
+
+
   useEffect(() => {
     const fetchGames = async () => {
+
+      let filters: Filters | null = JSON.parse(localStorage.getItem('filters') || 'null');
+      if (!filters) {
+        filters = {
+          name: '',
+          minPrice: 0,
+          maxPrice: 9999999,
+          genre: '',
+          page: 0,
+          size: 12
+        };
+
+        // Chuyển đổi đối tượng `filters` thành chuỗi JSON
+        localStorage.setItem('filters', JSON.stringify(filters));
+      } else {
+        // Chuyển chuỗi JSON thành đối tượng
+        filters = filters;
+      }
+
+
       setLoading(true);
-  
+
       const params = new URLSearchParams({
-        page: (first / rows).toString(),
-        size: rows.toString(),
+        page: (filters.page ?? 0).toString(),
+        size: (filters.size ?? 0).toString()
       });
-  
-      if (currentFilters.name) params.append('name', currentFilters.name);
-      if (currentFilters.minPrice !== undefined) params.append('minPrice', currentFilters.minPrice.toString());
-      if (currentFilters.maxPrice !== undefined) params.append('maxPrice', currentFilters.maxPrice.toString());
-      if (currentFilters.genre) params.append('category', currentFilters.genre);
-  
+
+
+      if (filters.name) {
+        params.append('name', filters.name);
+      }
+
+      if (filters.minPrice !== undefined) {
+        params.append('minPrice', filters.minPrice.toString());
+      }
+
+      if (filters.maxPrice !== undefined) {
+        params.append('maxPrice', filters.maxPrice.toString());
+      }
+
+      if (filters.genre) {
+        params.append('category', filters.genre);
+      }
+
+
       const url = `/api/games/p/browser?${params.toString()}`;
       const response = await apiClient.get<{ content: Game[], totalPages: number, totalElements: number, number: number }>(url);
       setGames(response.data.content);
-      setLoading(false);
+      setTotalRecords(response.data.totalElements);
+      // setLoading(false);
     };
-  
+
     fetchGames();
-  }, [currentFilters, first, rows]);  
+  }, []);
 
 
   return (
@@ -348,7 +488,8 @@ export const BrowserPage = () => {
                 placeholder="Keywords"
                 className="w-full p-3 pl-10 text-xs text-white bg-transparent focus:ring-0"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={handleSearchChange} // Đảm bảo truyền hàm xử lý đã sửa đổi
+              // onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
           </div>
@@ -395,9 +536,10 @@ export const BrowserPage = () => {
                 <span className="text-sm text-white">Price:</span>
                 <span className="text-sm text-white float-end">
                   {Array.isArray(price)
-                    ? `${formatCurrency(price[1])} - ${formatCurrency(price[0])}`
+                    ? `${formatCurrency(price[0])} - ${formatCurrency(price[1])}`
                     : price}
                 </span>
+
               </div>
             </AccordionTab>
           </Accordion>

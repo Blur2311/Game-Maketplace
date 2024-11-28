@@ -22,6 +22,8 @@ export type Filters = {
   minPrice?: number;
   maxPrice?: number;
   genre?: string;
+  page?: number;
+  size?: number;
 };
 
 export const handleCheckboxChange = (selectedLabel: string, setCheckedItems: Function) => {

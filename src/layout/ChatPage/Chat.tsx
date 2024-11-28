@@ -4,6 +4,8 @@ import './Chat.css';
 import axios from 'axios';
 import { env } from "../../env";
 import apiClient from "../../config/apiClient";
+import Swal from 'sweetalert2'
+import { useNavigate } from 'react-router-dom';
 
 
 type Message = {
@@ -11,33 +13,73 @@ type Message = {
   from: 'user' | 'system';
 };
 
+interface JWTPayload {
+  userId?: number;
+  name?: string;
+  exp?: number; // Thời gian hết hạn (epoch time)
+  [key: string]: any; // Cho phép các thuộc tính khác
+}
+
 export const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState<string>('');
+  const [access, setAccess] = useState(true);
+  const [user, setUser] = useState('');
+  const navigate = useNavigate();
 
   // Function to fetch messages from the server
   const fetchMessages = async () => {
+    let userName = null;
+    let context = "Tui cần hỗ trợ!";
     try {
-      const response = await apiClient.get(`/api/chat/room/Phat`);
+      const token = localStorage.getItem("token");
+      if (token) {
+        userName = decodeJWT(token);
+      }
+      const response = await apiClient.get(`/api/chat/room/${userName}`);
       const newMessages = response.data.map((msg: any) => ({
         text: msg.content.trim(),
         from: msg.staff ? 'system' : 'user',
       }));
       setMessages(newMessages);
     } catch (error) {
-      console.error('Error fetching messages:', error);
+      apiClient.post(`/api/chat/send/false?userName=${userName}`, context, {
+        headers: {
+          'Content-Type': 'text/plain',
+        },
+      });
     }
   };
 
+  function decodeJWT(token: string): JWTPayload | null {
+    try {
+      // Tách phần PAYLOAD (phần thứ hai) của token
+      const payload = token.split(".")[1];
+
+      // Giải mã Base64Url sang chuỗi JSON
+      const decodedPayload = atob(
+        payload.replace(/-/g, "+").replace(/_/g, "/"),
+      );
+
+      // Chuyển chuỗi JSON thành đối tượng JavaScript
+      const obj = JSON.parse(decodedPayload) as JWTPayload;
+      return obj.sub;
+    } catch (error) {
+      console.error("Failed to decode JWT:", error);
+      return null;
+    }
+  }
+
   useEffect(() => {
-    // Fetch messages initially
+    // Fetch messages after deletion
     fetchMessages();
 
-    // Set up interval to fetch messages every 5 seconds
+    // Set interval for fetching messages every 2 seconds
     const interval = setInterval(fetchMessages, 2000);
 
     // Clean up interval on component unmount
     return () => clearInterval(interval);
+
   }, []);
 
   const sendMessage = async () => {
@@ -47,25 +89,27 @@ export const Chat = () => {
         { text: input, from: 'user' },
       ]);
       setInput('');
-  
+
+      let userName = null;
       try {
-        const response = await apiClient.post(`/api/chat/send/false?userName=Phat`, input, {
+        const token = localStorage.getItem("token");
+        if (token) {
+          userName = decodeJWT(token);
+        }
+        const response = await apiClient.post(`/api/chat/send/false?userName=${userName}`, input, {
           headers: {
             'Content-Type': 'text/plain',
           },
         });
-        console.log('Message sent:', response.data);
       } catch (error) {
         console.error('Error sending message:', error);
       }
-  
-      // Simulate system response
-      // setTimeout(() => {
-      //   setMessages((prevMessages) => [
-      //     ...prevMessages,
-      //     { text: 'We received your message: ' + input, from: 'system' },
-      //   ]);
-      // }, 1000);
+    }
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      sendMessage();
     }
   };
 
@@ -92,6 +136,7 @@ export const Chat = () => {
           type='text'
           value={input}
           onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
         <button
           onClick={sendMessage}

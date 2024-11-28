@@ -2,6 +2,15 @@ import React, { useState } from "react";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { InputTextarea } from "primereact/inputtextarea";
+import apiClient from "../../../config/apiClient";
+
+
+interface JWTPayload {
+  userId?: number;
+  name?: string;
+  exp?: number; // Thời gian hết hạn (epoch time)
+  [key: string]: any; // Cho phép các thuộc tính khác
+}
 
 export const ChatSupport: React.FC = () => {
   const [isDialogVisible, setIsDialogVisible] = useState(false);
@@ -12,12 +21,43 @@ export const ChatSupport: React.FC = () => {
     setIsDialogVisible((prevState) => !prevState);
   };
 
+  function decodeJWT(token: string): JWTPayload | null {
+    try {
+      // Tách phần PAYLOAD (phần thứ hai) của token
+      const payload = token.split(".")[1];
+
+      // Giải mã Base64Url sang chuỗi JSON
+      const decodedPayload = atob(
+        payload.replace(/-/g, "+").replace(/_/g, "/"),
+      );
+
+      // Chuyển chuỗi JSON thành đối tượng JavaScript
+      const obj = JSON.parse(decodedPayload) as JWTPayload;
+      return obj.sub;
+    } catch (error) {
+      console.error("Failed to decode JWT:", error);
+      return null;
+    }
+  }
+
   // Hàm để gửi tin nhắn
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (message.trim()) {
-      // Gửi tin nhắn (bạn có thể thêm API hoặc chức năng khác tại đây)
-      console.log("Sent message:", message);
-      setMessage(""); // Reset message sau khi gửi
+      try {
+        const token = localStorage.getItem("token");
+        
+        let userName = null;
+        if (token) {
+          userName = decodeJWT(token);
+        }
+        const response = await apiClient.post(`/api/chat/send/false?userName=${userName}`, message, {
+          headers: {
+            'Content-Type': 'text/plain',
+          },
+        });
+      } catch (error) {
+        console.error('Error sending message:', error);
+      }
     }
   };
 
