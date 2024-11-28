@@ -58,7 +58,6 @@ export const Navbar = () => {
             </div>
           ) : (
             <div className="flex cursor-pointer items-center gap-6">
-              <FaRegBell className="text-xl text-white" />
               <div
                 className="flex items-center gap-3 hover:opacity-80"
                 onClick={(e) => op.current?.toggle(e)}

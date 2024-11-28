@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import { scrollToTop } from "../../../utils/OtherUtils";
 
 export type SaleCardProps = {
   image: string;
@@ -22,7 +23,11 @@ export const SaleCard: React.FC<SaleCardProps> = ({
         <div className="flex h-full flex-col items-start justify-between">
           <div className="">
             {/* Đảm bảo chiều cao full ở đây */}
-            <NavLink to={url} className="relative overflow-hidden rounded-lg">
+            <NavLink
+              to={url}
+              className="relative overflow-hidden rounded-lg"
+              onClick={scrollToTop}
+            >
               <img
                 src={image}
                 alt=""
@@ -36,6 +41,7 @@ export const SaleCard: React.FC<SaleCardProps> = ({
           </div>
           <NavLink
             to={url}
+            onClick={scrollToTop}
             className="mt-8 rounded-lg bg-grayBorder px-4 py-3 text-sm text-white hover:bg-gray200 hover:bg-opacity-50"
           >
             {buttonName}

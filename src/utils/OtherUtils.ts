@@ -69,16 +69,16 @@ export const formatDateFromLocalDateTime = (dateString: string): string => {
 export const formatDateTime = (dateString: string): string => {
   const date = new Date(dateString);
   const options: Intl.DateTimeFormatOptions = {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
     hour12: false,
-    timeZone: 'Asia/Bangkok' // GMT+7
+    timeZone: "Asia/Bangkok", // GMT+7
   };
-  return date.toLocaleDateString('en-US', options);
+  return date.toLocaleDateString("en-US", options);
 };
 
 export const normalizeDate = (date: Date): Date => {
@@ -87,25 +87,32 @@ export const normalizeDate = (date: Date): Date => {
 
 export const formatDateToDDMMYYYY = (dateString: string): string => {
   const date = new Date(dateString);
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
   const year = date.getFullYear();
   return `${day}/${month}/${year}`;
 };
 
-export const isDateValid = (iDate: string, sDate: Date, eDate: Date | null): boolean => {
+export const scrollToTop = () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
+
+export const isDateValid = (
+  iDate: string,
+  sDate: Date,
+  eDate: Date | null,
+): boolean => {
   const date = normalizeDate(new Date(iDate));
   const startDate = normalizeDate(sDate);
   const endDate = normalizeDate(eDate ?? sDate);
 
-  return (date >= startDate && date <= endDate);
-}
+  return date >= startDate && date <= endDate;
+};
 
 export const isValidEmail = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 };
-
 
 /**
  * Manages button state during an API call.

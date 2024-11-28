@@ -2,7 +2,7 @@ import { Button } from "primereact/button";
 import { useEffect, useState } from "react";
 import { TbExclamationCircle } from "react-icons/tb";
 import apiClient from "../../../config/apiClient";
-import { formatDate } from "../../../utils/OtherUtils";
+import { formatDate, scrollToTop } from "../../../utils/OtherUtils";
 import { sendVoucherToUser } from "../../../utils/VoucherUtils";
 
 export const LastChance = () => {
@@ -44,15 +44,18 @@ export const LastChance = () => {
       return (
         <div key={index} className="flex-1">
           <div
-            className="relative overflow-hidden rounded-lg cursor-pointer"
-            onClick={() => sendVoucherToUser(item.codeVoucher)}
+            className="relative cursor-pointer overflow-hidden rounded-lg"
+            onClick={() => {
+              sendVoucherToUser(item.codeVoucher);
+              scrollToTop();
+            }}
           >
             <img
               src={item.image}
               alt=""
               className="transition duration-300 hover:brightness-125"
             />
-            <div className="absolute bottom-0 left-0 right-0 flex items-center justify-center h-6 bg-mainCyan">
+            <div className="absolute bottom-0 left-0 right-0 flex h-6 items-center justify-center bg-mainCyan">
               <p className="text-xs font-bold text-black">CHECK NOW</p>
             </div>
           </div>
@@ -70,7 +73,7 @@ export const LastChance = () => {
   return (
     <>
       <div className="mt-16 rounded-xl bg-gray300 px-5 py-[30px] md:px-10">
-        <div className="flex items-center justify-between mb-6">
+        <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-[14px] text-white">
             <TbExclamationCircle className="text-4xl" />
             <p className="text-xl font-bold">Last Chance</p>
@@ -78,10 +81,10 @@ export const LastChance = () => {
           <Button
             disabled
             label="View More"
-            className="h-10 px-3 py-3 text-sm text-white bg-transparent border rounded-lg border-gray100 hover:border-white hover:bg-gray200 hover:bg-opacity-50"
+            className="h-10 rounded-lg border border-gray100 bg-transparent px-3 py-3 text-sm text-white hover:border-white hover:bg-gray200 hover:bg-opacity-50"
           />
         </div>
-        <div className="flex flex-col items-start justify-between gap-5 mb-2 sm:flex-row">
+        <div className="mb-2 flex flex-col items-start justify-between gap-5 sm:flex-row">
           {renderItems()}
         </div>
       </div>

@@ -94,7 +94,3 @@ td {
 .max-block-fit {
   max-block-size: fit-content;
 }
-
-.game-thumbnail-img {
-  @apply h-[18rem] w-full object-cover transition duration-300 hover:brightness-125;
-}
