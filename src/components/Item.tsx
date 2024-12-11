@@ -17,18 +17,16 @@ export type ItemProps = {
 export const Item: React.FC<ItemProps> = (item) => {
   return (
     <>
-      <div
-        className={`flex h-[397px] w-full flex-col justify-start pr-4 font-inter text-white`}
-      >
+      <div className={`${item.wrapper} font-inter text-white`}>
         <Link
           to={item.url}
           onClick={scrollToTop}
-          className="flex items-start justify-center sm:justify-start"
+          className="mb-[10px] flex items-start justify-center sm:justify-start"
         >
           <img
             src={item.image}
             alt=""
-            className="mb-[10px] h-[254px] w-full rounded-lg object-cover transition duration-300 hover:brightness-125"
+            className="h-full w-full rounded-lg object-cover transition duration-300 hover:brightness-125"
           />
         </Link>
         <p className="text-xs text-textType">{item.type}</p>

@@ -131,12 +131,12 @@ export const CartPage: React.FC = () => {
         <h1 className="mb-[50px] text-[40px] font-black text-white">My Cart</h1>
         <div className="grid grid-cols-12">
           <div
-            className={`col-span-12 mb-8 ${renderCartItems() == null && "lg:col-span-8 lg:mb-0"}`}
+            className={`col-span-12 mb-8 ${cartItems.length !== 0 && "lg:col-span-8 lg:mb-0"}`}
           >
             {renderCartItems()}
           </div>
 
-          {renderCartItems() == null && (
+          {cartItems.length !== 0 && (
             <div className="col-span-12 lg:col-span-4 lg:ml-9">
               <CartSummary
                 cal={calc()}
