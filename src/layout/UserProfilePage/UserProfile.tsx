@@ -288,7 +288,7 @@ export const UserProfile = () => {
                 onIcon="pi pi-mars"
                 offIcon="pi pi-venus"
                 onChange={(e) => setChecked(e.value)}
-                className="custom-toggle w-32"
+                className="custom-toggle h-[50px] w-32"
               />
 
               {/* Sửa lại gender cho bố
