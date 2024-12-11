@@ -9,6 +9,7 @@ import { jwtDecode } from "jwt-decode";
 import apiClient from "../../config/apiClient";
 import { useAuthCheck } from "../../utils/AuthUtils";
 import { MultiSelect } from "primereact/multiselect";
+import { ToggleButton } from "primereact/togglebutton";
 
 export const UserProfile = () => {
   const [uploading, setUploading] = useState(false);
@@ -20,6 +21,7 @@ export const UserProfile = () => {
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [CheckLogin, setCheckLogin] = useState<number>(0);
+  const [checked, setChecked] = useState(false);
 
   useAuthCheck([]);
 
@@ -215,30 +217,8 @@ export const UserProfile = () => {
           </div>
         </div>
         <div className="mt-10">
-          <div className="flex flex-col gap-5 gap-y-7 lg:flex-row lg:items-center">
-            <div className="flex flex-1 items-center gap-2">
-              <FloatLabel className="flex-1 text-sm">
-                <InputText
-                  readOnly
-                  id="Username"
-                  className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
-                  value={userData?.username || "N/A"}
-                  // value={username}
-                  // onChange={(e) => setUsername(e.target.value)}
-                  // aria-invalid={!!error}
-                  // aria-describedby="username-error"
-                />
-                <label htmlFor="Username">Username</label>
-              </FloatLabel>
-              <Button
-                icon="pi pi-pen-to-square"
-                size="large"
-                className="h-[50px] w-[50px] bg-mainYellow text-base font-bold text-slate-900"
-                // onClick={handleLogin}
-                // disabled={isLockedOut}
-              />
-            </div>
-            <div className="flex flex-1 items-center gap-2">
+          <div className="grid grid-cols-12">
+            <div className="col-span-12 flex items-center gap-2 lg:col-span-6">
               <FloatLabel className="flex-1 text-sm">
                 <InputText
                   readOnly
@@ -301,23 +281,15 @@ export const UserProfile = () => {
                 <label htmlFor="hoVaTen">Phone Number</label>
               </FloatLabel>
 
-              <FloatLabel className="col-span-12 text-sm md:col-span-6">
-                <MultiSelect
-                  // value={selectedCategories}
-                  // options={categories}
-                  // onChange={(e) => setSelectedCategories(e.value)}
-                  className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
-                  itemClassName="!font-inter"
-                  placeholder="Select categories"
-                  display="chip"
-                />
-                <label>Gender</label>
-                {/* {error.selectedCategories && (
-                  <p className="mt-1 text-xs text-red-500">
-                    {error.selectedCategories}
-                  </p>
-                )} */}
-              </FloatLabel>
+              <ToggleButton
+                checked={checked}
+                onLabel="Male"
+                offLabel="Female"
+                onIcon="pi pi-mars"
+                offIcon="pi pi-venus"
+                onChange={(e) => setChecked(e.value)}
+                className="custom-toggle w-32"
+              />
 
               {/* Sửa lại gender cho bố
               <div className="card justify-content-center flex">
