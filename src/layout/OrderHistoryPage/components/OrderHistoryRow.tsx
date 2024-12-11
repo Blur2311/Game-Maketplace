@@ -18,7 +18,7 @@ export const OrderHistoryRow: React.FC<OrderHistoryRowProps> = ({
 }) => {
   return (
     <>
-      <tr className="text-xs font-light bg-white border-b border-borderRow">
+      <tr className="border-b border-borderRow bg-white text-xs font-light">
         <td className="px-5 py-[25px]">{date}</td>
         <td className="px-5 py-[25px]">{id}</td>
         <td className="px-5 py-[25px]">{description}</td>

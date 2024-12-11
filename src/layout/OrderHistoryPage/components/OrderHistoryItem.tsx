@@ -17,17 +17,17 @@ export const OrderHistoryDetailItem: React.FC<OrderHistoryDetailItemProps> = (
   return (
     <>
       <div className="rounded bg-[#F2F2F2] p-5 shadow-sm">
-        <div className="flex items-end justify-between">
-          <div className="flex items-start gap-4">
-            <div className="h-full">
-              <Link to={`/product?game=${props.slug}`}>
-                <img
-                  src={props.img}
-                  alt=""
-                  className="max-h-56 w-[150px] rounded"
-                />
-              </Link>
-            </div>
+        <div className="flex flex-wrap gap-4">
+          <div className="h-full">
+            <Link to={`/product?game=${props.slug}`}>
+              <img
+                src={props.img}
+                alt=""
+                className="max-h-56 w-[150px] rounded"
+              />
+            </Link>
+          </div>
+          <div className="flex flex-1 flex-wrap items-stretch justify-between gap-4">
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2">
                 {props.type.map((item, index) => (
@@ -44,10 +44,12 @@ export const OrderHistoryDetailItem: React.FC<OrderHistoryDetailItemProps> = (
                 Quantity: x{props.quantity}
               </p>
             </div>
+            <div className="flex items-end">
+              <p className="text-lg font-bold">
+                Total: {formatCurrency(props.price * props.quantity)}
+              </p>
+            </div>
           </div>
-          <p className="text-lg font-bold">
-            Total: {formatCurrency(props.price * props.quantity)}
-          </p>
         </div>
       </div>
     </>

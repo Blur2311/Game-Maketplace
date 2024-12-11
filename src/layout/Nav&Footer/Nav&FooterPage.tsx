@@ -4,6 +4,7 @@ import { Navbar } from "./components/Navbar";
 import { SearchBar } from "./components/SearchBar";
 import { SideBar } from "./components/SideBar";
 import "./Nav.css";
+import { TopSideBar } from "./components/TopSideBar";
 
 export const NavFooterPage: React.FC = () => {
   return (
@@ -28,13 +29,18 @@ export const NavSidebarPage: React.FC = () => {
           <Navbar />
         </div>
         <div className="h-full min-h-screen bg-bgProfile">
-          <div className="w-full px-3 lg:mx-auto lg:w-11/12">
-            <div className="flex py-20">
-              <div className="w-1/4">
+          <div className="w-full md:px-3 lg:mx-auto lg:w-11/12">
+            <div className="flex md:py-20">
+              <div className="hidden w-1/4 md:block">
                 <SideBar />
               </div>
-              <div className="w-3/4">
-                <Outlet />
+              <div className="w-full md:w-3/4">
+                <div className="block border-b-2 md:hidden">
+                  <TopSideBar />
+                </div>
+                <div className="md:pl-5">
+                  <Outlet />
+                </div>
               </div>
             </div>
           </div>
