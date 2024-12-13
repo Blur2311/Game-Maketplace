@@ -10,6 +10,8 @@ import apiClient from "../../config/apiClient";
 import { useAuthCheck } from "../../utils/AuthUtils";
 import { MultiSelect } from "primereact/multiselect";
 import { ToggleButton } from "primereact/togglebutton";
+import { Dialog } from "primereact/dialog";
+import { Password } from "primereact/password";
 
 export const UserProfile = () => {
   const [uploading, setUploading] = useState(false);
@@ -22,6 +24,7 @@ export const UserProfile = () => {
   const [file, setFile] = useState<File | null>(null);
   const [CheckLogin, setCheckLogin] = useState<number>(0);
   const [checked, setChecked] = useState(false);
+  const [visible, setVisible] = useState(false);
 
   useAuthCheck([]);
 
@@ -236,9 +239,49 @@ export const UserProfile = () => {
                 icon="pi pi-pen-to-square"
                 size="large"
                 className="h-[50px] w-[50px] bg-mainYellow text-base font-bold text-slate-900"
-                // onClick={handleLogin}
+                onClick={() => setVisible(true)}
                 // disabled={isLockedOut}
               />
+              <Dialog
+                visible={visible}
+                onHide={() => setVisible(false)}
+                footer={
+                  <div className="flex flex-col gap-2 text-xs font-bold">
+                    <button
+                      className="h-[50px] rounded bg-mainCyan px-4 uppercase text-white hover:brightness-105"
+                      onClick={() => {
+                        setVisible(false);
+                      }}
+                    >
+                      Continue
+                    </button>
+                    <button
+                      className="h-[50px] rounded bg-gray-200 px-4 py-2 uppercase text-black hover:bg-gray-300"
+                      onClick={() => setVisible(false)}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                }
+                className="max-w-[489px] font-inter"
+              >
+                <h6 className="mb-5 text-center text-3xl font-light text-black">
+                  Verify Your Identity to Change Your Gmail Address
+                </h6>
+                <p className="mb-4 text-sm text-textSidebar">
+                  Please enter your password to proceed and secure your account.
+                </p>
+                <div>
+                  <Password
+                    placeholder="Current Password"
+                    className="w-full"
+                    inputClassName="border-grayBorder text-sm h-[50px] border bg-transparent p-5 ps-[10px] w-full"
+                    // onChange={(e) =>
+                    //   setFormData({ ...formData, oldPassword: e.target.value })
+                    // }
+                  />
+                </div>
+              </Dialog>
             </div>
           </div>
         </div>
