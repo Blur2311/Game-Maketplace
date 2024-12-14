@@ -74,7 +74,7 @@ export const ChatManage = () => {
       );
 
       // Chuyển chuỗi JSON thành đối tượng JavaScript
-      console.log(decodedPayload);
+      // console.log(decodedPayload);
       return JSON.parse(decodedPayload) as JWTPayload;
     } catch (error) {
       console.error("Failed to decode JWT:", error);

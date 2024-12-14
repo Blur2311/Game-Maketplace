@@ -94,7 +94,20 @@ td {
 .max-block-fit {
   max-block-size: fit-content;
 }
+/* Khi active (checked=true) */
+.custom-toggle.p-highlight .p-button {
+  background-color: transparent !important;
+  border: 1px solid black;
+  color: black !important;
+}
 
-.game-thumbnail-img {
-  @apply h-[18rem] w-full object-cover transition duration-300 hover:brightness-125;
+/* Khi inactive (checked=false) */
+.custom-toggle .p-button {
+  background-color: transparent !important;
+  border: 1px solid black;
+  color: black !important;
+}
+
+.p-button .p-button-icon-left {
+  color: black !important;
 }

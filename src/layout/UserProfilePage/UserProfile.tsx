@@ -4,11 +4,14 @@ import { formatCurrency, formatDate } from "../../utils/OtherUtils";
 import { Button } from "primereact/button";
 import { MdOutlineCameraAlt } from "react-icons/md";
 import { ProgressSpinner } from "primereact/progressspinner";
-import { useState, useEffect, ChangeEvent } from "react";
+import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import apiClient from "../../config/apiClient";
-import { signOut, useAuthCheck } from "../../utils/AuthUtils";
-import { RadioButton } from "primereact/radiobutton";
+import { useAuthCheck } from "../../utils/AuthUtils";
+import { MultiSelect } from "primereact/multiselect";
+import { ToggleButton } from "primereact/togglebutton";
+import { Dialog } from "primereact/dialog";
+import { Password } from "primereact/password";
 
 export const UserProfile = () => {
   const [uploading, setUploading] = useState(false);
@@ -20,6 +23,8 @@ export const UserProfile = () => {
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [CheckLogin, setCheckLogin] = useState<number>(0);
+  const [checked, setChecked] = useState(false);
+  const [visible, setVisible] = useState(false);
 
   useAuthCheck([]);
 
@@ -153,55 +158,47 @@ export const UserProfile = () => {
 
   return (
     <>
-      <div className="pl-5">
-        <div className="p-10 bg-white rounded">
-          <h1 className="text-3xl">Account Settings</h1>
-          <h6 className="mt-[15px] text-sm font-light">
-            Manage your account's details.
-          </h6>
-          <h5 className="mt-[30px] text-lg font-bold">Account Information</h5>
-          <div className="flex items-start mt-5">
-            <div className="flex flex-col flex-1 gap-5">
-              <div className="flex items-center">
-                <p className="min-w-[150px] text-sm font-semibold">Username:</p>
-                <p className="text-sm font-light">
-                  {" "}
-                  {userData?.username || "N/A"}
-                </p>
-              </div>
-              <div className="flex items-center">
-                <p className="min-w-[150px] text-sm font-semibold">
-                  Full Name:
-                </p>
-                <p className="text-sm font-light">
-                  {userData?.hoVaTen || "N/A"}
-                </p>
-              </div>
-              <div className="flex items-center">
-                <p className="min-w-[150px] text-sm font-semibold">Balance:</p>
-                <p className="text-sm font-light">
-                  {/* {formatCurrency(44910)}  */}
-                  {userData?.balance ? formatCurrency(userData.balance) : "N/A"}
-                </p>
-              </div>
-              <div className="flex items-center">
-                <p className="min-w-[150px] text-sm font-semibold">
-                  Join Date:
-                </p>
-                <p className="text-sm font-light">
-                  {/* {formatDate("2017-07-22T17:46:37")} */}
-                  {userData?.joinTime ? formatDate(userData?.joinTime) : "N/A"}
-                </p>
-              </div>
+      <div className="rounded bg-white p-10">
+        <h1 className="text-3xl">Account Settings</h1>
+        <h6 className="mt-[15px] text-sm font-light">
+          Manage your account's details.
+        </h6>
+        <h5 className="mt-[30px] text-lg font-bold">Account Information</h5>
+        <div className="mt-5 flex flex-col items-start gap-y-5 lg:flex-row">
+          <div className="flex flex-1 flex-col gap-5">
+            <div className="flex items-center">
+              <p className="min-w-[150px] text-sm font-semibold">Username:</p>
+              <p className="text-sm font-light">
+                {userData?.username || "N/A"}
+              </p>
             </div>
-            <div className="flex flex-col flex-1 gap-5">
-              <div className="flex items-center">
-                <p className="min-w-[150px] text-sm font-semibold">Email:</p>
-                <p className="text-sm font-light underline">
-                  {userData?.email || "N/A"}
-                </p>
-              </div>
-              {/*
+            <div className="flex items-center">
+              <p className="min-w-[150px] text-sm font-semibold">Full Name:</p>
+              <p className="text-sm font-light">{userData?.hoVaTen || "N/A"}</p>
+            </div>
+            <div className="flex items-center">
+              <p className="min-w-[150px] text-sm font-semibold">Balance:</p>
+              <p className="text-sm font-light">
+                {/* {formatCurrency(44910)}  */}
+                {userData?.balance ? formatCurrency(userData.balance) : "N/A"}
+              </p>
+            </div>
+            <div className="flex items-center">
+              <p className="min-w-[150px] text-sm font-semibold">Join Date:</p>
+              <p className="text-sm font-light">
+                {/* {formatDate("2017-07-22T17:46:37")} */}
+                {userData?.joinTime ? formatDate(userData?.joinTime) : "N/A"}
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-1 flex-col gap-5">
+            <div className="flex items-center">
+              <p className="min-w-[150px] text-sm font-semibold">Email:</p>
+              <p className="text-sm font-light underline">
+                {userData?.email || "N/A"}
+              </p>
+            </div>
+            {/*
                 <div className="flex items-center">
                   <p className="min-w-[150px] text-sm font-semibold">
                     Customer Group:
@@ -209,232 +206,231 @@ export const UserProfile = () => {
                   <p className="text-sm font-light">Silver VIP</p>
                 </div>
                 */}
-              <div className="flex items-center">
-                <p className="min-w-[150px] text-sm font-semibold">
-                  Accumulated:
-                </p>
-                <p className="text-sm font-light">
-                  {/* {formatCurrency(0)} */}
-                  {userData?.totalSpent
-                    ? formatCurrency(userData.totalSpent)
-                    : "N/A"}
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="mt-10">
-            <div className="flex items-center gap-5">
-              <div className="flex items-center flex-1 gap-2">
-                <FloatLabel className="flex-1 text-sm">
-                  <InputText
-                    id="Username"
-                    className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
-                    value={userData?.username || "N/A"}
-                    // value={username}
-                    // onChange={(e) => setUsername(e.target.value)}
-                    // aria-invalid={!!error}
-                    // aria-describedby="username-error"
-                  />
-                  <label htmlFor="Username">Username</label>
-                </FloatLabel>
-                <Button
-                  icon="pi pi-pen-to-square"
-                  size="large"
-                  className="h-[50px] w-[50px] bg-mainYellow text-base font-bold text-slate-900"
-                  // onClick={handleLogin}
-                  // disabled={isLockedOut}
-                />
-              </div>
-              <div className="flex items-center flex-1 gap-2">
-                <FloatLabel className="flex-1 text-sm">
-                  <InputText
-                    id="Email"
-                    className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
-                    // value={username}
-                    // onChange={(e) => setUsername(e.target.value)}
-                    // aria-invalid={!!error}
-                    // aria-describedby="username-error"
-                    value={userData?.email || "N/A"}
-                  />
-                  <label htmlFor="Email">Email</label>
-                </FloatLabel>
-                <Button
-                  icon="pi pi-pen-to-square"
-                  size="large"
-                  className="h-[50px] w-[50px] bg-mainYellow text-base font-bold text-slate-900"
-                  // onClick={handleLogin}
-                  // disabled={isLockedOut}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="mt-[50px]">
-            <h5 className="text-lg font-bold">Personal Details</h5>
             <div className="flex items-center">
-              <div className="mt-[25px] flex flex-1 flex-col gap-[25px]">
-                <FloatLabel className="flex-1 text-sm">
-                  <InputText
-                    id="Username"
-                    className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
-                    value={user.username || ""}
-                    // onChange={(e) => setUser({ ...user, username: e.target.value })}
+              <p className="min-w-[150px] text-sm font-semibold">
+                Accumulated:
+              </p>
+              <p className="text-sm font-light">
+                {/* {formatCurrency(0)} */}
+                {userData?.totalSpent
+                  ? formatCurrency(userData.totalSpent)
+                  : "N/A"}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="mt-10">
+          <div className="grid grid-cols-12">
+            <div className="col-span-12 flex items-center gap-2 lg:col-span-6">
+              <FloatLabel className="flex-1 text-sm">
+                <InputText
+                  readOnly
+                  id="Email"
+                  className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
+                  // value={username}
+                  // onChange={(e) => setUsername(e.target.value)}
+                  // aria-invalid={!!error}
+                  // aria-describedby="username-error"
+                  value={userData?.email || "N/A"}
+                />
+                <label htmlFor="Email">Email</label>
+              </FloatLabel>
+              <Button
+                icon="pi pi-pen-to-square"
+                size="large"
+                className="h-[50px] w-[50px] bg-mainYellow text-base font-bold text-slate-900"
+                onClick={() => setVisible(true)}
+                // disabled={isLockedOut}
+              />
+              <Dialog
+                visible={visible}
+                onHide={() => setVisible(false)}
+                footer={
+                  <div className="flex flex-col gap-2 text-xs font-bold">
+                    <button
+                      className="h-[50px] rounded bg-mainCyan px-4 uppercase text-white hover:brightness-105"
+                      onClick={() => {
+                        setVisible(false);
+                      }}
+                    >
+                      Continue
+                    </button>
+                    <button
+                      className="h-[50px] rounded bg-gray-200 px-4 py-2 uppercase text-black hover:bg-gray-300"
+                      onClick={() => setVisible(false)}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                }
+                className="max-w-[489px] font-inter"
+              >
+                <h6 className="mb-5 text-center text-3xl font-light text-black">
+                  Verify Your Identity to Change Your Gmail Address
+                </h6>
+                <p className="mb-4 text-sm text-textSidebar">
+                  Please enter your password to proceed and secure your account.
+                </p>
+                <div>
+                  <Password
+                    placeholder="Current Password"
+                    className="w-full"
+                    inputClassName="border-grayBorder text-sm h-[50px] border bg-transparent p-5 ps-[10px] w-full"
+                    // onChange={(e) =>
+                    //   setFormData({ ...formData, oldPassword: e.target.value })
+                    // }
                   />
-                  <label htmlFor="Username">Username</label>
-                </FloatLabel>
+                </div>
+              </Dialog>
+            </div>
+          </div>
+        </div>
+        <div className="mt-[50px]">
+          <h5 className="text-lg font-bold">Personal Details</h5>
+          <div className="flex flex-col gap-y-5 lg:flex-row lg:items-center">
+            <div className="order-2 mt-[25px] flex flex-1 flex-col gap-[25px] lg:order-1">
+              <FloatLabel className="flex-1 text-sm">
+                <InputText
+                  id="hoVaTen"
+                  className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
+                  value={user.hoVaTen || ""}
+                  onChange={(e) =>
+                    setUser({ ...user, hoVaTen: e.target.value })
+                  }
+                />
+                <label htmlFor="hoVaTen">Full Name</label>
+              </FloatLabel>
 
-                <FloatLabel className="flex-1 text-sm">
-                  <InputText
-                    id="hoVaTen"
-                    className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
-                    value={user.hoVaTen || ""}
-                    onChange={(e) =>
-                      setUser({ ...user, hoVaTen: e.target.value })
-                    }
-                  />
-                  <label htmlFor="hoVaTen">Full Name</label>
-                </FloatLabel>
-                {/* <FloatLabel className="flex-1 text-sm">
-                  <InputText
-                    id="hoVaTen"
-                    className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
-                    value={user.gender +"" || ""}
-                    onChange={(e) => setUser({ ...user, hoVaTen: e.target.value })}
-                  />
+              <FloatLabel className="flex-1 text-sm">
+                <InputText
+                  id="dob"
+                  type="date"
+                  className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
+                  value={user.dob || ""}
+                  onChange={(e) => setUser({ ...user, dob: e.target.value })}
+                />
+                <label htmlFor="hoVaTen">DOB</label>
+              </FloatLabel>
 
-                  <label htmlFor="hoVaTen">Gender</label>
-                </FloatLabel> */}
+              <FloatLabel className="flex-1 text-sm">
+                <InputText
+                  id="phonenumber"
+                  className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
+                  value={user.phoneNumber || ""}
+                  onChange={(e) =>
+                    setUser({ ...user, phoneNumber: e.target.value })
+                  }
+                />
+                <label htmlFor="hoVaTen">Phone Number</label>
+              </FloatLabel>
 
-                <FloatLabel className="flex-1 text-sm">
-                  <InputText
-                    id="dob"
-                    type="date"
-                    className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
-                    value={user.dob || ""}
-                    onChange={(e) => setUser({ ...user, dob: e.target.value })}
-                  />
-                  <label htmlFor="hoVaTen">DOB</label>
-                </FloatLabel>
+              <ToggleButton
+                checked={checked}
+                onLabel="Male"
+                offLabel="Female"
+                onIcon="pi pi-mars"
+                offIcon="pi pi-venus"
+                onChange={(e) => setChecked(e.value)}
+                className="custom-toggle h-[50px] w-32"
+              />
 
-                <FloatLabel className="flex-1 text-sm">
-                  <InputText
-                    id="phonenumber"
-                    className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
-                    value={user.phoneNumber || ""}
-                    onChange={(e) =>
-                      setUser({ ...user, phoneNumber: e.target.value })
-                    }
-                  />
-                  <label htmlFor="hoVaTen">Phone Number</label>
-                </FloatLabel>
+              {/* Sửa lại gender cho bố
+              <div className="card justify-content-center flex">
+                <div className="flex flex-wrap gap-3">
+                  <div className="align-items-center flex">
+                    <RadioButton
+                      inputId="genderMale"
+                      name="gender"
+                      value={true} // Giá trị cho "Male" là true
+                      onChange={() => setUser({ ...user, gender: true })}
+                      checked={user.gender === true} // Kiểm tra nếu gender là true
+                    />
+                    <label htmlFor="genderMale" className="ml-2">
+                      Male
+                    </label>
+                  </div>
 
-                <FloatLabel className="flex-1 text-sm">
-                  <InputText
-                    id="email"
-                    className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
-                    value={user.email || ""}
-                    // onChange={(e) => setUser({ ...user, email: e.target.value })}
-                  />
-                  <label htmlFor="email">Email</label>
-                </FloatLabel>
-                <div className="flex card justify-content-center">
-                  <div className="flex flex-wrap gap-3">
-                    {/* Radio Button for Male */}
-                    <div className="flex align-items-center">
-                      <RadioButton
-                        inputId="genderMale"
-                        name="gender"
-                        value={true} // Giá trị cho "Male" là true
-                        onChange={() => setUser({ ...user, gender: true })}
-                        checked={user.gender === true} // Kiểm tra nếu gender là true
-                      />
-                      <label htmlFor="genderMale" className="ml-2">
-                        Male
-                      </label>
-                    </div>
-
-                    {/* Radio Button for Female */}
-                    <div className="flex align-items-center">
-                      <RadioButton
-                        inputId="genderFemale"
-                        name="gender"
-                        value={false} // Giá trị cho "Female" là false
-                        onChange={() => setUser({ ...user, gender: false })}
-                        checked={user.gender === false} // Kiểm tra nếu gender là false
-                      />
-                      <label htmlFor="genderFemale" className="ml-2">
-                        Female
-                      </label>
-                    </div>
+                  <div className="align-items-center flex">
+                    <RadioButton
+                      inputId="genderFemale"
+                      name="gender"
+                      value={false} // Giá trị cho "Female" là false
+                      onChange={() => setUser({ ...user, gender: false })}
+                      checked={user.gender === false} // Kiểm tra nếu gender là false
+                    />
+                    <label htmlFor="genderFemale" className="ml-2">
+                      Female
+                    </label>
                   </div>
                 </div>
+              </div> */}
 
-                <Button
-                  label="SAVE CHANGES"
-                  size="large"
-                  className="mt-5 h-[50px] w-[150px] bg-mainYellow text-xs font-bold text-slate-900"
-                  onClick={updateUser}
-                  // disabled={isLockedOut}
-                />
-              </div>
-              <div className="flex items-center justify-center flex-1">
-                <div className="relative">
-                  {/* Cái này có sẵn ấn vào hình mở input xog ấn nút để submit
+              <Button
+                label="SAVE CHANGES"
+                size="large"
+                className="mt-5 h-[50px] w-[150px] bg-mainYellow text-xs font-bold text-slate-900"
+                onClick={updateUser}
+                // disabled={isLockedOut}
+              />
+            </div>
+            <div className="order-1 mt-[25px] flex flex-1 items-center justify-center lg:order-2 lg:mt-0">
+              <div className="relative">
+                {/* Cái này có sẵn ấn vào hình mở input xog ấn nút để submit
                     xog cho nó loading nhìn cho giống real */}
-                  <div className="group relative flex h-[248px] w-[248px] cursor-pointer items-center justify-center overflow-hidden">
-                    <input
-                      type="file"
-                      onChange={handleChangeFile}
-                      className="absolute inset-0 z-50 opacity-0 cursor-pointer"
-                    />
+                <div className="group relative flex h-[248px] w-[248px] cursor-pointer items-center justify-center overflow-hidden">
+                  <input
+                    type="file"
+                    onChange={handleChangeFile}
+                    className="absolute inset-0 z-50 cursor-pointer opacity-0"
+                  />
 
-                    {/* trong thời gian đợi nó submit thì cập nhật trạg thái true cho nó load nhìn cho đẹp */}
-                    {uploading ? (
-                      <ProgressSpinner />
-                    ) : (
-                      // <img
-                      //   id="user-avatar"
-                      //   src={
-                      //     userData?.avatar && CheckLogin === 0
-                      //       ? userData?.avatar
-                      //       : avatar || "/user image.webp"
-                      //   }
-                      //   // Kiểm tra trong localStorage nếu có
+                  {/* trong thời gian đợi nó submit thì cập nhật trạg thái true cho nó load nhìn cho đẹp */}
+                  {uploading ? (
+                    <ProgressSpinner />
+                  ) : (
+                    // <img
+                    //   id="user-avatar"
+                    //   src={
+                    //     userData?.avatar && CheckLogin === 0
+                    //       ? userData?.avatar
+                    //       : avatar || "/user image.webp"
+                    //   }
+                    //   // Kiểm tra trong localStorage nếu có
 
-                      //   // src={photoURL || "/girl.png"}  Thay thế bằng URL ảnh placeholder nếu cần
-                      //   // src={userData?.avatar || "/user image.webp"} // nhớ xoá dòng này
-                      //   alt="Uploaded"
-                      //   className="object-cover w-full h-full border-4 rounded-full border-slate-900"
-                      // />
+                    //   // src={photoURL || "/girl.png"}  Thay thế bằng URL ảnh placeholder nếu cần
+                    //   // src={userData?.avatar || "/user image.webp"} // nhớ xoá dòng này
+                    //   alt="Uploaded"
+                    //   className="object-cover w-full h-full border-4 rounded-full border-slate-900"
+                    // />
 
-                      <>
-                        <img
-                          src={
-                            userData?.avatar && CheckLogin === 0
-                              ? userData?.avatar
-                              : avatar || "/user image.webp"
-                          }
-                          alt="Uploaded"
-                          className="object-cover w-full h-full p-1 border border-black border-dashed rounded-full"
-                        />
-                        <div className="absolute left-1/2 top-1/2 flex h-[95%] w-[95%] -translate-x-1/2 -translate-y-1/2 transform items-center justify-center gap-2 rounded-full bg-black bg-opacity-40 text-lg text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                          <MdOutlineCameraAlt />
-                          <p className="">Select</p>
-                        </div>
-                      </>
-                    )}
-                  </div>
+                    <>
+                      <img
+                        src={
+                          userData?.avatar && CheckLogin === 0
+                            ? userData?.avatar
+                            : avatar || "/user image.webp"
+                        }
+                        alt="Uploaded"
+                        className="h-full w-full rounded-full border border-dashed border-black object-cover p-1"
+                      />
+                      <div className="absolute left-1/2 top-1/2 flex h-[95%] w-[95%] -translate-x-1/2 -translate-y-1/2 transform items-center justify-center gap-2 rounded-full bg-black bg-opacity-40 text-lg text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                        <MdOutlineCameraAlt />
+                        <p className="">Select</p>
+                      </div>
+                    </>
+                  )}
+                </div>
 
-                  {/* Nút này để submit file lên nè */}
-                  <div className="absolute bottom-0 right-8">
-                    {/* <button className="shadow-whiteInShadow flex items-center justify-center rounded-full bg-mainYellow pb-[7px] pe-[7px] ps-2 pt-2">
+                {/* Nút này để submit file lên nè */}
+                <div className="absolute bottom-0 right-8">
+                  {/* <button className="shadow-whiteInShadow flex items-center justify-center rounded-full bg-mainYellow pb-[7px] pe-[7px] ps-2 pt-2">
                       <MdOutlineCameraAlt className="text-[30px] text-slate-900" />
                     </button> */}
-                    <Button
-                      icon="pi pi-camera"
-                      tooltip="Upload image"
-                      className="flex items-center justify-center w-10 h-10 border-4 border-white rounded-full shadow-whiteInShadow bg-mainYellow"
-                    />
-                  </div>
+                  <Button
+                    icon="pi pi-camera"
+                    tooltip="Upload image"
+                    className="shadow-whiteInShadow flex h-10 w-10 items-center justify-center rounded-full border-4 border-white bg-mainYellow"
+                  />
                 </div>
               </div>
             </div>
