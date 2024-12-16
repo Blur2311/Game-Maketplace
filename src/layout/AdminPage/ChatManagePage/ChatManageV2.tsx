@@ -10,6 +10,7 @@ import { Sidebar } from "primereact/sidebar";
 import { RightSideChat } from "./components/RightSideChat";
 import apiClient from "../../../config/apiClient";
 import Swal from "sweetalert2";
+import { useAuthCheck } from "../../../utils/AuthUtils";
 
 interface JWTPayload {
   userId?: number;
@@ -19,6 +20,7 @@ interface JWTPayload {
 }
 
 export const ChatManageV2 = () => {
+  useAuthCheck(["ADMIN", "STAFF"]);
   const [sideChat, setSideChat] = useState(false);
   const [visible, setVisible] = useState(false);
   const overlayPanelRef = useRef<OverlayPanel>(null);

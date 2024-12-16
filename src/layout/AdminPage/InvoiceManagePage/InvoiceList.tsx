@@ -11,8 +11,10 @@ import { MultiSelect } from "primereact/multiselect";
 import { Calendar } from "primereact/calendar";
 import { fetchInvoices, filterInvoices } from "./components/service/InvoiceListService";
 import { InvoiceModel } from "../../../model/InvoiceModel";
+import { useAuthCheck } from "../../../utils/AuthUtils";
 
 export const InvoiceList = () => {
+  useAuthCheck(['ADMIN']);
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(10);
   const [totalRecords, setTotalRecords] = useState(0);
@@ -87,7 +89,7 @@ export const InvoiceList = () => {
         <div className="grid grid-cols-12 gap-8">
           <div className="col-span-12 rounded-[20px] px-6 pb-8 pt-4 shadow-adminBoxshadow md:col-span-4">
             <div className="flex items-center gap-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full shadow-adminIconshadow">
+              <div className="flex items-center justify-center w-10 h-10 rounded-full shadow-adminIconshadow">
                 <TbInvoice className="text-2xl" />
               </div>
               <div className="">
@@ -101,7 +103,7 @@ export const InvoiceList = () => {
           </div>
           <div className="col-span-12 rounded-[20px] px-6 pb-8 pt-4 shadow-adminBoxshadow md:col-span-4">
             <div className="flex items-center gap-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full shadow-adminIconshadow">
+              <div className="flex items-center justify-center w-10 h-10 rounded-full shadow-adminIconshadow">
                 <TbCheck className="text-2xl" />
               </div>
               <div className="">
@@ -115,7 +117,7 @@ export const InvoiceList = () => {
           </div>
           <div className="col-span-12 rounded-[20px] px-6 pb-8 pt-4 shadow-adminBoxshadow md:col-span-4">
             <div className="flex items-center gap-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full shadow-adminIconshadow">
+              <div className="flex items-center justify-center w-10 h-10 rounded-full shadow-adminIconshadow">
                 <TbClockHour3 className="text-2xl" />
               </div>
               <div className="">
@@ -148,8 +150,8 @@ export const InvoiceList = () => {
                   <h6 className="text-2xl font-medium">Filters</h6>
 
                   <div className="">
-                    <div className="relative w-full rounded-lg border border-gray150 bg-transparent hover:border-black">
-                      <i className="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 transform text-gray100"></i>
+                    <div className="relative w-full bg-transparent border rounded-lg border-gray150 hover:border-black">
+                      <i className="absolute transform -translate-y-1/2 pi pi-search left-3 top-1/2 text-gray100"></i>
                       <InputText
                         placeholder="Search invoice ID"
                         className="w-full bg-transparent py-[17px] pl-10 pr-3 text-sm text-black focus:ring-0"
@@ -167,14 +169,14 @@ export const InvoiceList = () => {
                       optionLabel="label"
                       placeholder="Select Status"
                       maxSelectedLabels={3}
-                      className="w-full rounded-lg border border-gray150 px-4 py-2 font-inter text-sm shadow-adminInputShadow"
+                      className="w-full px-4 py-2 text-sm border rounded-lg border-gray150 font-inter shadow-adminInputShadow"
                       itemClassName="!font-inter"
                     />
                   </div>
 
                   <div className="">
-                    <div className="relative w-full rounded-lg border border-gray150 bg-transparent hover:border-black">
-                      <i className="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 transform text-gray100"></i>
+                    <div className="relative w-full bg-transparent border rounded-lg border-gray150 hover:border-black">
+                      <i className="absolute transform -translate-y-1/2 pi pi-search left-3 top-1/2 text-gray100"></i>
                       <InputText
                         placeholder="Search customer"
                         className="w-full bg-transparent py-[17px] pl-10 pr-3 text-sm text-black focus:ring-0"
@@ -263,7 +265,7 @@ export const InvoiceList = () => {
                         ),
                       }}
                       onPageChange={onPageChange}
-                      className="custom-pagi-cate bg-transparent text-gray150"
+                      className="bg-transparent custom-pagi-cate text-gray150"
                     />
                   </div>
                 </div>

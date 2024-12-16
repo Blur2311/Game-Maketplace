@@ -13,8 +13,10 @@ import {
   saveCategory,
   CategoryDTO,
 } from "./service/CategoryService"; // Import các hàm từ categoryService
+import { useAuthCheck } from "../../../utils/AuthUtils";
 
 export const CategoryCU = () => {
+  useAuthCheck(['ADMIN']);
   const { id } = useParams<{ id?: string }>(); // Nhận tham số id tùy chọn
   const isUpdateMode = Boolean(id); // Xác định chế độ cập nhật hay tạo mới
   const navigate = useNavigate();
@@ -61,7 +63,7 @@ export const CategoryCU = () => {
   return (
     <>
       <div className="px-6 py-16">
-        <div className="mb-8 flex flex-col gap-6">
+        <div className="flex flex-col gap-6 mb-8">
           <NavLink
             to={"/admin/category/list"}
             className="flex items-center gap-2 text-sm hover:underline"
@@ -78,7 +80,7 @@ export const CategoryCU = () => {
           <div className="px-6 pt-4">
             <h6 className="mb-6 text-lg font-medium">Basic information</h6>
 
-            <div className="grid grid-cols-12 gap-x-6 gap-y-8 pb-8">
+            <div className="grid grid-cols-12 pb-8 gap-x-6 gap-y-8">
               <FloatLabel className="col-span-12 text-sm">
                 <InputText
                   className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black"

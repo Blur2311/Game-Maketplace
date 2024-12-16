@@ -7,8 +7,10 @@ import { useNavigate } from "react-router-dom";
 import apiClient from "../../../config/apiClient";
 import { NewPasswordErrors } from "../../../model/RegistrationModel";
 import { validateNewPasswordForm } from "../../../utils/RegistrationUtils";
+import { useAuthCheck } from "../../../utils/AuthUtils";
 
 export const ResetPWAdmin = () => {
+  useAuthCheck(['ADMIN', 'STAFF']);
   const [{ status, message }, setMessages] = useState<{
     status:
       | "error"

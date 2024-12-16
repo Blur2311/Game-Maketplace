@@ -85,7 +85,7 @@ export const SignInAdmin = () => {
       localStorage.removeItem("email");
 
       setTimeout(() => {
-        navigate(decodeToken.role === "CUSTOMER" ? "/" : "/admin");
+        navigate(decodeToken.role === "CUSTOMER" ? "/" : decodeToken.role === "ADMIN" ? "/admin/home" : "/admin/chat-manage");
       }, 3000);
     } catch (error) {
       const attempts = getLoginAttempts() + 1;

@@ -8,8 +8,10 @@ import { TiArrowLeft } from "react-icons/ti";
 import { useParams, NavLink, Link, useNavigate } from "react-router-dom";
 import { Toast } from 'primereact/toast';
 import { insertAccountUserAndRole, convertFileToBase64, validateForm } from "./service/CustomerCUService";
+import { useAuthCheck } from "../../../utils/AuthUtils";
 
 export const CustomerCU = () => {
+  useAuthCheck(['ADMIN']);
   const { id } = useParams<{ id?: string }>(); // Nhận tham số id tùy chọn
   const isUpdateMode = Boolean(id); // Xác định chế độ cập nhật hay tạo mới
   const navigate = useNavigate();
@@ -70,7 +72,7 @@ export const CustomerCU = () => {
     <>
       <Toast ref={toast} />
       <div className="px-6 py-16">
-        <div className="mb-8 flex flex-col gap-6">
+        <div className="flex flex-col gap-6 mb-8">
           <NavLink
             to={"/admin/customer/list"}
             className="flex items-center gap-2 text-sm hover:underline"
@@ -87,8 +89,8 @@ export const CustomerCU = () => {
           <div className="px-6 pt-4">
             <h6 className="mb-6 text-lg font-medium">Basic information</h6>
 
-            <div className="grid grid-cols-12 gap-x-6 gap-y-8 pb-8">
-              <div className="col-span-12 flex items-center gap-6">
+            <div className="grid grid-cols-12 pb-8 gap-x-6 gap-y-8">
+              <div className="flex items-center col-span-12 gap-6">
                 {/* Avatar Preview Circle */}
                 <div className="h-[100px] w-[100px] rounded-full border border-dashed border-gray-300 p-1">
                   <div className="flex h-full items-center justify-center rounded-full bg-[#f9fafb]">
@@ -96,7 +98,7 @@ export const CustomerCU = () => {
                       <img
                         src={avatar}
                         alt="Avatar Preview"
-                        className="h-full w-full rounded-full object-cover"
+                        className="object-cover w-full h-full rounded-full"
                       />
                     ) : (
                       <FiCamera size={24} />
@@ -110,14 +112,14 @@ export const CustomerCU = () => {
                   <p className="text-xs text-textSecond">
                     Min 400x400px, PNG or JPEG
                   </p>
-                  <label className="mt-2 inline-block">
+                  <label className="inline-block mt-2">
                     <input
                       type="file"
                       accept="image/png, image/jpeg"
                       className="hidden"
                       onChange={handleFileChange}
                     />
-                    <span className="adminInputShadow cursor-pointer rounded-lg border px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-100">
+                    <span className="px-4 py-2 text-sm font-medium text-gray-700 border rounded-lg shadow-sm cursor-pointer adminInputShadow hover:bg-gray-100">
                       Select
                     </span>
                   </label>

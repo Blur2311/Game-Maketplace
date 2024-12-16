@@ -57,7 +57,7 @@ export const AdminNavBar = () => {
             <AdminSidebar onLinkClick={toggleSidebar} />
           </Sidebar>
         </div>
-        <div className="flex h-10 cursor-pointer items-center gap-2">
+        <div className="flex items-center h-10 gap-2 cursor-pointer">
           <div className="relative">
             {/* Nút chuông */}
             <button
@@ -65,11 +65,11 @@ export const AdminNavBar = () => {
                 setUnread(false); // Đặt trạng thái unread về false
                 opNotifications.current?.toggle(e); // Bật/tắt OverlayPanel
               }}
-              className="relative rounded-full p-2 hover:bg-gray-200"
+              className="relative p-2 rounded-full hover:bg-gray-200"
             >
               <BsBellFill className="text-xl" />
               {unread && (
-                <span className="absolute right-0 top-0 h-3 w-3 rounded-full bg-red-500 text-xs text-white"></span>
+                <span className="absolute top-0 right-0 w-3 h-3 text-xs text-white bg-red-500 rounded-full"></span>
               )}
             </button>
 
@@ -81,7 +81,7 @@ export const AdminNavBar = () => {
               <div className="flex items-center justify-between gap-4 px-6 py-4">
                 <h3 className="text-lg font-medium">Notifications</h3>
                 <Button
-                  className="rounded-lg p-2 hover:bg-gray-100"
+                  className="p-2 rounded-lg hover:bg-gray-100"
                   icon="pi pi-envelope"
                   tooltip="Mark all as read"
                 />
@@ -108,7 +108,7 @@ export const AdminNavBar = () => {
             className="flex items-center gap-3 hover:opacity-80"
             onClick={(e) => opUserMenu.current?.toggle(e)}
           >
-            <img src="/cat.jpeg" alt="" className="h-10 w-10 rounded-full" />
+            <img src="/cat.jpeg" alt="" className="w-10 h-10 rounded-full" />
             {/* Không có hình ảnh thì hiển thị cái này
               <Avatar
                 icon="pi pi-user"
@@ -126,7 +126,7 @@ export const AdminNavBar = () => {
               <p className="text-sm text-[#667085]">{username || "Username"}</p>
             </div>
             <ul className="p-2">
-              <li className="cursor-pointer rounded-lg px-2 py-1 hover:bg-gray200 hover:bg-opacity-10">
+              <li className="px-2 py-1 rounded-lg cursor-pointer hover:bg-gray200 hover:bg-opacity-10">
                 <Link
                   to={"/admin/account-info"}
                   className="flex items-center gap-4"
@@ -135,7 +135,7 @@ export const AdminNavBar = () => {
                   <span>Account Info</span>
                 </Link>
               </li>
-              <li className="cursor-pointer rounded-lg px-2 py-1 hover:bg-gray200 hover:bg-opacity-10">
+              <li className="px-2 py-1 rounded-lg cursor-pointer hover:bg-gray200 hover:bg-opacity-10">
                 <Link
                   to={"/admin/settings"}
                   className="flex items-center gap-4"
@@ -147,8 +147,8 @@ export const AdminNavBar = () => {
             </ul>
             <div className="border-t border-[#dcdfe4] p-2">
               <button
-                className="w-full cursor-pointer rounded-lg px-2 py-1 hover:bg-gray200 hover:bg-opacity-10"
-                onClick={signOut}
+                className="w-full px-2 py-1 rounded-lg cursor-pointer hover:bg-gray200 hover:bg-opacity-10"
+                onClick={() => signOut('!CUSTOMER')}
               >
                 Sign Out
               </button>

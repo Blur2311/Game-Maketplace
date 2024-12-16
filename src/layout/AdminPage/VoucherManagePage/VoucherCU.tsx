@@ -14,8 +14,10 @@ import {
   validateForm,
 } from "./service/VoucherCUService";
 import { InputSwitch } from "primereact/inputswitch";
+import { useAuthCheck } from "../../../utils/AuthUtils";
 
 export const VoucherCU = () => {
+  useAuthCheck(['ADMIN']);
   const { id } = useParams<{ id?: string }>(); // Nhận tham số id tùy chọn
   const isUpdateMode = Boolean(id);
   const navigate = useNavigate();
@@ -153,7 +155,7 @@ export const VoucherCU = () => {
   return (
     <>
       <div className="px-6 py-16">
-        <div className="mb-8 flex flex-col gap-6">
+        <div className="flex flex-col gap-6 mb-8">
           <NavLink
             to={"/admin/customer/list"}
             className="flex items-center gap-2 text-sm hover:underline"
@@ -300,7 +302,7 @@ export const VoucherCU = () => {
                   </FloatLabel>
 
                   <div className="col-span-12 text-sm sm:col-span-6">
-                    <div className="flex h-full items-center gap-2">
+                    <div className="flex items-center h-full gap-2">
                       <label htmlFor="active" className="p-checkbox-label">
                         State
                       </label>
@@ -346,7 +348,7 @@ export const VoucherCU = () => {
           <div className="flex justify-end">
             <button
               onClick={handleSubmit}
-              className="rounded-lg bg-blue-500 px-6 py-3 text-white hover:bg-blue-600"
+              className="px-6 py-3 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
             >
               {isUpdateMode ? "Update" : "Create"} Voucher
             </button>
