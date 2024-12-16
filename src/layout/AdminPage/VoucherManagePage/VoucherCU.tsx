@@ -2,7 +2,6 @@ import { Calendar } from "primereact/calendar";
 import { FloatLabel } from "primereact/floatlabel";
 import { InputNumber } from "primereact/inputnumber";
 import { InputText } from "primereact/inputtext";
-import { Checkbox, CheckboxChangeEvent } from "primereact/checkbox";
 import { useState, useEffect } from "react";
 import { TiArrowLeft } from "react-icons/ti";
 import { NavLink, useParams, useNavigate } from "react-router-dom";
@@ -14,8 +13,11 @@ import {
   convertFileToBase64,
   validateForm,
 } from "./service/VoucherCUService";
+import { InputSwitch } from "primereact/inputswitch";
+import { useAuthCheck } from "../../../utils/AuthUtils";
 
 export const VoucherCU = () => {
+  useAuthCheck(['ADMIN']);
   const { id } = useParams<{ id?: string }>(); // Nhận tham số id tùy chọn
   const isUpdateMode = Boolean(id);
   const navigate = useNavigate();
@@ -65,8 +67,8 @@ export const VoucherCU = () => {
     setEndDate(e.value || null); // Sets to null if value is undefined
   };
 
-  const handleActiveChange = (e: CheckboxChangeEvent) => {
-    setActive(e.checked ?? false); // Ensure checked is not undefined
+  const handleActiveChange = (e: { value: boolean }) => {
+    setActive(e.value);
   };
 
   const handleMaxDiscountChange = (e: { value: number | null }) => {
@@ -153,7 +155,7 @@ export const VoucherCU = () => {
   return (
     <>
       <div className="px-6 py-16">
-        <div className="mb-8 flex flex-col gap-6">
+        <div className="flex flex-col gap-6 mb-8">
           <NavLink
             to={"/admin/customer/list"}
             className="flex items-center gap-2 text-sm hover:underline"
@@ -206,62 +208,7 @@ export const VoucherCU = () => {
                     )}
                   </FloatLabel>
 
-                  <FloatLabel className="col-span-12 text-sm">
-                    <InputNumber
-                      className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black"
-                      inputClassName="focus:ring-0"
-                      min={0}
-                      max={100}
-                      value={discountPercent}
-                      onChange={handleDiscountPercentChange}
-                    />
-                    <label>
-                      Discount percent <span className="text-red-500">*</span>
-                    </label>
-                    {errors.discountPercent && (
-                      <p className="mt-1 text-xs text-red-500">
-                        {errors.discountPercent}
-                      </p>
-                    )}
-                  </FloatLabel>
-
-                  <FloatLabel className="col-span-12 text-sm">
-                    <InputNumber
-                      className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black"
-                      inputClassName="focus:ring-0"
-                      min={0}
-                      value={quantity}
-                      onChange={handleQuantityChange}
-                    />
-                    <label>
-                      Quantity <span className="text-red-500">*</span>
-                    </label>
-                    {errors.quantity && (
-                      <p className="mt-1 text-xs text-red-500">
-                        {errors.quantity}
-                      </p>
-                    )}
-                  </FloatLabel>
-
-                  <FloatLabel className="col-span-12 text-sm">
-                    <InputNumber
-                      className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black"
-                      inputClassName="focus:ring-0"
-                      min={0}
-                      value={maxDiscount}
-                      onChange={handleMaxDiscountChange}
-                    />
-                    <label>
-                      Max Discount <span className="text-red-500">*</span>
-                    </label>
-                    {errors.maxDiscount && (
-                      <p className="mt-1 text-xs text-red-500">
-                        {errors.maxDiscount}
-                      </p>
-                    )}
-                  </FloatLabel>
-
-                  <FloatLabel className="col-span-12 text-sm">
+                  <FloatLabel className="col-span-12 text-sm sm:col-span-6">
                     <Calendar
                       value={startDate}
                       onChange={handleStartDateChange}
@@ -280,7 +227,7 @@ export const VoucherCU = () => {
                     )}
                   </FloatLabel>
 
-                  <FloatLabel className="col-span-12 text-sm">
+                  <FloatLabel className="col-span-12 text-sm sm:col-span-6">
                     <Calendar
                       value={endDate}
                       onChange={handleEndDateChange}
@@ -299,16 +246,79 @@ export const VoucherCU = () => {
                     )}
                   </FloatLabel>
 
-                  <div className="col-span-12 text-sm">
-                    <div className="flex items-center gap-2">
-                      <Checkbox
-                        inputId="active"
+                  <FloatLabel className="col-span-12 text-sm sm:col-span-6">
+                    <InputNumber
+                      className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black"
+                      inputClassName="focus:ring-0"
+                      min={0}
+                      max={100}
+                      value={discountPercent}
+                      onChange={handleDiscountPercentChange}
+                    />
+                    <label>
+                      Discount percent <span className="text-red-500">*</span>
+                    </label>
+                    {errors.discountPercent && (
+                      <p className="mt-1 text-xs text-red-500">
+                        {errors.discountPercent}
+                      </p>
+                    )}
+                  </FloatLabel>
+
+                  <FloatLabel className="col-span-12 text-sm sm:col-span-6">
+                    <InputNumber
+                      className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black"
+                      inputClassName="focus:ring-0"
+                      min={0}
+                      value={quantity}
+                      onChange={handleQuantityChange}
+                    />
+                    <label>
+                      Quantity <span className="text-red-500">*</span>
+                    </label>
+                    {errors.quantity && (
+                      <p className="mt-1 text-xs text-red-500">
+                        {errors.quantity}
+                      </p>
+                    )}
+                  </FloatLabel>
+
+                  <FloatLabel className="col-span-12 text-sm sm:col-span-6">
+                    <InputNumber
+                      className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black"
+                      inputClassName="focus:ring-0"
+                      min={0}
+                      value={maxDiscount}
+                      onChange={handleMaxDiscountChange}
+                    />
+                    <label>
+                      Maximum amount <span className="text-red-500">*</span>
+                    </label>
+                    {errors.maxDiscount && (
+                      <p className="mt-1 text-xs text-red-500">
+                        {errors.maxDiscount}
+                      </p>
+                    )}
+                  </FloatLabel>
+
+                  <div className="col-span-12 text-sm sm:col-span-6">
+                    <div className="flex items-center h-full gap-2">
+                      <label htmlFor="active" className="p-checkbox-label">
+                        State
+                      </label>
+                      <InputSwitch
                         checked={active}
                         onChange={handleActiveChange}
                       />
-                      <label htmlFor="active" className="p-checkbox-label">
-                        Active
-                      </label>
+                      {active ? (
+                        <>
+                          <span className="text-green-500">Active</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="text-red-500">Inactive</span>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -338,7 +348,7 @@ export const VoucherCU = () => {
           <div className="flex justify-end">
             <button
               onClick={handleSubmit}
-              className="rounded-lg bg-blue-500 px-6 py-3 text-white hover:bg-blue-600"
+              className="px-6 py-3 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
             >
               {isUpdateMode ? "Update" : "Create"} Voucher
             </button>

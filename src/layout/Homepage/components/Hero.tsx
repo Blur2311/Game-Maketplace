@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import apiClient from "../../../config/apiClient";
 import { getImage } from "../../../utils/ProductUtils";
+import { scrollToTop } from "../../../utils/OtherUtils";
 
 type Hero = {
   content: string;
@@ -117,6 +118,7 @@ export const Hero = () => {
             <Link to={item.slug ?? "/"}>
               <Button
                 label="More Info"
+                onClick={scrollToTop}
                 className="hidden w-[180px] rounded-lg bg-mainYellow px-3 py-3 text-sm hover:bg-hoverYellow sm:block"
               />
             </Link>
@@ -148,18 +150,28 @@ export const Hero = () => {
   return (
     <>
       <div className="">
-        <div className="mb-10 flex flex-col items-center gap-5 md:flex-row">
+        <div className="mb-10 flex flex-col items-stretch gap-5 md:flex-row">
           <Link
             to="/product?game=Black_Myth_Wukong"
+            onClick={scrollToTop}
             className="flex-1 transition duration-300 hover:brightness-125"
           >
-            <img src="/wukong.webp" alt="" className="hot-img rounded-xl" />
+            <img
+              src="/wukong.webp"
+              alt=""
+              className="h-full w-full rounded-xl object-cover"
+            />
           </Link>
           <Link
             to="/product?game=The_Scourge__Tai_ng"
+            onClick={scrollToTop}
             className="flex-1 transition duration-300 hover:brightness-125"
           >
-            <img src="/scourge.webp" alt="" className="hot-img rounded-xl" />
+            <img
+              src="/scourge.webp"
+              alt=""
+              className="h-full w-full rounded-xl object-cover"
+            />
           </Link>
         </div>
         <Galleria

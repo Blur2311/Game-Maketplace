@@ -1,57 +1,31 @@
 import { InputText } from "primereact/inputtext";
 import { TabView, TabPanel } from "primereact/tabview";
 import { ChatPerson } from "./ChatPerson"; // Assuming this component is already defined
-import { useState } from "react";
+import {
+  forwardRef,
+  useImperativeHandle,
+  useState,
+  useEffect,
+} from "react";
 
-export const RightSideChat = () => {
+import apiClient from "../../../../config/apiClient";
+import React from "react";
+
+type Room = {
+  id: number;
+  userName: string
+};
+
+type RightSideChatProps = {
+  onUserNameSelect: (userName: string) => void;
+  onFirstChatLoad: () => void;
+};
+
+
+export const RightSideChat = (({ onUserNameSelect, onFirstChatLoad }: RightSideChatProps) => {
+
   const [activeIndex, setActiveIndex] = useState<number>(0);
-  const [chats, setChats] = useState([
-    {
-      id: 1,
-      name: "Huy Dep Trai",
-      avatar: "/cat.jpeg",
-      mess: "Netflix and chill?",
-      date: "1 hours ago",
-      status: true,
-      unread: false,
-    },
-    {
-      id: 2,
-      name: "Huy Dep Trai",
-      avatar: "/cat.jpeg",
-      mess: "Netflix and chill?",
-      date: "1 hours ago",
-      status: false,
-      unread: true,
-    },
-    {
-      id: 3,
-      name: "Huy Dep Trai",
-      avatar: "/cat.jpeg",
-      mess: "Netflix and chill?",
-      date: "1 hours ago",
-      status: false,
-      unread: true,
-    },
-    {
-      id: 4,
-      name: "Huy Dep Trai",
-      avatar: "/cat.jpeg",
-      mess: "Netflix and chill?",
-      date: "1 hours ago",
-      status: false,
-      unread: true,
-    },
-    {
-      id: 5,
-      name: "Huy Dep Trai",
-      avatar: "/cat.jpeg",
-      mess: "Netflix and chill?",
-      date: "1 hours ago",
-      status: false,
-      unread: true,
-    },
-  ]);
+  const [chats, setChats] = useState<Room[]>([]);
   const [selectedChatId, setSelectedChatId] = useState<number | null>(null);
 
   const handleSelectChat = (id: number) => {
@@ -61,10 +35,33 @@ export const RightSideChat = () => {
         chat.id === id ? { ...chat, unread: false } : chat,
       ),
     );
+    const selectedChat = chats.find((chat) => chat.id === id);
+    if (selectedChat) {
+      // Gọi callback với userName khi chọn một cuộc trò chuyện
+      onUserNameSelect(selectedChat.userName);
+    }
   };
 
-  // Filter unread chats for the "Unread" tab
-  const unreadChats = chats.filter((chat) => chat.unread);
+  const fetchData = async () => {
+    const response = await apiClient.get(`/api/chat/room-chat`);
+    setChats(response.data.data);
+  }
+
+  useEffect(() => {
+    fetchData();
+
+    const interval = setInterval(fetchData, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    // Chọn cuộc trò chuyện đầu tiên khi dữ liệu đã tải
+    if (chats.length > 0 && !selectedChatId) {
+      handleSelectChat(chats[0].id); // Tự động chọn chat đầu tiên
+      onFirstChatLoad(); // Gọi callback để thông báo cho parent (ChatManageV2)
+    }
+  }, [chats, selectedChatId, onFirstChatLoad]);
 
   return (
     <div className="flex h-full flex-col">
@@ -86,15 +83,13 @@ export const RightSideChat = () => {
             activeIndex={activeIndex}
             onTabChange={(e) => setActiveIndex(e.index)}
           >
-            {/* Tab Tất cả */}
             <TabPanel
               header={
                 <span
-                  className={`${
-                    activeIndex === 0
-                      ? "border-b-2 border-blue-600 text-blue-600"
-                      : ""
-                  } text-sm font-medium`}
+                  className={`${activeIndex === 0
+                    ? "border-b-2 border-blue-600 text-blue-600"
+                    : ""
+                    } text-sm font-medium`}
                 >
                   All
                 </span>
@@ -104,17 +99,16 @@ export const RightSideChat = () => {
               <ul className="flex flex-col gap-2 font-inter">
                 {chats.map((chat) => (
                   <ChatPerson
-                    key={chat.id}
+                    name={`${chat.userName}`} avatar={"/cat.jpeg"} mess={""} date={""} unread={false} key={chat.id}
                     {...chat}
                     isSelected={selectedChatId === chat.id}
-                    onSelect={handleSelectChat}
-                  />
+                    onSelect={handleSelectChat} />
                 ))}
               </ul>
             </TabPanel>
 
             {/* Tab Chưa đọc */}
-            <TabPanel
+            {/* <TabPanel
               header={
                 <span
                   className={`${
@@ -134,14 +128,14 @@ export const RightSideChat = () => {
                     key={chat.id}
                     {...chat}
                     isSelected={selectedChatId === chat.id}
-                    onSelect={handleSelectChat}
-                  />
+                    onSelect={handleSelectChat}                  />
                 ))}
               </ul>
-            </TabPanel>
+            </TabPanel> */}
           </TabView>
         </div>
       </div>
     </div>
   );
-};
+});
+

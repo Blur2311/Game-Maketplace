@@ -92,7 +92,7 @@ export const CarouselHome: React.FC<CarouselHomeProps> = ({ name, field }) => {
       numScroll: 5,
     },
     {
-      breakpoint: "1324px",
+      breakpoint: "1224px",
       numVisible: 4,
       numScroll: 4,
     },
@@ -102,14 +102,9 @@ export const CarouselHome: React.FC<CarouselHomeProps> = ({ name, field }) => {
       numScroll: 3,
     },
     {
-      breakpoint: "560px",
+      breakpoint: "640px",
       numVisible: 2,
       numScroll: 2,
-    },
-    {
-      breakpoint: "460px",
-      numVisible: 1,
-      numScroll: 1,
     },
   ];
 
@@ -181,7 +176,7 @@ export const CarouselHome: React.FC<CarouselHomeProps> = ({ name, field }) => {
         type={item.type}
         price={item.price}
         sale={item.sale}
-        wrapper={`mr-4 flex h-[397px] min-w-[190px] flex-col justify-center font-inter text-white sm:max-w-[200px]`}
+        wrapper={`flex w-full flex-col justify-start pr-4 `}
         url={item.url}
       />
     );
@@ -190,7 +185,7 @@ export const CarouselHome: React.FC<CarouselHomeProps> = ({ name, field }) => {
   return (
     <div className="relative mt-16">
       <div className="flex items-start justify-between">
-        <button className="flex items-center mb-4 text-white group">
+        <button className="group mb-4 flex items-center text-white">
           <span className="mr-2 text-xl font-bold">{name}</span>
           <GoChevronRight className="text-2xl transition-transform duration-300 group-hover:translate-x-2" />
         </button>
@@ -204,7 +199,7 @@ export const CarouselHome: React.FC<CarouselHomeProps> = ({ name, field }) => {
 
           <Button
             icon="pi pi-chevron-right"
-            className="bg-opacity-50 rounded-full h-7 w-7 bg-gray400"
+            className="h-7 w-7 rounded-full bg-gray400 bg-opacity-50"
             onClick={next}
             disabled={page === totalPages - 1}
           />
@@ -220,7 +215,7 @@ export const CarouselHome: React.FC<CarouselHomeProps> = ({ name, field }) => {
         showNavigators={false} // Ẩn nút mặc định
         page={page} // Đồng bộ trạng thái trang
         circular={false}
-        className=""
+        className="text-white"
       />
     </div>
   );

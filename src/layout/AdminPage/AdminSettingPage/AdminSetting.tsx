@@ -6,8 +6,10 @@ import { useState } from "react";
 import { FaRegBell } from "react-icons/fa";
 import { IoWarningOutline } from "react-icons/io5";
 import { PiPassword } from "react-icons/pi";
+import { useAuthCheck } from "../../../utils/AuthUtils";
 
 export const AdminSetting = () => {
+  useAuthCheck(['ADMIN', 'STAFF']);
   const [checkedProd, setCheckedProd] = useState(true);
   const [checkedSecu, setCheckedSecu] = useState(false);
   const [newPW, setNewPW] = useState("");
@@ -17,17 +19,17 @@ export const AdminSetting = () => {
     <>
       <div className="px-6 py-16">
         <h1 className="text-[32px] font-medium">Settings</h1>
-        <div className="mt-6 grid grid-cols-12 gap-x-4 gap-y-8">
+        <div className="grid grid-cols-12 mt-6 gap-x-4 gap-y-8">
           <div className="col-span-12">
             <div className="rounded-[20px] shadow-adminBoxshadow">
               <div className="px-6 py-8">
-                <div className="mb-8 flex items-center gap-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full shadow-adminIconshadow">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-full shadow-adminIconshadow">
                     <PiPassword className="text-2xl" />
                   </div>
                   <p className="text-lg font-medium">Change password</p>
                 </div>
-                <div className="grid grid-cols-12 gap-x-6 gap-y-8 pb-8">
+                <div className="grid grid-cols-12 pb-8 gap-x-6 gap-y-8">
                   <div className="col-span-12 text-sm sm:col-span-6">
                     <FloatLabel className="!w-full">
                       <Password
@@ -72,8 +74,8 @@ export const AdminSetting = () => {
           <div className="col-span-12">
             <div className="rounded-[20px] shadow-adminBoxshadow">
               <div className="px-6 py-8">
-                <div className="mb-8 flex items-center gap-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full shadow-adminIconshadow">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-full shadow-adminIconshadow">
                     <FaRegBell className="text-2xl" />
                   </div>
                   <p className="text-lg font-medium">Notifications</p>
@@ -117,8 +119,8 @@ export const AdminSetting = () => {
           <div className="col-span-12">
             <div className="rounded-[20px] shadow-adminBoxshadow">
               <div className="px-6 py-8">
-                <div className="mb-8 flex items-center gap-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full shadow-adminIconshadow">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-full shadow-adminIconshadow">
                     <IoWarningOutline className="text-2xl" />
                   </div>
                   <p className="text-lg font-medium">Delete account</p>

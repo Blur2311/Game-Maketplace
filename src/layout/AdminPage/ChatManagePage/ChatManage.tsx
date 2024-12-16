@@ -4,6 +4,7 @@ import { Dialog } from "primereact/dialog";
 import { FaBell } from "react-icons/fa";
 import apiClient from "../../../config/apiClient"; // Ensure you have the correct path to your apiClient
 import "./ChatManage.css"; // Import file CSS
+import { useAuthCheck } from "../../../utils/AuthUtils";
 
 interface ChatRoom {
   id: number;
@@ -18,6 +19,7 @@ interface JWTPayload {
 }
 
 export const ChatManage = () => {
+  useAuthCheck(['ADMIN', 'STAFF']);
   const [uploading, setUploading] = useState(false);
   const [visibleModal, setVisibleModal] = useState<number | null>(null);
   const [messages, setMessages] = useState<
@@ -74,7 +76,7 @@ export const ChatManage = () => {
       );
 
       // Chuyển chuỗi JSON thành đối tượng JavaScript
-      console.log(decodedPayload);
+      // console.log(decodedPayload);
       return JSON.parse(decodedPayload) as JWTPayload;
     } catch (error) {
       console.error("Failed to decode JWT:", error);
@@ -125,10 +127,10 @@ export const ChatManage = () => {
                     <div key={room.id}>
                       <Button
                         type="button"
-                        className="flex items-center rounded-md bg-zinc-700 px-3 py-2 text-white"
+                        className="flex items-center px-3 py-2 text-white rounded-md bg-zinc-700"
                         onClick={() => toggleModal(index, room.userName)}
                       >
-                        <FaBell className="shake mr-2" />
+                        <FaBell className="mr-2 shake" />
                         {room.userName}
                       </Button>
 
@@ -159,7 +161,7 @@ export const ChatManage = () => {
                             />
                             <button
                               // onClick={handleSendMessage}
-                              className="ml-2 rounded-full bg-yellow-400 p-2 text-white hover:bg-blue-600 focus:outline-none"
+                              className="p-2 ml-2 text-white bg-yellow-400 rounded-full hover:bg-blue-600 focus:outline-none"
                             >
                               <svg
                                 width="20px"

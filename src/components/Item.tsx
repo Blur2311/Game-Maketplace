@@ -1,5 +1,9 @@
 import { Link } from "react-router-dom";
-import { calculateSalePrice, formatCurrency } from "../utils/OtherUtils";
+import {
+  calculateSalePrice,
+  formatCurrency,
+  scrollToTop,
+} from "../utils/OtherUtils";
 export type ItemProps = {
   name: string;
   image: string;
@@ -13,16 +17,22 @@ export type ItemProps = {
 export const Item: React.FC<ItemProps> = (item) => {
   return (
     <>
-      <div className={`${item.wrapper} text-white`}>
-        <Link to={item.url}>
-          <img
-            src={item.image}
-            alt=""
-            className="mb-[10px] h-[254px] w-[190px] rounded-lg object-cover transition duration-300 hover:brightness-125"
-          />
+      <div className={`${item.wrapper}`}>
+        <Link
+          to={item.url}
+          onClick={scrollToTop}
+          className="mb-[10px] flex items-start justify-center overflow-hidden sm:justify-start"
+        >
+          <div className="aspect-[3/4] w-full">
+            <img
+              src={item.image}
+              alt=""
+              className="h-full w-full rounded-lg object-cover transition duration-300 hover:brightness-125"
+            />
+          </div>
         </Link>
         <p className="text-xs text-textType">{item.type}</p>
-        <Link to={item.url}>
+        <Link to={item.url} onClick={scrollToTop}>
           <h6 className="text-overflow-ellipsis-1-line my-[5px] line-clamp-2 max-w-[190px] text-base font-bold">
             {item.name}
           </h6>
@@ -35,17 +45,19 @@ export const Item: React.FC<ItemProps> = (item) => {
         >
           {item.sale ? (
             <>
-              <div className="rounded-full bg-mainCyan max-block-fit px-2 py-[2px] text-xs text-black">
+              <div className="max-block-fit rounded-full bg-mainCyan px-2 py-[2px] text-xs text-black">
                 -{item.sale}%
               </div>
-              <p className="text-sm line-through text-textType">
-                {formatCurrency(item.price)}
-              </p>
-              <p className="text-sm">
-                {formatCurrency(
-                  Math.round(calculateSalePrice(item.price, item.sale)),
-                )}
-              </p>
+              <div className="">
+                <p className="text-sm text-textType line-through">
+                  {formatCurrency(item.price)}
+                </p>
+                <p className="text-sm">
+                  {formatCurrency(
+                    Math.round(calculateSalePrice(item.price, item.sale)),
+                  )}
+                </p>
+              </div>
             </>
           ) : (
             <p className="text-sm text-textType">

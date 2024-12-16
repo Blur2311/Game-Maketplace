@@ -45,7 +45,7 @@ export const Homepage: React.FC = () => {
           url={"/browser"}
         />
       </div>
-      <ChatSupport />
+      {/* <ChatSupport /> */}
     </>
   );
 };

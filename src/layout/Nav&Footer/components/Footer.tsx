@@ -1,12 +1,9 @@
 import { Button } from "primereact/button";
 import { FaFacebook, FaYoutube } from "react-icons/fa";
 import { FaSquareXTwitter } from "react-icons/fa6";
+import { scrollToTop } from "../../../utils/OtherUtils";
 
 export const Footer = () => {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   return (
     <>
       <div className="bg-gray300 px-10 pb-10 pt-5 sm:px-16">

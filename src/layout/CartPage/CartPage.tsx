@@ -10,6 +10,8 @@ import CartItem from "./components/CartItem";
 import CartSummary from "./components/CartSummary";
 import LoadingSpinner from "./components/LoadingSpinner";
 import { useCart } from "./hooks/useCart";
+import { FaFaceSadTear } from "react-icons/fa6";
+import { NavLink } from "react-router-dom";
 
 export const CartPage: React.FC = () => {
   const {
@@ -66,7 +68,18 @@ export const CartPage: React.FC = () => {
   const renderCartItems = () => {
     if (cartItems.length === 0) {
       return (
-        <div className="p-4 text-center text-gray-500">Your cart is empty</div>
+        <div className="flex flex-col items-center justify-center text-white">
+          <FaFaceSadTear size={60} className="mb-10" />
+          <p className="text-center text-5xl font-bold">Your cart is empty.</p>
+          <NavLink
+            to={"/home"}
+            className={
+              "mt-3 rounded-md bg-mainCyan px-3 py-1 text-sm font-medium text-black hover:text-white hover:brightness-110"
+            }
+          >
+            Back to Home
+          </NavLink>
+        </div>
       );
     }
 
@@ -114,18 +127,24 @@ export const CartPage: React.FC = () => {
   return (
     <>
       <Toast ref={toast} />
-      <div className="container px-4 py-8 mx-auto">
-        <h1 className="mb-8 text-3xl font-bold text-white">My Cart</h1>
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-          <div className="lg:col-span-2">{renderCartItems()}</div>
-
-          <div className="lg:col-span-1">
-            <CartSummary
-              cal={calc()}
-              cartItemsCount={cartItems.length}
-              onCheckOut={handleCheckOut}
-            />
+      <div className="pb-[90px]">
+        <h1 className="mb-[50px] text-[40px] font-black text-white">My Cart</h1>
+        <div className="grid grid-cols-12">
+          <div
+            className={`col-span-12 mb-8 ${cartItems.length !== 0 && "lg:col-span-8 lg:mb-0"}`}
+          >
+            {renderCartItems()}
           </div>
+
+          {cartItems.length !== 0 && (
+            <div className="col-span-12 lg:col-span-4 lg:ml-9">
+              <CartSummary
+                cal={calc()}
+                cartItemsCount={cartItems.length}
+                onCheckOut={handleCheckOut}
+              />
+            </div>
+          )}
         </div>
       </div>
     </>

@@ -7,8 +7,10 @@ import { useState, useEffect } from "react";
 import { VoucherRow } from "./components/VoucherRow";
 import { getAllVouchers } from "./service/VoucherListService";
 import { Voucher } from "../../../model/VoucherModel";
+import { useAuthCheck } from "../../../utils/AuthUtils";
 
 export const VoucherList = () => {
+  useAuthCheck(['ADMIN']);
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(10);
   const [totalRecords, setTotalRecords] = useState(100);
@@ -138,8 +140,8 @@ export const VoucherList = () => {
                   <h6 className="text-2xl font-medium">Filters</h6>
 
                   <div className="">
-                    <div className="relative w-full rounded-lg border border-gray150 bg-transparent hover:border-black">
-                      <i className="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 transform text-gray100"></i>
+                    <div className="relative w-full bg-transparent border rounded-lg border-gray150 hover:border-black">
+                      <i className="absolute transform -translate-y-1/2 pi pi-search left-3 top-1/2 text-gray100"></i>
                       <InputText
                         placeholder="Search name"
                         className="w-full bg-transparent py-[17px] pl-10 pr-3 text-sm text-black focus:ring-0"
@@ -157,7 +159,7 @@ export const VoucherList = () => {
                       optionLabel="name"
                       placeholder="Select Status"
                       maxSelectedLabels={3}
-                      className="w-full rounded-lg border border-gray150 px-4 py-2 font-inter text-sm shadow-adminInputShadow"
+                      className="w-full px-4 py-2 text-sm border rounded-lg border-gray150 font-inter shadow-adminInputShadow"
                       itemClassName="!font-inter"
                     />
                   </div>
@@ -258,7 +260,7 @@ export const VoucherList = () => {
                         ),
                       }}
                       onPageChange={onPageChange}
-                      className="custom-pagi-cate bg-transparent text-gray150"
+                      className="bg-transparent custom-pagi-cate text-gray150"
                     />
                   </div>
                 </div>

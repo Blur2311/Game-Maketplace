@@ -5,8 +5,11 @@ import { ApexOptions } from "apexcharts";
 import { TbReportMoney, TbUserHexagon } from "react-icons/tb";
 import { FiTrendingDown, FiTrendingUp } from "react-icons/fi";
 import { getAnalytics } from "./components/service/AnalyticsService";
+import { useAuthCheck } from "../../../utils/AuthUtils";
 
+  
 export const Analytics = () => {
+  useAuthCheck(['ADMIN']);
   const [analyticsData, setAnalyticsData] = useState({
     totalRevenue: 0,
     totalItemsSold: 0,
@@ -172,8 +175,8 @@ export const Analytics = () => {
         <div className="grid grid-cols-12 gap-8">
           <div className="col-span-12 lg:col-span-6">
             <div className="rounded-[20px] px-6 py-8 shadow-adminBoxshadow">
-              <div className="mb-8 flex items-center gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full shadow-adminIconshadow">
+              <div className="flex items-center gap-4 mb-8">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full shadow-adminIconshadow">
                   <TbReportMoney size={24} />
                 </div>
                 <p className="text-lg font-medium">Revenue vs Profit</p>
@@ -188,8 +191,8 @@ export const Analytics = () => {
           </div>
           <div className="col-span-12 lg:col-span-6">
             <div className="rounded-[20px] px-6 py-8 shadow-adminBoxshadow">
-              <div className="mb-8 flex items-center gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full shadow-adminIconshadow">
+              <div className="flex items-center gap-4 mb-8">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full shadow-adminIconshadow">
                   <TbUserHexagon size={24} />
                 </div>
                 <p className="text-lg font-medium">Monthly user growth</p>

@@ -188,7 +188,7 @@ export const Checkout: React.FC<{ cartItem?: CartItem[] }> = ({ cartItem }) => {
       <Toast ref={toast} />
       <div className="mb-10">
         <h1 className="mb-12 text-4xl font-black text-white">Checkout</h1>
-        <div className="flex items-start">
+        <div className="flex flex-col gap-y-5 md:flex-row md:items-start">
           <div className="flex-1">
             <div className="flex flex-col gap-8 text-white">
               <div className="">
@@ -221,12 +221,12 @@ export const Checkout: React.FC<{ cartItem?: CartItem[] }> = ({ cartItem }) => {
               </div>
             </div>
           </div>
-          <div className="text-white ml-9">
+          <div className="text-white md:ml-9">
             <div className="flex flex-col gap-4">
               <p className="text-sm uppercase">Order Summary</p>
-              <div className="flex flex-col p-4 bg-gray-100 rounded-lg shadow-md">
+              <div className="flex flex-col rounded-lg bg-gray-100 p-4 shadow-md">
                 {renderCartItems}
-                <div className="flex flex-col gap-1 mt-5">
+                <div className="mt-5 flex flex-col gap-1">
                   <div className="flex items-center justify-between text-sm font-light text-textSidebar">
                     <p>Price</p>
                     <p>{formatCurrency(subTotal)}</p>
@@ -247,8 +247,8 @@ export const Checkout: React.FC<{ cartItem?: CartItem[] }> = ({ cartItem }) => {
                     <p>Total</p>
                     <p>{formatCurrency(afterTaxes)}</p>
                   </div>
-                  <div className="flex items-center max-w-md gap-2 p-4 mt-2 font-medium text-black rounded-lg bg-gradient-to-r from-green-200 to-yellow-200">
-                    <div className="flex items-center justify-center w-6 h-6 text-white bg-black rounded-full">
+                  <div className="mt-2 flex items-center gap-2 rounded-lg bg-gradient-to-r from-green-200 to-yellow-200 p-4 font-medium text-black">
+                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-black text-white">
                       <FaStar size={12} />
                     </div>
                     <span className="text-sm">
@@ -259,33 +259,36 @@ export const Checkout: React.FC<{ cartItem?: CartItem[] }> = ({ cartItem }) => {
                       with VIP Silver.
                     </span>
                   </div>
-                  <FloatLabel className="w-full text-sm mt-7">
+                  <FloatLabel className="mt-7 w-full text-sm">
                     <InputText
                       className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px] text-black"
                       onChange={(e) => setDiscountCode(e.target.value)}
                     />
                     <label>Enter discount code</label>
                   </FloatLabel>
-                  <Button
-                    label="APPLY"
-                    size="small"
-                    className="h-10 mt-2 text-xs font-bold bg-mainYellow text-slate-900"
-                    disabled={!discountCode}
-                    onClick={() =>
-                      checkDiscountCode(
-                        discountCode,
-                        subTotal,
-                        tax,
-                        toast,
-                        setDiscount,
-                        setTotal,
-                      )
-                    }
-                  />
+
+                  {discountCode && (
+                    <Button
+                      label="APPLY"
+                      size="small"
+                      className="mt-2 h-10 bg-mainYellow text-xs font-bold text-slate-900"
+                      onClick={() =>
+                        checkDiscountCode(
+                          discountCode,
+                          subTotal,
+                          tax,
+                          toast,
+                          setDiscount,
+                          setTotal,
+                        )
+                      }
+                    />
+                  )}
+
                   <Button
                     label="PLACE ORDER"
                     size="large"
-                    className="w-full mt-2 text-xs font-bold h-14 bg-mainYellow text-slate-900"
+                    className="mt-2 h-14 w-full bg-mainYellow text-xs font-bold text-slate-900"
                     onClick={handlePlaceOrderClick}
                     disabled={!selectedOption || isButtonDisabled}
                   />

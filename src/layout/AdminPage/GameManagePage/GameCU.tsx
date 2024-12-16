@@ -1,13 +1,9 @@
 import { Button } from "primereact/button";
 import { FloatLabel } from "primereact/floatlabel";
 import { InputText } from "primereact/inputtext";
-import { InputTextarea } from "primereact/inputtextarea";
-import { RadioButton } from "primereact/radiobutton";
 import { MultiSelect } from "primereact/multiselect";
-import { FileUpload } from "primereact/fileupload";
 import { Link, useParams, useNavigate, NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
-import apiClient from "../../../config/apiClient";
 import { TiArrowLeft } from "react-icons/ti";
 import { Dropdown } from "primereact/dropdown";
 import { Editor } from "primereact/editor";
@@ -22,10 +18,10 @@ import {
   generateRandomString,
   validateForm,
 } from "./service/GameCUService";
+import { useAuthCheck } from "../../../utils/AuthUtils";
 
 export const GameCU = () => {
-  const [text, setText] = useState("");
-
+  useAuthCheck(['ADMIN']);
   const { id } = useParams<{ id?: string }>(); // Nhận tham số id tùy chọn
   const isUpdateMode = Boolean(id); // Xác định chế độ cập nhật hay tạo mới
   const navigate = useNavigate();
@@ -489,7 +485,7 @@ export const GameCU = () => {
                   <h6 className="text-lg font-medium">Preview</h6>
                 </div>
                 <div className="flex flex-col gap-4 pb-8">
-                {thumbnailUrl ? (
+                  {thumbnailUrl ? (
                     <img
                       src={thumbnailUrl}
                       alt="Thumbnail"
@@ -503,7 +499,7 @@ export const GameCU = () => {
                   </div>
                   {discountPercent ? (
                     <div className="flex items-center gap-2">
-                      <div className="rounded-full bg-mainCyan max-block-fit px-2 py-[2px] text-xs text-black">
+                      <div className="max-block-fit rounded-full bg-mainCyan px-2 py-[2px] text-xs text-black">
                         -{discountPercent}%
                       </div>
                       <p className="text-sm line-through">
@@ -530,7 +526,6 @@ export const GameCU = () => {
               </div>
             </div>
           )}
-
         </div>
       </div>
     </>

@@ -5,7 +5,7 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { useState, useEffect } from "react";
 import { FiUser } from "react-icons/fi";
 import { MdOutlineCameraAlt } from "react-icons/md";
-import { getCurrentUser } from "../../../utils/AuthUtils";
+import { getCurrentUser,useAuthCheck } from "../../../utils/AuthUtils";
 import { updateAvatarAndHoVaTenByUsername, UpdateUserDTO } from "./service/AdminAccInfoService";
 
 export type User = {
@@ -20,6 +20,7 @@ export type User = {
 };
 
 export const AdminAccInfo = () => {
+  useAuthCheck(['ADMIN', 'STAFF']);
   const [uploading, setUploading] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [hoVaTen, setHoVaTen] = useState("");
@@ -89,7 +90,7 @@ export const AdminAccInfo = () => {
     <>
       <div className="px-6 py-16">
         <h1 className="text-[32px] font-medium">Account</h1>
-        <div className="mt-6 grid grid-cols-12 gap-x-4 gap-y-8">
+        <div className="grid grid-cols-12 mt-6 gap-x-4 gap-y-8">
           <div className="col-span-12 md:col-span-4">
             <div className="rounded-[20px] shadow-adminBoxshadow">
               <div className="">
@@ -128,13 +129,13 @@ export const AdminAccInfo = () => {
           <div className="col-span-12 md:col-span-8">
             <div className="rounded-[20px] shadow-adminBoxshadow">
               <div className="px-6 py-8">
-                <div className="mb-8 flex items-center gap-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full shadow-adminIconshadow">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-full shadow-adminIconshadow">
                     <FiUser className="text-2xl" />
                   </div>
                   <p className="text-lg font-medium">Basic details</p>
                 </div>
-                <div className="grid grid-cols-12 gap-x-6 gap-y-8 pb-8">
+                <div className="grid grid-cols-12 pb-8 gap-x-6 gap-y-8">
                   <FloatLabel className="col-span-12 text-sm sm:col-span-6">
                     <InputText
                       className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black focus:border-black"
