@@ -1,3 +1,26 @@
+export function timeAgo(inputDate: string): string {
+  const now = new Date(); // Thời gian hiện tại
+  const past = new Date(inputDate); // Chuyển đổi thời gian nhận vào
+  const diffInSeconds = Math.floor((now.getTime() - past.getTime()) / 1000); // Hiệu số giây
+
+  if (diffInSeconds < 60) {
+    return `${diffInSeconds} sec ago`; // Dưới 1 phút
+  }
+
+  const diffInMinutes = Math.floor(diffInSeconds / 60);
+  if (diffInMinutes < 60) {
+    return `${diffInMinutes} min ago`; // Dưới 1 giờ
+  }
+
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  if (diffInHours < 24) {
+    return `${diffInHours} hours ago`; // Dưới 1 ngày
+  }
+
+  const diffInDays = Math.floor(diffInHours / 24);
+  return `${diffInDays} days ago`; // Trả về số ngày
+}
+
 export const formatCurrency = (amount: number) => {
   return `₫${Math.round(amount)
     .toString()

@@ -1,8 +1,11 @@
+import { timeAgo } from "../../../../utils/OtherUtils";
+
 type SentMessageProps = {
   avatar: string;
   name: string;
   message: string;
   img?: string;
+  date: string;
 };
 
 export const SentMessage: React.FC<SentMessageProps> = (props) => {
@@ -24,6 +27,10 @@ export const SentMessage: React.FC<SentMessageProps> = (props) => {
                 )}
                 <p>{props.message}</p>
               </div>
+            </div>
+
+            <div className="justify-content-end flex px-4">
+              <p className="truncate text-sm">{timeAgo(props.date)}</p>
             </div>
           </div>
         </div>

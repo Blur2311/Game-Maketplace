@@ -3,15 +3,13 @@ import { ChangeEvent, useEffect, useRef, useState } from "react";
 import "./ChatManage.css";
 import { Button } from "primereact/button";
 import { OverlayPanel } from "primereact/overlaypanel";
-import { PiBell, PiTrash } from "react-icons/pi";
+import { PiTrash } from "react-icons/pi";
 import { SentMessage } from "./components/SentMessage";
 import { ReceivedMessage } from "./components/ReceivedMessage";
 import { Sidebar } from "primereact/sidebar";
 import { RightSideChat } from "./components/RightSideChat";
-import axios from 'axios';
 import apiClient from "../../../config/apiClient";
-import Swal from 'sweetalert2'
-
+import Swal from "sweetalert2";
 
 interface JWTPayload {
   userId?: number;
@@ -27,7 +25,6 @@ export const ChatManageV2 = () => {
   const [textChat, setTextChat] = useState("");
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [messages, setMessages] = useState<any[]>([]); // Lưu trữ danh sách tin nhắn
-
 
   const [displayName, setDisplayName] = useState(""); // State lưu trữ userName
   const [firstChatLoaded, setFirstChatLoaded] = useState(false); // Flag để kiểm tra khi load xong chat đầu tiên
@@ -76,7 +73,7 @@ export const ChatManageV2 = () => {
       // // Xử lý lỗi nếu có
       // console.error("Error fetching data:", error);
     }
-  }
+  };
 
   function decodeJWT(token: string): JWTPayload | null {
     try {
@@ -101,25 +98,29 @@ export const ChatManageV2 = () => {
     if (textChat.trim()) {
       setMessages((prevMessages) => [
         ...prevMessages,
-        { text: textChat, from: 'user' },
+        { text: textChat, from: "user" },
       ]);
-      setTextChat('');
+      setTextChat("");
 
       try {
-        const response = await apiClient.post(`/api/chat/send/true?userName=${displayName}`, textChat, {
-          headers: {
-            'Content-Type': 'text/plain',
+        const response = await apiClient.post(
+          `/api/chat/send/true?userName=${displayName}`,
+          textChat,
+          {
+            headers: {
+              "Content-Type": "text/plain",
+            },
           },
-        });
+        );
         callData(displayName);
       } catch (error) {
-        console.error('Error sending message:', error);
+        console.error("Error sending message:", error);
       }
     }
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       sendMessage();
     }
   };
@@ -150,7 +151,7 @@ export const ChatManageV2 = () => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
-      allowOutsideClick: false
+      allowOutsideClick: false,
     }).then((result) => {
       if (result.isConfirmed) {
         try {
@@ -163,11 +164,11 @@ export const ChatManageV2 = () => {
         Swal.fire({
           title: "Deleted!",
           text: "Your file has been deleted.",
-          icon: "success"
+          icon: "success",
         });
       }
     });
-  }
+  };
 
   return (
     <>
@@ -181,13 +182,19 @@ export const ChatManageV2 = () => {
           <div
             className={`w-[320px] border-r transition-all duration-[225ms] ease-[cubic-bezier(0,0,0.2,1)]`}
           >
-            <RightSideChat onFirstChatLoad={handleFirstChatLoad} onUserNameSelect={updateDisplayName} />
+            <RightSideChat
+              onFirstChatLoad={handleFirstChatLoad}
+              onUserNameSelect={updateDisplayName}
+            />
           </div>
         </Sidebar>
         <div
           className={`hidden w-[320px] border-r transition-all duration-[225ms] ease-[cubic-bezier(0,0,0.2,1)] lg:block ${sideChat ? "ml-[-320px]" : ""}`}
         >
-          <RightSideChat onFirstChatLoad={handleFirstChatLoad} onUserNameSelect={updateDisplayName} />
+          <RightSideChat
+            onFirstChatLoad={handleFirstChatLoad}
+            onUserNameSelect={updateDisplayName}
+          />
         </div>
 
         <div className="flex flex-1 flex-col overflow-hidden">
@@ -225,7 +232,10 @@ export const ChatManageV2 = () => {
                   className="custom-admin-navbar min-w-36 rounded-lg"
                 >
                   <ul className="flex flex-col gap-1 p-2">
-                    <li onClick={async () => await deleteRoom(displayName)}  className="flex cursor-pointer items-center gap-4 whitespace-nowrap rounded-lg px-2 py-1 hover:bg-black hover:bg-opacity-5">
+                    <li
+                      onClick={async () => await deleteRoom(displayName)}
+                      className="flex cursor-pointer items-center gap-4 whitespace-nowrap rounded-lg px-2 py-1 hover:bg-black hover:bg-opacity-5"
+                    >
                       <PiTrash size={20} />
                       <p>Delete</p>
                     </li>
@@ -235,13 +245,14 @@ export const ChatManageV2 = () => {
             </div>
 
             <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-6">
-              {messages.map((message, index) => (
+              {messages.map((message, index) =>
                 message.staff ? (
                   <SentMessage
                     key={index}
                     avatar={message.avatar || "/cat.jpeg"}
                     name={message.sender}
                     message={message.content}
+                    date={""}
                   />
                 ) : (
                   <ReceivedMessage
@@ -249,13 +260,14 @@ export const ChatManageV2 = () => {
                     avatar={message.avatar || "/cat.jpeg"}
                     name={message.sender}
                     message={message.content}
+                    date={""}
                   />
-                )
-              ))}
+                ),
+              )}
             </div>
 
-            <div className="flex items-center gap-4 px-6 py-2 ">
-              <div className="flex-1 max-h-full">
+            <div className="flex items-center gap-4 px-6 py-2">
+              <div className="max-h-full flex-1">
                 <InputText
                   placeholder="Leave a message"
                   className="h-9 w-full rounded-lg border bg-transparent px-3 text-sm text-black transition duration-100 ease-linear focus:border-2 focus:border-mainYellow focus:ring-0"

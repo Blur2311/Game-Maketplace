@@ -52,6 +52,7 @@ import { ConfirmDialog } from "primereact/confirmdialog";
 import { HomeAdmin } from "./layout/AdminPage/Home&AnaPage/HomeAdmin";
 import { Analytics } from "./layout/AdminPage/Home&AnaPage/Analytics";
 import { ChatManageV2 } from "./layout/AdminPage/ChatManagePage/ChatManageV2";
+import { ChatV2 } from "./layout/ChatPage/ChatV2";
 
 function App() {
   return (
@@ -118,7 +119,7 @@ function App() {
               <Route path="transaction" element={<TransactionList />} />
               <Route path="security" element={<ChangePW />} />
               <Route path="review-history" element={<ReviewHistory />} />
-              <Route path="chat" element={<Chat />} />
+              <Route path="chat" element={<ChatV2 />} />
             </Route>
 
             <Route path="/sign-in" element={<SignIn />} />

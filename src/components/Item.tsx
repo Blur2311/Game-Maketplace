@@ -21,13 +21,15 @@ export const Item: React.FC<ItemProps> = (item) => {
         <Link
           to={item.url}
           onClick={scrollToTop}
-          className="mb-[10px] flex items-start justify-center sm:justify-start"
+          className="mb-[10px] flex items-start justify-center overflow-hidden sm:justify-start"
         >
-          <img
-            src={item.image}
-            alt=""
-            className="h-full w-full rounded-lg object-cover transition duration-300 hover:brightness-125"
-          />
+          <div className="aspect-[3/4] w-full">
+            <img
+              src={item.image}
+              alt=""
+              className="h-full w-full rounded-lg object-cover transition duration-300 hover:brightness-125"
+            />
+          </div>
         </Link>
         <p className="text-xs text-textType">{item.type}</p>
         <Link to={item.url} onClick={scrollToTop}>

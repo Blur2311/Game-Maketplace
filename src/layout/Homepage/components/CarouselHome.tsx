@@ -176,7 +176,7 @@ export const CarouselHome: React.FC<CarouselHomeProps> = ({ name, field }) => {
         type={item.type}
         price={item.price}
         sale={item.sale}
-        wrapper={`flex h-[397px] w-full flex-col justify-start pr-4 `}
+        wrapper={`flex w-full flex-col justify-start pr-4 `}
         url={item.url}
       />
     );
