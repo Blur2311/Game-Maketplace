@@ -43,21 +43,21 @@ export const Navbar = () => {
             <div className="flex items-center gap-4">
               <Button
                 label="Sign In"
-                className="rounded-lg bg-gray400 px-3 py-1 text-base font-normal text-white hover:bg-gray200"
+                className="px-3 py-1 text-base font-normal text-white rounded-lg bg-gray400 hover:bg-gray200"
                 onClick={() => {
                   navigate("/sign-in");
                 }}
               />
               <Button
                 label="Create Account"
-                className="hidden rounded-lg bg-mainYellow px-3 py-1 text-base font-normal hover:bg-hoverYellow sm:block"
+                className="hidden px-3 py-1 text-base font-normal rounded-lg bg-mainYellow hover:bg-hoverYellow sm:block"
                 onClick={() => {
                   navigate("/register");
                 }}
               />
             </div>
           ) : (
-            <div className="flex cursor-pointer items-center gap-6">
+            <div className="flex items-center gap-6 cursor-pointer">
               <div
                 className="flex items-center gap-3 hover:opacity-80"
                 onClick={(e) => op.current?.toggle(e)}
@@ -67,17 +67,17 @@ export const Navbar = () => {
                 <Avatar
                   icon="pi pi-user"
                   // style={{ backgroundColor: "#9c27b0", color: "#ffffff" }}
-                  className="bg-grayBorder text-white"
+                  className="text-white bg-grayBorder"
                   shape="circle"
                 />
                 <p className="text-sm text-gray250">{username || "Guest"}</p>
               </div>
               <OverlayPanel
                 ref={op}
-                className="min-w-56 rounded-xl border border-borderSubdued bg-gray300 bg-opacity-80 shadow-navBoxshadow backdrop-blur-lg"
+                className="border min-w-56 rounded-xl border-borderSubdued bg-gray300 bg-opacity-80 shadow-navBoxshadow backdrop-blur-lg"
               >
                 <ul className="text-white">
-                  <li className="cursor-pointer rounded-lg px-4 py-2 hover:bg-gray200 hover:bg-opacity-50">
+                  <li className="px-4 py-2 rounded-lg cursor-pointer hover:bg-gray200 hover:bg-opacity-50">
                     <p>Account Balance:</p>
                     <div className="flex items-center gap-2">
                       {formatCurrency(user?.balance || 0)}
@@ -87,7 +87,7 @@ export const Navbar = () => {
                   <li>
                     <Link
                       to="/setting/user-info"
-                      className="block cursor-pointer rounded-lg px-4 py-2 hover:bg-gray200 hover:bg-opacity-50"
+                      className="block px-4 py-2 rounded-lg cursor-pointer hover:bg-gray200 hover:bg-opacity-50"
                     >
                       Account Info
                     </Link>
@@ -95,7 +95,7 @@ export const Navbar = () => {
                   <li>
                     <Link
                       to="/setting/transaction"
-                      className="block cursor-pointer rounded-lg px-4 py-2 hover:bg-gray200 hover:bg-opacity-50"
+                      className="block px-4 py-2 rounded-lg cursor-pointer hover:bg-gray200 hover:bg-opacity-50"
                     >
                       Transactions
                     </Link>
@@ -103,14 +103,14 @@ export const Navbar = () => {
                   <li>
                     <Link
                       to="/wishlist"
-                      className="block cursor-pointer rounded-lg px-4 py-2 hover:bg-gray200 hover:bg-opacity-50"
+                      className="block px-4 py-2 rounded-lg cursor-pointer hover:bg-gray200 hover:bg-opacity-50"
                     >
                       Wishlist
                     </Link>
                   </li>
                   <li
-                    className="cursor-pointer rounded-lg px-4 py-2 hover:bg-gray200 hover:bg-opacity-50"
-                    onClick={signOut}
+                    className="px-4 py-2 rounded-lg cursor-pointer hover:bg-gray200 hover:bg-opacity-50"
+                    onClick={() => signOut()}
                   >
                     Sign Out
                   </li>
