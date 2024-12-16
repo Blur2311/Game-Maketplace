@@ -1,12 +1,34 @@
+import { useEffect, useState } from "react";
 import { formatCurrency } from "../../../utils/OtherUtils";
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import { TbReportMoney, TbUserHexagon } from "react-icons/tb";
 import { FiTrendingDown, FiTrendingUp } from "react-icons/fi";
+import { getAnalytics } from "./components/service/AnalyticsService";
 import { useAuthCheck } from "../../../utils/AuthUtils";
 
+  
 export const Analytics = () => {
   useAuthCheck(['ADMIN']);
+  const [analyticsData, setAnalyticsData] = useState({
+    totalRevenue: 0,
+    totalItemsSold: 0,
+    totalUsers: 0,
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getAnalytics();
+        setAnalyticsData(data);
+      } catch (error) {
+        console.error("Error fetching analytics summary:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const revenueOptions: ApexOptions = {
     series: [
       {
@@ -83,51 +105,55 @@ export const Analytics = () => {
 
         <div className="rounded-[20px] p-6 shadow-adminBoxshadow">
           <div className="grid grid-cols-12 gap-4">
-            <div className="col-span-12 md:col-span-6 xl:col-span-3">
-              <div className="flex flex-col gap-2 pb-4 border-b md:border-b-0 md:border-r md:pb-0">
+            <div className="col-span-12 md:col-span-6 xl:col-span-4">
+              <div className="flex flex-col gap-2 border-b pb-4 md:border-b-0 md:border-r md:pb-0">
                 <p className="font-light text-textSecond">Total Revenue</p>
                 <h6 className="text-4xl font-medium tracking-wide">
-                  {formatCurrency(12812390)}
+                  {formatCurrency(analyticsData.totalRevenue)}
                 </h6>
-                <div className="flex gap-2">
+                {/* <div className="flex gap-2">
                   <FiTrendingUp size={20} className="text-green-500" />
                   <p className="text-sm text-textSecond">
                     <span className="text-green-500"> 15% </span>
                     increase vs last month
                   </p>
-                </div>
+                </div> */}
               </div>
             </div>
 
-            <div className="col-span-12 md:col-span-6 xl:col-span-3">
-              <div className="flex flex-col gap-2 pb-4 border-b md:border-b-0 md:pb-0 xl:border-r">
+            <div className="col-span-12 md:col-span-6 xl:col-span-4">
+              <div className="flex flex-col gap-2 border-b pb-4 md:border-b-0 md:pb-0 xl:border-r">
                 <p className="font-light text-textSecond">Items sold</p>
-                <h6 className="text-4xl font-medium tracking-wide">150</h6>
-                <div className="flex gap-2">
+                <h6 className="text-4xl font-medium tracking-wide">
+                  {analyticsData.totalItemsSold}
+                </h6>
+                {/* <div className="flex gap-2">
                   <FiTrendingUp size={20} className="text-green-500" />
                   <p className="text-sm text-textSecond">
                     <span className="text-green-500"> 15% </span>
                     increase vs last month
                   </p>
-                </div>
+                </div> */}
               </div>
             </div>
 
-            <div className="col-span-12 md:col-span-6 xl:col-span-3">
-              <div className="flex flex-col gap-2 pb-4 border-b md:border-b-0 md:border-r md:pb-0">
-                <p className="font-light text-textSecond">New users</p>
-                <h6 className="text-4xl font-medium tracking-wide">2182</h6>
-                <div className="flex gap-2">
+            <div className="col-span-12 md:col-span-6 xl:col-span-4">
+              <div className="flex flex-col gap-2 border-b pb-4 md:border-b-0 md:border-r md:pb-0">
+                <p className="font-light text-textSecond">Total User</p>
+                <h6 className="text-4xl font-medium tracking-wide">
+                  {analyticsData.totalUsers}
+                </h6>
+                {/* <div className="flex gap-2">
                   <FiTrendingUp size={20} className="text-green-500" />
                   <p className="text-sm text-textSecond">
                     <span className="text-green-500"> 15% </span>
                     increase vs last month
                   </p>
-                </div>
+                </div> */}
               </div>
             </div>
 
-            <div className="col-span-12 md:col-span-6 xl:col-span-3">
+            {/* <div className="col-span-12 md:col-span-6 xl:col-span-3">
               <div className="flex flex-col gap-2">
                 <p className="font-light text-textSecond">Refund</p>
                 <h6 className="text-4xl font-medium tracking-wide">
@@ -141,7 +167,8 @@ export const Analytics = () => {
                   </p>
                 </div>
               </div>
-            </div>
+            </div> */}
+
           </div>
         </div>
 
