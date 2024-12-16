@@ -215,7 +215,7 @@ export const CarouselHome: React.FC<CarouselHomeProps> = ({ name, field }) => {
         showNavigators={false} // Ẩn nút mặc định
         page={page} // Đồng bộ trạng thái trang
         circular={false}
-        className=""
+        className="text-white"
       />
     </div>
   );

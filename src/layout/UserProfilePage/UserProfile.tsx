@@ -8,7 +8,6 @@ import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import apiClient from "../../config/apiClient";
 import { useAuthCheck } from "../../utils/AuthUtils";
-import { MultiSelect } from "primereact/multiselect";
 import { ToggleButton } from "primereact/togglebutton";
 import { Dialog } from "primereact/dialog";
 import { Password } from "primereact/password";

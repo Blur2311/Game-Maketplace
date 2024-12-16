@@ -600,7 +600,7 @@ export const BrowserPage = () => {
                     <div className="flex flex-1 justify-end">
                       <button
                         className="h-12 w-full max-w-40 rounded-[10px] bg-mainCyan text-sm text-black"
-                        onClick={resetFilters}
+                        onClick={() => setIsVisible(false)}
                       >
                         Apply
                       </button>
@@ -610,7 +610,7 @@ export const BrowserPage = () => {
               </Sidebar>
             </div>
           </div>
-          <div className="grid grid-cols-12 gap-x-2 gap-y-5">
+          <div className="grid grid-cols-12 gap-x-2 gap-y-5 font-inter text-white">
             {games.map((game) => (
               <Item
                 key={game.sysIdGame}

@@ -32,6 +32,7 @@ export default {
         borderSubdued: "rgba(255, 255, 255, 0.1)",
       },
       boxShadow: {
+        dropdownShadow: "rgba(0, 0, 0, 0.3) 0px 5px 10px",
         navBoxshadow:
           "0 32px 16px #0000001a, 0 16px 8px #0000001a, 0 8px 4px #0000001a, 0 4px 2px #0000001a, 0 2px 1px #0000001a",
         buttonShadow: "0px 1px 10px rgba(0, 0, 0, 0.08)",
