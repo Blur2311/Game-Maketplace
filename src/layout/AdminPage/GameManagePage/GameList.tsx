@@ -5,7 +5,6 @@ import { GameRow } from "./components/GameRow";
 import { Paginator } from "primereact/paginator";
 import { useState, useEffect } from "react";
 import "./Game.css";
-import apiClient from "../../../config/apiClient";
 import { MultiSelect } from "primereact/multiselect";
 import { Dropdown } from "primereact/dropdown";
 import { Game } from "../../../model/GameModel";

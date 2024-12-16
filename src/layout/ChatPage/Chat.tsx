@@ -113,7 +113,7 @@ export const Chat = () => {
   };
 
   return (
-    <div className="mx-auto ms-3 flex h-3/5 flex-col bg-gray-100">
+    <div className="mx-auto flex h-3/5 flex-col bg-gray-100">
       <div className="flex items-center justify-center bg-gray-950 p-4 text-white">
         <span>Support</span>
       </div>

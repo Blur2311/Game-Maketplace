@@ -1,7 +1,7 @@
 import { Button } from "primereact/button";
 import { OverlayPanel } from "primereact/overlaypanel";
 import { useEffect, useRef, useState } from "react";
-import { FaRegBell, FaRegPlusSquare } from "react-icons/fa";
+import { FaRegPlusSquare } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import {
   getCurrentUser,
@@ -77,30 +77,43 @@ export const Navbar = () => {
                 className="min-w-56 rounded-xl border border-borderSubdued bg-gray300 bg-opacity-80 shadow-navBoxshadow backdrop-blur-lg"
               >
                 <ul className="text-white">
-                  <>
-                    <li className="cursor-pointer rounded-lg px-4 py-2 hover:bg-gray200 hover:bg-opacity-50">
-                      <p>Account Balance: </p>
-                      <div className="flex items-center gap-2">
-                        {formatCurrency(user?.balance || 0)}
-                        <FaRegPlusSquare className="text-lg" />
-                      </div>
-                    </li>
-                    <li className="cursor-pointer rounded-lg px-4 py-2 hover:bg-gray200 hover:bg-opacity-50">
-                      <Link to={"/setting/user-info"}>Account Info</Link>
-                    </li>
-                    <li className="cursor-pointer rounded-lg px-4 py-2 hover:bg-gray200 hover:bg-opacity-50">
-                      <Link to={"/setting/transaction"}>Transactions</Link>
-                    </li>
-                    <li className="cursor-pointer rounded-lg px-4 py-2 hover:bg-gray200 hover:bg-opacity-50">
-                      <Link to={"/wishlist"}>Wishlist</Link>
-                    </li>
-                    <li
-                      className="cursor-pointer rounded-lg px-4 py-2 hover:bg-gray200 hover:bg-opacity-50"
-                      onClick={signOut}
+                  <li className="cursor-pointer rounded-lg px-4 py-2 hover:bg-gray200 hover:bg-opacity-50">
+                    <p>Account Balance:</p>
+                    <div className="flex items-center gap-2">
+                      {formatCurrency(user?.balance || 0)}
+                      <FaRegPlusSquare className="text-lg" />
+                    </div>
+                  </li>
+                  <li>
+                    <Link
+                      to="/setting/user-info"
+                      className="block cursor-pointer rounded-lg px-4 py-2 hover:bg-gray200 hover:bg-opacity-50"
                     >
-                      Sign Out
-                    </li>
-                  </>
+                      Account Info
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/setting/transaction"
+                      className="block cursor-pointer rounded-lg px-4 py-2 hover:bg-gray200 hover:bg-opacity-50"
+                    >
+                      Transactions
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/wishlist"
+                      className="block cursor-pointer rounded-lg px-4 py-2 hover:bg-gray200 hover:bg-opacity-50"
+                    >
+                      Wishlist
+                    </Link>
+                  </li>
+                  <li
+                    className="cursor-pointer rounded-lg px-4 py-2 hover:bg-gray200 hover:bg-opacity-50"
+                    onClick={signOut}
+                  >
+                    Sign Out
+                  </li>
                 </ul>
               </OverlayPanel>
             </div>

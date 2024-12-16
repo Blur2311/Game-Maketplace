@@ -17,7 +17,7 @@ export type ItemProps = {
 export const Item: React.FC<ItemProps> = (item) => {
   return (
     <>
-      <div className={`${item.wrapper} font-inter text-white`}>
+      <div className={`${item.wrapper}`}>
         <Link
           to={item.url}
           onClick={scrollToTop}
