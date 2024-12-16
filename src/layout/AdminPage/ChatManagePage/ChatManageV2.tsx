@@ -213,6 +213,18 @@ export const ChatManageV2 = () => {
             />
           </div>
 
+          {/* KHI KHÔNG CHƯA ẤN VÀO TIN NHẮN NÀO 
+              THÌ HIỆN CÁI NÀY LÊN ẤN CÁI KIA OKE? */}
+
+          {/* <div className="flex flex-1 flex-col items-center justify-center p-6">
+            <div className="flex flex-col items-center gap-4">
+              <img src="/chat.png" alt="" className="h-full w-32" />
+              <p>Start meaningful conversations!</p>
+            </div>
+          </div> */}
+
+          {/* DÙNG 'hidden' ĐỂ ẨN CÁI Ở DƯỚI ĐI HIỂU CHƯA BẤY BÌ? */}
+          {/* ẨN CÁI DIV NÀY NÈ */}
           <div className="flex min-h-0 flex-1 flex-col">
             <div className="flex min-h-16 items-center justify-between gap-4 border-b px-4 py-2">
               <div className="flex items-center gap-4">

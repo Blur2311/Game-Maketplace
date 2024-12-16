@@ -30,7 +30,7 @@ export const SentMessage: React.FC<SentMessageProps> = (props) => {
             </div>
 
             <div className="justify-content-end flex px-4">
-              <p className="truncate text-sm">{timeAgo(props.date)}</p>
+              <p className="truncate text-xs">{timeAgo(props.date)}</p>
             </div>
           </div>
         </div>
