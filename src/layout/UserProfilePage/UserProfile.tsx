@@ -11,6 +11,7 @@ import { useAuthCheck } from "../../utils/AuthUtils";
 import { ToggleButton } from "primereact/togglebutton";
 import { Dialog } from "primereact/dialog";
 import { Password } from "primereact/password";
+import Swal from "sweetalert2";
 
 export const UserProfile = () => {
   const [uploading, setUploading] = useState(false);
@@ -24,6 +25,7 @@ export const UserProfile = () => {
   const [CheckLogin, setCheckLogin] = useState<number>(0);
   const [checked, setChecked] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [isReadOnly, setIsReadOnly] = useState(true);
 
   useAuthCheck([]);
 
@@ -66,6 +68,8 @@ export const UserProfile = () => {
       return null; // Trả về null nếu có lỗi
     }
   };
+
+
 
   useEffect(() => {
     if (userData) {
@@ -155,6 +159,59 @@ export const UserProfile = () => {
 
   const [ingredient, setIngredient] = useState("");
 
+
+  const handleCheckPw = async () => {
+    console.log(user.username);
+    console.log(checkPassWord);
+
+    try {
+      const response = await apiClient.post(
+        "/api/accounts/verify-pass",
+        null,
+        {
+          params: {
+            username: user.username,
+            pass: checkPassWord,
+          },
+        }
+      );
+
+      if (response.data.data) {
+        console.log("Password verified successfully", response.data);
+        setIsReadOnly(false); // Tắt readonly
+
+        // Hiển thị thông báo thành công
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Password verified successfully!",
+        });
+      } else {
+        console.log("Password verification failed", response.status);
+
+        // Hiển thị thông báo thất bại
+        Swal.fire({
+          icon: "error",
+          title: "Failed",
+          text: "Password verification failed. Please try again!",
+        });
+      }
+    } catch (error) {
+      console.error("Error verifying password:", error);
+
+      // Hiển thị thông báo lỗi
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "An error occurred while verifying the password.",
+      });
+    }
+  };
+
+
+
+  const [checkPassWord, setCheckPassword] = useState("");
+
   return (
     <>
       <div className="rounded bg-white p-10">
@@ -168,25 +225,25 @@ export const UserProfile = () => {
             <div className="flex items-center">
               <p className="min-w-[150px] text-sm font-semibold">Username:</p>
               <p className="text-sm font-light">
-                {userData?.username || "N/A"}
+                {userData?.username || ""}
               </p>
             </div>
             <div className="flex items-center">
               <p className="min-w-[150px] text-sm font-semibold">Full Name:</p>
-              <p className="text-sm font-light">{userData?.hoVaTen || "N/A"}</p>
+              <p className="text-sm font-light">{userData?.hoVaTen || ""}</p>
             </div>
             <div className="flex items-center">
               <p className="min-w-[150px] text-sm font-semibold">Balance:</p>
               <p className="text-sm font-light">
                 {/* {formatCurrency(44910)}  */}
-                {userData?.balance ? formatCurrency(userData.balance) : "N/A"}
+                {userData?.balance ? formatCurrency(userData.balance) : ""}
               </p>
             </div>
             <div className="flex items-center">
               <p className="min-w-[150px] text-sm font-semibold">Join Date:</p>
               <p className="text-sm font-light">
                 {/* {formatDate("2017-07-22T17:46:37")} */}
-                {userData?.joinTime ? formatDate(userData?.joinTime) : "N/A"}
+                {userData?.joinTime ? formatDate(userData?.joinTime) : ""}
               </p>
             </div>
           </div>
@@ -194,7 +251,7 @@ export const UserProfile = () => {
             <div className="flex items-center">
               <p className="min-w-[150px] text-sm font-semibold">Email:</p>
               <p className="text-sm font-light underline">
-                {userData?.email || "N/A"}
+                {userData?.email || ""}
               </p>
             </div>
             {/*
@@ -213,7 +270,7 @@ export const UserProfile = () => {
                 {/* {formatCurrency(0)} */}
                 {userData?.totalSpent
                   ? formatCurrency(userData.totalSpent)
-                  : "N/A"}
+                  : ""}
               </p>
             </div>
           </div>
@@ -223,14 +280,17 @@ export const UserProfile = () => {
             <div className="col-span-12 flex items-center gap-2 lg:col-span-6">
               <FloatLabel className="flex-1 text-sm">
                 <InputText
-                  readOnly
+                  readOnly={isReadOnly}
                   id="Email"
                   className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
                   // value={username}
                   // onChange={(e) => setUsername(e.target.value)}
                   // aria-invalid={!!error}
                   // aria-describedby="username-error"
-                  value={userData?.email || "N/A"}
+                  value={user?.email || ""}
+                  onChange={(e) =>
+                    setUser({ ...user, email: e.target.value })
+                  }
                 />
                 <label htmlFor="Email">Email</label>
               </FloatLabel>
@@ -239,7 +299,7 @@ export const UserProfile = () => {
                 size="large"
                 className="h-[50px] w-[50px] bg-mainYellow text-base font-bold text-slate-900"
                 onClick={() => setVisible(true)}
-                // disabled={isLockedOut}
+              // disabled={isLockedOut}
               />
               <Dialog
                 visible={visible}
@@ -249,6 +309,7 @@ export const UserProfile = () => {
                     <button
                       className="h-[50px] rounded bg-mainCyan px-4 uppercase text-white hover:brightness-105"
                       onClick={() => {
+                        handleCheckPw();
                         setVisible(false);
                       }}
                     >
@@ -275,9 +336,9 @@ export const UserProfile = () => {
                     placeholder="Current Password"
                     className="w-full"
                     inputClassName="border-grayBorder text-sm h-[50px] border bg-transparent p-5 ps-[10px] w-full"
-                    // onChange={(e) =>
-                    //   setFormData({ ...formData, oldPassword: e.target.value })
-                    // }
+                    onChange={(e) =>
+                      setCheckPassword(e.target.value)
+                    }
                   />
                 </div>
               </Dialog>
@@ -324,12 +385,15 @@ export const UserProfile = () => {
               </FloatLabel>
 
               <ToggleButton
-                checked={checked}
+                checked={user.gender}
                 onLabel="Male"
                 offLabel="Female"
                 onIcon="pi pi-mars"
                 offIcon="pi pi-venus"
-                onChange={(e) => setChecked(e.value)}
+                // onChange={(e) => setChecked(e.value)}
+                onChange={(e) =>
+                  setUser({ ...user, gender: e.target.value })
+                }
                 className="custom-toggle h-[50px] w-32"
               />
 
@@ -369,7 +433,7 @@ export const UserProfile = () => {
                 size="large"
                 className="mt-5 h-[50px] w-[150px] bg-mainYellow text-xs font-bold text-slate-900"
                 onClick={updateUser}
-                // disabled={isLockedOut}
+              // disabled={isLockedOut}
               />
             </div>
             <div className="order-1 mt-[25px] flex flex-1 items-center justify-center lg:order-2 lg:mt-0">
