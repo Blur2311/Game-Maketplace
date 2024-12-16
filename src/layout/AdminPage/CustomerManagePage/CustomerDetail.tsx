@@ -12,8 +12,10 @@ import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { MultiSelect } from "primereact/multiselect";
 import { fetchOrders } from "./service/CustomerDetailService";
+import { useAuthCheck } from "../../../utils/AuthUtils";
 
 export const CustomerDetail = () => {
+  useAuthCheck(['ADMIN']);
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(10);
   const [totalRecords, setTotalRecords] = useState(100);
@@ -100,7 +102,7 @@ export const CustomerDetail = () => {
   return (
     <>
       <div className="px-6 py-16">
-        <div className="mb-8 flex flex-col gap-6">
+        <div className="flex flex-col gap-6 mb-8">
           <NavLink
             to={"/admin/customer/list"}
             className="flex items-center gap-2 text-sm hover:underline"
@@ -109,7 +111,7 @@ export const CustomerDetail = () => {
             Customers
           </NavLink>
           <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full">
+            <div className="flex items-center justify-center w-16 h-16 overflow-hidden rounded-full">
               <img src={user.avatar || "/default-avatar.png"} alt="" className="" />
             </div>
             <div className="">
@@ -124,8 +126,8 @@ export const CustomerDetail = () => {
             <div className="flex flex-col gap-8">
               <div className="rounded-[20px] shadow-adminBoxshadow">
                 <div className="">
-                  <div className="mb-4 flex items-center px-6 py-8">
-                    <div className="mr-4 flex h-10 w-10 items-center justify-center rounded-full shadow-adminIconshadow">
+                  <div className="flex items-center px-6 py-8 mb-4">
+                    <div className="flex items-center justify-center w-10 h-10 mr-4 rounded-full shadow-adminIconshadow">
                       <FiUser className="text-2xl" />
                     </div>
                     <p className="flex-1 text-lg font-medium">Basic details</p>
@@ -182,8 +184,8 @@ export const CustomerDetail = () => {
               </div>
               {/* <div className="rounded-[20px] shadow-adminBoxshadow">
                 <div className="px-6 py-8">
-                  <div className="mb-8 flex items-center gap-4">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full shadow-adminIconshadow">
+                  <div className="flex items-center gap-4 mb-8">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-full shadow-adminIconshadow">
                       <IoWarningOutline className="text-2xl" />
                     </div>
                     <p className="text-lg font-medium">Security</p>
@@ -207,19 +209,19 @@ export const CustomerDetail = () => {
           <div className="col-span-12 md:col-span-8">
             <div className="rounded-[20px] shadow-adminBoxshadow">
               <div className="px-6 py-8">
-                <div className="mb-8 flex items-center gap-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full shadow-adminIconshadow">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-full shadow-adminIconshadow">
                     <PiShoppingCartSimple className="text-2xl" />
                   </div>
                   <p className="text-lg font-medium">Payments</p>
                 </div>
 
                 <div className="flex flex-col gap-6">
-                  <div className="rounded-lg border">
+                  <div className="border rounded-lg">
                     <div className="flex flex-col justify-between gap-6 p-4 sm:flex-row">
                       
                       <div className="flex-1">
-                        <p className="text-xs uppercase leading-loose tracking-wider text-textSecond">
+                        <p className="text-xs leading-loose tracking-wider uppercase text-textSecond">
                           Total orders
                         </p>
                         <h6 className="text-lg font-medium">{filteredOrders.length}</h6>
@@ -228,7 +230,7 @@ export const CustomerDetail = () => {
                       <div className="border-[0.5px]"></div>
 
                       <div className="flex-1">
-                        <p className="text-xs uppercase leading-loose tracking-wider text-textSecond">
+                        <p className="text-xs leading-loose tracking-wider uppercase text-textSecond">
                           Orders value
                         </p>
                         <h6 className="text-lg font-medium">
@@ -241,7 +243,7 @@ export const CustomerDetail = () => {
                       {/* <div className="border-[0.5px]"></div> */}
 
                       {/* <div className="">
-                        <p className="text-xs uppercase leading-loose tracking-wider text-textSecond">
+                        <p className="text-xs leading-loose tracking-wider uppercase text-textSecond">
                           Refunds
                         </p>
                         <h6 className="text-lg font-medium">
@@ -253,11 +255,11 @@ export const CustomerDetail = () => {
                     </div>
                   </div>
 
-                  <div className="rounded-lg border p-4">
+                  <div className="p-4 border rounded-lg">
                     <div className="flex flex-wrap items-center justify-between gap-4">
                       <div className="flex-1">
                         <div className="relative w-full min-w-[211px] rounded-lg border border-gray150 bg-transparent shadow-adminInputShadow hover:border-black">
-                          <i className="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 transform text-gray100"></i>
+                          <i className="absolute transform -translate-y-1/2 pi pi-search left-3 top-1/2 text-gray100"></i>
                           <InputText
                             placeholder="Search"
                             className="w-full bg-transparent py-[17px] pl-10 pr-3 text-sm text-black focus:ring-0"
@@ -266,7 +268,7 @@ export const CustomerDetail = () => {
                           />
                         </div>
                       </div>
-                      <div className="flex flex-grow flex-wrap items-center justify-between gap-4">
+                      <div className="flex flex-wrap items-center justify-between flex-grow gap-4">
                         <div className="flex-1">
                           <MultiSelect
                             value={selectedStatus}
@@ -275,7 +277,7 @@ export const CustomerDetail = () => {
                             optionLabel="name"
                             placeholder="Select Status"
                             maxSelectedLabels={2}
-                            className="w-full rounded-lg border border-gray150 px-4 py-2 font-inter text-sm shadow-adminInputShadow"
+                            className="w-full px-4 py-2 text-sm border rounded-lg border-gray150 font-inter shadow-adminInputShadow"
                             itemClassName="!font-inter"
                           />
                         </div>
@@ -344,7 +346,7 @@ export const CustomerDetail = () => {
                             ),
                           }}
                           onPageChange={onPageChange}
-                          className="custom-pagi-cate bg-transparent text-gray150"
+                          className="bg-transparent custom-pagi-cate text-gray150"
                         />
                       </div>
                     </div>

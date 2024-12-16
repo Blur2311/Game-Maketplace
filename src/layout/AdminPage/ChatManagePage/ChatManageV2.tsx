@@ -11,6 +11,7 @@ import { RightSideChat } from "./components/RightSideChat";
 import axios from 'axios';
 import apiClient from "../../../config/apiClient";
 import Swal from 'sweetalert2'
+import { useAuthCheck } from "../../../utils/AuthUtils";
 
 
 interface JWTPayload {
@@ -21,6 +22,7 @@ interface JWTPayload {
 }
 
 export const ChatManageV2 = () => {
+  useAuthCheck(['ADMIN', 'STAFF']);
   const [sideChat, setSideChat] = useState(false);
   const [visible, setVisible] = useState(false);
   const overlayPanelRef = useRef<OverlayPanel>(null);
@@ -176,7 +178,7 @@ export const ChatManageV2 = () => {
           visible={visible}
           onHide={toggleSidebar}
           position="left"
-          className="custom-sidebar bg-white"
+          className="bg-white custom-sidebar"
         >
           <div
             className={`w-[320px] border-r transition-all duration-[225ms] ease-[cubic-bezier(0,0,0.2,1)]`}
@@ -190,8 +192,8 @@ export const ChatManageV2 = () => {
           <RightSideChat onFirstChatLoad={handleFirstChatLoad} onUserNameSelect={updateDisplayName} />
         </div>
 
-        <div className="flex flex-1 flex-col overflow-hidden">
-          <div className="flex border-b p-4">
+        <div className="flex flex-col flex-1 overflow-hidden">
+          <div className="flex p-4 border-b">
             <Button
               className={"hidden rounded-lg p-2 hover:bg-gray-100 lg:block"}
               icon={`pi pi-bars`}
@@ -204,28 +206,28 @@ export const ChatManageV2 = () => {
             />
           </div>
 
-          <div className="flex min-h-0 flex-1 flex-col">
-            <div className="flex min-h-16 items-center justify-between gap-4 border-b px-4 py-2">
+          <div className="flex flex-col flex-1 min-h-0">
+            <div className="flex items-center justify-between gap-4 px-4 py-2 border-b min-h-16">
               <div className="flex items-center gap-4">
-                <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 border-white">
+                <div className="flex items-center justify-center w-10 h-10 overflow-hidden border-2 border-white rounded-full">
                   <img src={"/cat.jpeg"} alt="" className="object-cover" />
                 </div>
-                <h6 className="truncate text-sm font-medium">{displayName}</h6>
+                <h6 className="text-sm font-medium truncate">{displayName}</h6>
               </div>
 
               <div className="">
                 <Button
-                  className="rounded-lg p-2 hover:bg-gray-100"
+                  className="p-2 rounded-lg hover:bg-gray-100"
                   icon="pi pi-ellipsis-h"
                   onClick={(e) => overlayPanelRef.current?.toggle(e)}
                 />
                 <OverlayPanel
                   ref={overlayPanelRef}
                   dismissable
-                  className="custom-admin-navbar min-w-36 rounded-lg"
+                  className="rounded-lg custom-admin-navbar min-w-36"
                 >
                   <ul className="flex flex-col gap-1 p-2">
-                    <li onClick={async () => await deleteRoom(displayName)}  className="flex cursor-pointer items-center gap-4 whitespace-nowrap rounded-lg px-2 py-1 hover:bg-black hover:bg-opacity-5">
+                    <li onClick={async () => await deleteRoom(displayName)}  className="flex items-center gap-4 px-2 py-1 rounded-lg cursor-pointer whitespace-nowrap hover:bg-black hover:bg-opacity-5">
                       <PiTrash size={20} />
                       <p>Delete</p>
                     </li>
@@ -234,7 +236,7 @@ export const ChatManageV2 = () => {
               </div>
             </div>
 
-            <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-6">
+            <div className="flex flex-col flex-1 gap-4 p-6 overflow-y-auto">
               {messages.map((message, index) => (
                 message.staff ? (
                   <SentMessage
@@ -258,7 +260,7 @@ export const ChatManageV2 = () => {
               <div className="flex-1 max-h-full">
                 <InputText
                   placeholder="Leave a message"
-                  className="h-9 w-full rounded-lg border bg-transparent px-3 text-sm text-black transition duration-100 ease-linear focus:border-2 focus:border-mainYellow focus:ring-0"
+                  className="w-full px-3 text-sm text-black transition duration-100 ease-linear bg-transparent border rounded-lg h-9 focus:border-2 focus:border-mainYellow focus:ring-0"
                   value={textChat}
                   onChange={handleTextChange}
                   onKeyDown={handleKeyDown}
@@ -275,7 +277,7 @@ export const ChatManageV2 = () => {
 
                 <div>
                   <Button
-                    className="rounded-lg p-2 hover:bg-gray-100"
+                    className="p-2 rounded-lg hover:bg-gray-100"
                     icon="pi pi-paperclip"
                     onClick={handleFileClick}
                   />

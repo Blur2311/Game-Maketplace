@@ -3,8 +3,10 @@ import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import { TbReportMoney, TbUserHexagon } from "react-icons/tb";
 import { FiTrendingDown, FiTrendingUp } from "react-icons/fi";
+import { useAuthCheck } from "../../../utils/AuthUtils";
 
 export const Analytics = () => {
+  useAuthCheck(['ADMIN']);
   const revenueOptions: ApexOptions = {
     series: [
       {
@@ -82,7 +84,7 @@ export const Analytics = () => {
         <div className="rounded-[20px] p-6 shadow-adminBoxshadow">
           <div className="grid grid-cols-12 gap-4">
             <div className="col-span-12 md:col-span-6 xl:col-span-3">
-              <div className="flex flex-col gap-2 border-b pb-4 md:border-b-0 md:border-r md:pb-0">
+              <div className="flex flex-col gap-2 pb-4 border-b md:border-b-0 md:border-r md:pb-0">
                 <p className="font-light text-textSecond">Total Revenue</p>
                 <h6 className="text-4xl font-medium tracking-wide">
                   {formatCurrency(12812390)}
@@ -98,7 +100,7 @@ export const Analytics = () => {
             </div>
 
             <div className="col-span-12 md:col-span-6 xl:col-span-3">
-              <div className="flex flex-col gap-2 border-b pb-4 md:border-b-0 md:pb-0 xl:border-r">
+              <div className="flex flex-col gap-2 pb-4 border-b md:border-b-0 md:pb-0 xl:border-r">
                 <p className="font-light text-textSecond">Items sold</p>
                 <h6 className="text-4xl font-medium tracking-wide">150</h6>
                 <div className="flex gap-2">
@@ -112,7 +114,7 @@ export const Analytics = () => {
             </div>
 
             <div className="col-span-12 md:col-span-6 xl:col-span-3">
-              <div className="flex flex-col gap-2 border-b pb-4 md:border-b-0 md:border-r md:pb-0">
+              <div className="flex flex-col gap-2 pb-4 border-b md:border-b-0 md:border-r md:pb-0">
                 <p className="font-light text-textSecond">New users</p>
                 <h6 className="text-4xl font-medium tracking-wide">2182</h6>
                 <div className="flex gap-2">
@@ -146,8 +148,8 @@ export const Analytics = () => {
         <div className="grid grid-cols-12 gap-8">
           <div className="col-span-12 lg:col-span-6">
             <div className="rounded-[20px] px-6 py-8 shadow-adminBoxshadow">
-              <div className="mb-8 flex items-center gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full shadow-adminIconshadow">
+              <div className="flex items-center gap-4 mb-8">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full shadow-adminIconshadow">
                   <TbReportMoney size={24} />
                 </div>
                 <p className="text-lg font-medium">Revenue vs Profit</p>
@@ -162,8 +164,8 @@ export const Analytics = () => {
           </div>
           <div className="col-span-12 lg:col-span-6">
             <div className="rounded-[20px] px-6 py-8 shadow-adminBoxshadow">
-              <div className="mb-8 flex items-center gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full shadow-adminIconshadow">
+              <div className="flex items-center gap-4 mb-8">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full shadow-adminIconshadow">
                   <TbUserHexagon size={24} />
                 </div>
                 <p className="text-lg font-medium">Monthly user growth</p>

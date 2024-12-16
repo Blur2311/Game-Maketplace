@@ -11,8 +11,10 @@ import { fetchInvoiceById } from "./components/service/InvoiceDetailService";
 import { InvoiceModel } from "../../../model/InvoiceModel";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import { useAuthCheck } from "../../../utils/AuthUtils";
 
 export const InvoiceDetail = () => {
+  useAuthCheck(['ADMIN']);
   const { id } = useParams<{ id: string }>();
   const [invoice, setInvoice] = useState<InvoiceModel | null>(null);
   const [status, setStatus] = useState<boolean | null>(null);
@@ -54,7 +56,7 @@ export const InvoiceDetail = () => {
     <>
       <div className="px-6 py-16">
         <div className="">
-          <div className="mb-8 flex flex-col gap-6">
+          <div className="flex flex-col gap-6 mb-8">
             <NavLink
               to={"/admin/invoice/list"}
               className="flex items-center gap-2 text-sm hover:underline"
@@ -96,7 +98,7 @@ export const InvoiceDetail = () => {
               </div>
             </div>
 
-            <div className="flex flex-1 flex-col gap-2">
+            <div className="flex flex-col flex-1 gap-2">
               <div className="flex gap-4">
                 <div className="flex-none basis-[150px] text-sm">Number:</div>
                 <div className="text-sm font-light">{invoice.orderCode}</div>
@@ -111,7 +113,7 @@ export const InvoiceDetail = () => {
               </div>
             </div>
 
-            <div className="flex flex-1 flex-col gap-2">
+            <div className="flex flex-col flex-1 gap-2">
               <h6 className="">Customer</h6>
               <div className="space-y-[5px] text-sm font-light">
                 <p>{invoice.usersDTO.hoVaTen}</p>
@@ -133,7 +135,7 @@ export const InvoiceDetail = () => {
                       <th className="p-5 text-xs font-light">Name</th>
                       <th className="p-5 text-xs font-light">Unit Amount</th>
                       <th className="p-5 text-xs font-light">Qty</th>
-                      <th className="p-5 text-right text-xs font-light">
+                      <th className="p-5 text-xs font-light text-right">
                         Amount
                       </th>
                     </tr>

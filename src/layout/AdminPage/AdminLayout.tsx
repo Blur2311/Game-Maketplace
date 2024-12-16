@@ -5,7 +5,7 @@ import "./Admin.css";
 import { useAuthCheck } from "../../utils/AuthUtils";
 
 export const AdminLayout = () => {
-  useAuthCheck(["ADMIN"]);
+  useAuthCheck(['ADMIN', 'STAFF']);
 
   return (
     <>
