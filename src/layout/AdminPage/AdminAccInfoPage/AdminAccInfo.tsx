@@ -2,12 +2,88 @@ import { Button } from "primereact/button";
 import { FloatLabel } from "primereact/floatlabel";
 import { InputText } from "primereact/inputtext";
 import { ProgressSpinner } from "primereact/progressspinner";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FiUser } from "react-icons/fi";
 import { MdOutlineCameraAlt } from "react-icons/md";
+import { getCurrentUser } from "../../../utils/AuthUtils";
+import { updateAvatarAndHoVaTenByUsername, UpdateUserDTO } from "./service/AdminAccInfoService";
+
+export type User = {
+  sysIdUser: number;
+  username: string;
+  email: string;
+  role: string;
+  hoVaTen: string;
+  balance: number;
+  avatar: string;
+  joinTime: string;
+};
 
 export const AdminAccInfo = () => {
   const [uploading, setUploading] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [hoVaTen, setHoVaTen] = useState("");
+  const [avatar, setAvatar] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const currentUser = await getCurrentUser();
+      setUser(currentUser);
+      if (currentUser) {
+        setHoVaTen(currentUser.hoVaTen);
+        setPreview(currentUser.avatar);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  const handleChangeFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setAvatar(file);
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!user || !avatar) return;
+
+    setUploading(true);
+
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      const base64Image = reader.result as string;
+      const updateUserDTO: UpdateUserDTO = {
+        files: [base64Image],
+        fileName: avatar.name,
+        hoVaTen: hoVaTen,
+        username: user.username,
+      };
+
+      try {
+        await updateAvatarAndHoVaTenByUsername(updateUserDTO);
+        const updatedUser = { ...user, avatar: base64Image, hoVaTen: hoVaTen };
+        setUser(updatedUser);
+      } catch (error) {
+        console.error("Error updating avatar and ho va ten:", error);
+      } finally {
+        setUploading(false);
+      }
+    };
+
+    reader.readAsDataURL(avatar);
+  };
+
+  if (!user) {
+    return <ProgressSpinner />;
+  }
 
   return (
     <>
@@ -18,23 +94,19 @@ export const AdminAccInfo = () => {
             <div className="rounded-[20px] shadow-adminBoxshadow">
               <div className="">
                 <div className="flex flex-col items-center justify-center gap-4 px-6 py-8">
-                  {/* Cái này có sẵn ấn vào hình mở input xog ấn nút để submit
-                   xog cho nó loading nhìn cho giống real */}
                   <div className="group relative flex h-[100px] w-[100px] cursor-pointer items-center justify-center overflow-hidden">
                     <input
                       type="file"
-                      // onChange={handleChangeFile}
-                      className="absolute inset-0 cursor-pointer opacity-0"
+                      onChange={handleChangeFile}
+                      className="absolute inset-0 cursor-pointer opacity-0 z-40"
                     />
 
-                    {/* trong thời gian đợi nó submit thì cập nhật trạg thái true cho nó load nhìn cho đẹp */}
                     {uploading ? (
                       <ProgressSpinner />
                     ) : (
                       <>
                         <img
-                          // src={photoURL || "/girl.png"}  Thay thế bằng URL ảnh placeholder nếu cần
-                          src="/cat.jpeg" // nhớ xoá dòng này
+                          src={preview || "/default-avatar.png"}
                           alt="Uploaded"
                           className="h-full w-full rounded-full border border-dashed border-[#dcdfe4] object-cover p-1"
                         />
@@ -46,20 +118,9 @@ export const AdminAccInfo = () => {
                     )}
                   </div>
                   <div className="space-y-2 text-center">
-                    <h6 className="text-2xl font-medium">Huy Dz</h6>
-                    <p className="text-sm text-textSecond">
-                      huydz102@gmail.com
-                    </p>
+                    <h6 className="text-2xl font-medium">{user.hoVaTen}</h6>
+                    <p className="text-sm text-textSecond">{user.email}</p>
                   </div>
-                </div>
-                {/* Nút này để submit file lên nè */}
-                <div className="p-2">
-                  <Button
-                    label="Upload picture"
-                    // loading={true}
-                    // onClick={handleUpload}
-                    className="flex w-full items-center justify-center rounded-lg bg-transparent pb-[7px] pe-[7px] ps-2 pt-2 text-sm text-mainYellow transition duration-300 ease-in-out hover:bg-mainYellow hover:bg-opacity-10"
-                  />
                 </div>
               </div>
             </div>
@@ -77,8 +138,8 @@ export const AdminAccInfo = () => {
                   <FloatLabel className="col-span-12 text-sm sm:col-span-6">
                     <InputText
                       className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black focus:border-black"
-                      // value={description}
-                      // onChange={(e) => setDescription(e.target.value)}
+                      value={hoVaTen}
+                      onChange={(e) => setHoVaTen(e.target.value)}
                     />
                     <label>
                       Full name <span className="text-red-500">*</span>
@@ -87,8 +148,8 @@ export const AdminAccInfo = () => {
                   <FloatLabel className="col-span-12 text-sm sm:col-span-6">
                     <InputText
                       className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black focus:border-black"
-                      // value={description}
-                      // onChange={(e) => setDescription(e.target.value)}
+                      value={user.username}
+                      disabled
                     />
                     <label>
                       Username <span className="text-red-500">*</span>
@@ -97,8 +158,8 @@ export const AdminAccInfo = () => {
                   <FloatLabel className="col-span-12 text-sm sm:col-span-6">
                     <InputText
                       className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black focus:border-black"
-                      // value={description}
-                      // onChange={(e) => setDescription(e.target.value)}
+                      value={user.email}
+                      disabled
                     />
                     <label>
                       Email address <span className="text-red-500">*</span>
@@ -107,26 +168,18 @@ export const AdminAccInfo = () => {
                   <FloatLabel className="col-span-12 text-sm sm:col-span-6">
                     <InputText
                       className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black focus:border-black"
-                      // value={description}
-                      // onChange={(e) => setDescription(e.target.value)}
+                      value={user.balance.toString()}
+                      disabled
                     />
-                    <label>Phone number </label>
+                    <label>Balance</label>
                   </FloatLabel>
                   <FloatLabel className="col-span-12 text-sm sm:col-span-6">
                     <InputText
                       className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black focus:border-black"
-                      // value={description}
-                      // onChange={(e) => setDescription(e.target.value)}
+                      value={user.joinTime}
+                      disabled
                     />
-                    <label>State</label>
-                  </FloatLabel>
-                  <FloatLabel className="col-span-12 text-sm sm:col-span-6">
-                    <InputText
-                      className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black focus:border-black"
-                      // value={description}
-                      // onChange={(e) => setDescription(e.target.value)}
-                    />
-                    <label>City </label>
+                    <label>Join Time</label>
                   </FloatLabel>
                 </div>
               </div>
@@ -138,6 +191,7 @@ export const AdminAccInfo = () => {
                 <Button
                   label="Save changes"
                   className="rounded-lg bg-mainYellow px-4 py-[10px] text-sm font-medium text-white hover:brightness-105"
+                  onClick={handleUpload}
                 />
               </div>
             </div>
