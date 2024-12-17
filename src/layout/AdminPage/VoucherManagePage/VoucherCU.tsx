@@ -56,6 +56,9 @@ export const VoucherCU = () => {
           console.error("Invalid voucher data:", error);
         }
       }
+      else {
+        navigate("/admin/voucher/list");
+      }
     }
   }, [id, isUpdateMode]);
 

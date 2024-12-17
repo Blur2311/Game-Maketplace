@@ -7,13 +7,17 @@ import {
   useState,
   useEffect,
 } from "react";
+import { getUsernameFromToken } from '../../../../utils/AuthUtils';
+
 
 import apiClient from "../../../../config/apiClient";
 import React from "react";
 
 type Room = {
   id: number;
-  userName: string
+  channelName: string;
+  createdAt: string;
+  status: string
 };
 
 type RightSideChatProps = {
@@ -38,13 +42,15 @@ export const RightSideChat = (({ onUserNameSelect, onFirstChatLoad }: RightSideC
     const selectedChat = chats.find((chat) => chat.id === id);
     if (selectedChat) {
       // Gọi callback với userName khi chọn một cuộc trò chuyện
-      onUserNameSelect(selectedChat.userName);
+      onUserNameSelect(selectedChat.channelName);
     }
   };
 
   const fetchData = async () => {
     const response = await apiClient.get(`/api/chat/room-chat`);
     setChats(response.data.data);
+    // console.log(response.data.data);
+
   }
 
   useEffect(() => {
@@ -97,41 +103,26 @@ export const RightSideChat = (({ onUserNameSelect, onFirstChatLoad }: RightSideC
               className="custom-chat-tab"
             >
               <ul className="flex flex-col gap-2 font-inter">
-                {chats.map((chat) => (
-                  <ChatPerson
-                    name={`${chat.userName}`} avatar={"/cat.jpeg"} mess={""} date={""} unread={false} key={chat.id}
-                    {...chat}
-                    isSelected={selectedChatId === chat.id}
-                    onSelect={handleSelectChat} />
-                ))}
+                {chats
+                  .filter(chat => chat.channelName !== getUsernameFromToken()) // Loại bỏ các chat có channelName trùng với tên người dùng hiện tại
+                  .map((chat) => (
+                    <ChatPerson
+                      key={chat.id}
+                      name={chat.channelName}
+                      avatar={"/cat.jpeg"}
+                      mess={""}
+                      date={""}
+                      unread={false}
+                      {...chat}
+                      isSelected={selectedChatId === chat.id}
+                      onSelect={handleSelectChat}
+                    />
+                  ))}
               </ul>
+
             </TabPanel>
 
-            {/* Tab Chưa đọc */}
-            {/* <TabPanel
-              header={
-                <span
-                  className={`${
-                    activeIndex === 1
-                      ? "border-b-2 border-blue-600 text-blue-600"
-                      : ""
-                  } text-sm font-medium`}
-                >
-                  Unread
-                </span>
-              }
-              className="custom-chat-tab"
-            >
-              <ul className="flex flex-col gap-2 font-inter">
-                {unreadChats.map((chat) => (
-                  <ChatPerson
-                    key={chat.id}
-                    {...chat}
-                    isSelected={selectedChatId === chat.id}
-                    onSelect={handleSelectChat}                  />
-                ))}
-              </ul>
-            </TabPanel> */}
+
           </TabView>
         </div>
       </div>

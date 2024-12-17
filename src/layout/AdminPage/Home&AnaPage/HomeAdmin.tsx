@@ -1,36 +1,76 @@
+import { ApexOptions } from "apexcharts";
+import { useEffect, useState } from "react";
+import Chart from "react-apexcharts";
 import { FiTrendingUp } from "react-icons/fi";
+import { IoCartOutline } from "react-icons/io5";
 import {
-  PiArrowRight,
   PiBag,
   PiChartPie,
-  PiGlobeHemisphereWest,
   PiReceipt,
-  PiReceiptX,
-  PiWarning,
+  PiReceiptX
 } from "react-icons/pi";
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
 import { TbUsers } from "react-icons/tb";
-import { formatCurrency } from "../../../utils/OtherUtils";
-import Chart from "react-apexcharts";
-import { ApexOptions } from "apexcharts";
-import { NavLink } from "react-router-dom";
-import { TopSaleItem } from "./components/TopSaleItemRow";
-import MapChart from "./components/MapChart";
-import SalesByCountry from "./components/SaleByCountry";
-import { IoCartOutline } from "react-icons/io5";
+import {
+  StatisticForNew,
+  TransactionSum,
+  TransactionSummary,
+} from "../../../model/Statistic";
 import { useAuthCheck } from "../../../utils/AuthUtils";
+import { GameDTO } from "../../../utils/CartUtils";
+import { formatCurrency } from "../../../utils/OtherUtils";
+import { getImage } from "../../../utils/ProductUtils";
+import {
+  fetchNewOrderStatistics,
+  fetchNewUserStatistics,
+  fetchSortedGames,
+  fetchTransactionSummaryStatistic,
+  fetchTransactionSumStatistic,
+} from "../../../utils/StatisticUtils";
+import { TopSaleItem } from "./components/TopSaleItemRow";
 
 export const HomeAdmin = () => {
-  useAuthCheck(['ADMIN']);
+  useAuthCheck(["ADMIN"]);
+
+  const [newOrders, setNewOrders] = useState<StatisticForNew[]>([]);
+  const [newUsers, setNewUsers] = useState<StatisticForNew[]>([]);
+  const [transactionSum, setTransactionSum] = useState<TransactionSum>();
+  const [transactionSummary, setTransactionSummary] = useState<
+    TransactionSummary[]
+  >([]);
+  const [topSoldGames, setTopSoldGames] = useState<GameDTO[]>([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const orders = await fetchNewOrderStatistics();
+        setNewOrders(orders);
+        const users = await fetchNewUserStatistics();
+        setNewUsers(users);
+        const sum = await fetchTransactionSumStatistic();
+        setTransactionSum(sum);
+        const summary = await fetchTransactionSummaryStatistic();
+        setTransactionSummary(summary.reverse());
+        const games = await fetchSortedGames("quantitySold");
+        console.log(games);
+
+        setTopSoldGames(games);
+      } catch (error) {
+        console.error("Error fetching statistics:", error);
+      }
+    }
+    fetchData();
+  }, []);
+
   const options: ApexOptions = {
     series: [
       {
         name: "New customers",
-        data: [28, 29, 33, 36, 32, 32, 33],
+        data: transactionSummary.map((summary) => summary.userCount),
       },
       {
         name: "Number of Orders",
-        data: [12, 11, 14, 18, 17, 13, 13],
+        data: transactionSummary.map((summary) => summary.orderCount),
       },
     ],
     chart: {
@@ -69,17 +109,9 @@ export const HomeAdmin = () => {
       size: 1,
     },
     xaxis: {
-      categories: [
-        "Nov 1",
-        "Nov 5",
-        "Nov 10",
-        "Nov 15",
-        "Nov 20",
-        "Nov 25",
-        "Nov 30",
-      ],
+      categories: transactionSummary.map((summary) => summary.date),
       title: {
-        text: "Days of the month",
+        text: "Recent days",
       },
     },
     legend: {
@@ -97,6 +129,7 @@ export const HomeAdmin = () => {
         <h3 className="text-[32px] font-medium">Overview</h3>
 
         <div className="grid grid-cols-12 gap-8">
+          <div className="lg:col-span-2"></div>
           <div className="col-span-12 md:col-span-4">
             <div className="rounded-[20px] shadow-adminBoxshadow">
               <div className="px-6 pt-4 pb-8">
@@ -106,7 +139,9 @@ export const HomeAdmin = () => {
                   </div>
                   <div className="">
                     <p className="font-light text-textSecond">Orders</p>
-                    <h6 className="text-4xl font-medium">59</h6>
+                    <h6 className="text-4xl font-medium">
+                      {newOrders.length !== 0 && newOrders[0].thisMonth}
+                    </h6>
                   </div>
                 </div>
               </div>
@@ -117,7 +152,11 @@ export const HomeAdmin = () => {
                 <div className="flex gap-2">
                   <FiTrendingUp size={20} className="text-green-500" />
                   <p className="text-sm text-textSecond">
-                    <span className="text-green-500"> 15% </span>
+                    <span className="text-green-500">
+                      {" "}
+                      {newOrders.length !== 0 &&
+                        newOrders[0].increasedPercent}%{" "}
+                    </span>
                     increase vs last month
                   </p>
                 </div>
@@ -134,7 +173,9 @@ export const HomeAdmin = () => {
                   </div>
                   <div className="">
                     <p className="font-light text-textSecond">Sign ups</p>
-                    <h6 className="text-4xl font-medium">240</h6>
+                    <h6 className="text-4xl font-medium">
+                      {newUsers.length !== 0 && newUsers[0].thisMonth}
+                    </h6>
                   </div>
                 </div>
               </div>
@@ -145,41 +186,18 @@ export const HomeAdmin = () => {
                 <div className="flex gap-2">
                   <FiTrendingUp size={20} className="text-green-500" />
                   <p className="text-sm text-textSecond">
-                    <span className="text-green-500"> 15% </span>
+                    <span className="text-green-500">
+                      {" "}
+                      {newUsers.length !== 0 &&
+                        newUsers[0].increasedPercent}%{" "}
+                    </span>
                     increase vs last month
                   </p>
                 </div>
               </div>
             </div>
           </div>
-
-          <div className="col-span-12 md:col-span-4">
-            <div className="rounded-[20px] shadow-adminBoxshadow">
-              <div className="px-6 pt-4 pb-8">
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center justify-center w-12 h-12 rounded-full shadow-adminIconshadow">
-                    <PiWarning size={24} />
-                  </div>
-                  <div className="">
-                    <p className="font-light text-textSecond">issues</p>
-                    <h6 className="text-4xl font-medium">17</h6>
-                  </div>
-                </div>
-              </div>
-
-              <hr />
-
-              <div className="p-4">
-                <div className="flex gap-2">
-                  <FiTrendingUp size={20} className="text-green-500" />
-                  <p className="text-sm text-textSecond">
-                    <span className="text-green-500"> 15% </span>
-                    increase vs last month
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <div className="lg:col-span-2"></div>
         </div>
 
         <div className="rounded-[20px] px-6 shadow-adminBoxshadow">
@@ -200,7 +218,8 @@ export const HomeAdmin = () => {
                         Payout balance
                       </p>
                       <h6 className="text-2xl font-medium">
-                        {formatCurrency(1640000)}
+                        {transactionSum &&
+                          formatCurrency(transactionSum.totalIncome)}
                       </h6>
                     </div>
                   </div>
@@ -218,7 +237,8 @@ export const HomeAdmin = () => {
                         Today's revenue
                       </p>
                       <h6 className="text-2xl font-medium">
-                        {formatCurrency(260000)}
+                        {transactionSum &&
+                          formatCurrency(transactionSum.todayIncome)}
                       </h6>
                     </div>
                   </div>
@@ -236,7 +256,8 @@ export const HomeAdmin = () => {
                         Expenses
                       </p>
                       <h6 className="text-2xl font-medium">
-                        {formatCurrency(580000)}
+                        {transactionSum &&
+                          formatCurrency(transactionSum.totalIncome * 0.05)}
                       </h6>
                     </div>
                   </div>
@@ -254,7 +275,7 @@ export const HomeAdmin = () => {
                         Refunds
                       </p>
                       <h6 className="text-2xl font-medium">
-                        {formatCurrency(125000)}
+                        {formatCurrency(0)}
                       </h6>
                     </div>
                   </div>
@@ -266,84 +287,53 @@ export const HomeAdmin = () => {
               <Chart
                 options={options}
                 series={options.series}
-                type="line"
+                type="bar"
                 height={350}
               />
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-12 gap-8">
-          <div className="col-span-12 lg:col-span-8">
-            <div className="rounded-[20px] shadow-adminBoxshadow">
-              <div className="flex items-center px-6 pt-8 pb-4">
-                <div className="flex items-center justify-center w-10 h-10 mr-4 rounded-full shadow-adminIconshadow">
-                  <PiGlobeHemisphereWest className="text-2xl" />
-                </div>
-                <p className="flex-1 text-lg font-medium">Sales by country</p>
-              </div>
-
-              <div className="flex flex-col gap-6 px-6 pt-4 pb-8 md:flex-row">
-                <SalesByCountry />
-                <MapChart />
-              </div>
-            </div>
-          </div>
-
-          <div className="col-span-12 lg:col-span-4">
+        <div className="flex justify-center w-full">
+          <div className="w-full max-w-screen-lg">
             <div className="rounded-[20px] shadow-adminBoxshadow">
               <div className="flex items-center px-6 pt-8 pb-4">
                 <div className="flex items-center justify-center w-10 h-10 mr-4 rounded-full shadow-adminIconshadow">
                   <PiBag className="text-2xl" />
                 </div>
                 <p className="flex-1 text-lg font-medium">Top selling</p>
-                <NavLink
+                {/* <NavLink
+                  hidden
                   to={`/admin/customer/detail/1`}
                   className={
                     "flex items-center gap-2 rounded-lg p-2 text-sm hover:bg-gray-100"
                   }
                 >
                   See all <PiArrowRight size={18} />
-                </NavLink>
+                </NavLink> */}
               </div>
               <div className="overflow-x-scroll">
                 <table className="w-full text-nowrap">
                   <tbody>
-                    <TopSaleItem
-                      image={"/cat.jpeg"}
-                      name={"Stray"}
-                      type={"Steam Game"}
-                      amount={5190000}
-                      top={1}
-                    />
-                    <TopSaleItem
-                      image={"/cat.jpeg"}
-                      name={"Stray"}
-                      type={"Steam Game"}
-                      amount={4890000}
-                      top={2}
-                    />
-                    <TopSaleItem
-                      image={"/cat.jpeg"}
-                      name={"Assasin Creed"}
-                      type={"Steam Game"}
-                      amount={3630000}
-                      top={3}
-                    />
-                    <TopSaleItem
-                      image={"/cat.jpeg"}
-                      name={"Dark Soul"}
-                      type={"Steam Game"}
-                      amount={3190000}
-                      top={4}
-                    />
-                    <TopSaleItem
-                      image={"/cat.jpeg"}
-                      name={"Wadafak"}
-                      type={"Steam Game"}
-                      amount={2620000}
-                      top={5}
-                    />
+                    {topSoldGames.map((game, index) => (
+                      <TopSaleItem
+                        key={index}
+                        top={index + 1}
+                        name={game.gameName}
+                        amount={
+                          game.quantitySold *
+                          game.price *
+                          (1 - game.discountPercent / 100)
+                        }
+                        type={
+                          game.features
+                            ? game.features.split("\n")[0]
+                            : "Steam Game"
+                        }
+                        image={getImage(game, "thumbnail") ?? "/cat.jpeg"}
+                        gameId={game.sysIdGame}
+                      />
+                    ))}
                   </tbody>
                 </table>
               </div>

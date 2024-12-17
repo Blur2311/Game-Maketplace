@@ -11,12 +11,14 @@ import { RightSideChat } from "./components/RightSideChat";
 import apiClient from "../../../config/apiClient";
 import Swal from "sweetalert2";
 import { useAuthCheck } from "../../../utils/AuthUtils";
+import { getUsernameFromToken } from '../../../utils/AuthUtils';
 
-interface JWTPayload {
-  userId?: number;
-  name?: string;
-  exp?: number; // Thời gian hết hạn (epoch time)
-  [key: string]: any; // Cho phép các thuộc tính khác
+interface Message {
+  id: number; // ID của tin nhắn
+  channel: string | null; // Channel name (nếu cần tên channel dưới dạng chuỗi)
+  senderName: string | null; // Tên người gửi
+  senderRole: string | null; // Vai trò người gửi
+  content: string; // Nội dung tin nhắn
 }
 
 export const ChatManageV2 = () => {
@@ -26,10 +28,15 @@ export const ChatManageV2 = () => {
   const overlayPanelRef = useRef<OverlayPanel>(null);
   const [textChat, setTextChat] = useState("");
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [messages, setMessages] = useState<any[]>([]); // Lưu trữ danh sách tin nhắn
+  const [messages, setMessages] = useState<Message[]>([]); // Mảng các tin nhắn
+  const [username, setUsername] = useState<string | null>(null); // Username người dùng
+
 
   const [displayName, setDisplayName] = useState(""); // State lưu trữ userName
   const [firstChatLoaded, setFirstChatLoaded] = useState(false); // Flag để kiểm tra khi load xong chat đầu tiên
+
+  const socketRef = useRef<WebSocket | null>(null); // WebSocket reference
+
 
   // Callback hàm để nhận userName từ RightSideChat
   const updateDisplayName = (userName: string) => {
@@ -65,59 +72,81 @@ export const ChatManageV2 = () => {
   };
 
   const callData = async (userName: any) => {
-    try {
-      // Dùng await để đợi Promise hoàn thành
-      const response = await apiClient.get(`/api/chat/room/${userName}`);
 
-      // Sau khi Promise hoàn thành, bạn có thể truy cập vào response.data
-      setMessages(response.data);
-    } catch (error) {
-      // // Xử lý lỗi nếu có
-      // console.error("Error fetching data:", error);
-    }
+    const response = await apiClient.get(`/api/chat/channel_name_mess?username=${userName}`);
+    console.log(response.data.data);
+    setMessages(response.data.data);
+    
   };
 
-  function decodeJWT(token: string): JWTPayload | null {
-    try {
-      // Tách phần PAYLOAD (phần thứ hai) của token
-      const payload = token.split(".")[1];
+  const openWebSocket = () => {
 
-      // Giải mã Base64Url sang chuỗi JSON
-      const decodedPayload = atob(
-        payload.replace(/-/g, "+").replace(/_/g, "/"),
-      );
+    const user = getUsernameFromToken();
+    if (!user) return;
 
-      // Chuyển chuỗi JSON thành đối tượng JavaScript
-      const obj = JSON.parse(decodedPayload) as JWTPayload;
-      return obj.sub;
-    } catch (error) {
-      console.error("Failed to decode JWT:", error);
-      return null;
-    }
-  }
+    const socket = new WebSocket("ws://localhost:9999/chatUsertoAdmin");
+
+    socketRef.current = socket;
+
+    socket.onopen = () => {
+      console.log("Connected to server");
+      socket.send(`join:${user}`); // Gửi sự kiện "join" cùng username
+      socket.send(`loadMessages:${user}`); // Load tin nhắn cũ
+    };
+
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (Array.isArray(data)) {
+        // Nếu data là mảng, thêm vào danh sách cũ
+        setMessages((prevMessages) => [...prevMessages, ...data]);
+      } else if (typeof data === 'object') {
+        // Nếu data là object, chuyển thành mảng và thêm vào danh sách
+        setMessages((prevMessages) => [...prevMessages, data]);
+      } else {
+        console.error("Invalid data format received:", data);
+      }
+    };
+
+    socket.onclose = () => {
+      console.log("Disconnected from server");
+    };
+  };
+
 
   const sendMessage = async () => {
-    if (textChat.trim()) {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: textChat, from: "user" },
-      ]);
-      setTextChat("");
+    if (!textChat.trim()) {
+      return;
+    } else {
+      const user = getUsernameFromToken();
+      const formattedMessage = `message:${username}:${user}:${textChat}`;
+      if (socketRef.current) {
+        // Tạo tin nhắn mới
+        const newMessage: Message = {
+          id: Date.now(), // Dùng thời gian hiện tại làm ID
+          channel: null, // Hoặc cần channel cụ thể
+          senderName: username,
+          senderRole: null, // Nếu vai trò không cần thiết
+          content: textChat
+        };
 
-      try {
-        const response = await apiClient.post(
-          `/api/chat/send/true?userName=${displayName}`,
-          textChat,
-          {
-            headers: {
-              "Content-Type": "text/plain",
-            },
-          },
-        );
-        callData(displayName);
-      } catch (error) {
-        console.error("Error sending message:", error);
+        socketRef.current.send(formattedMessage);
+
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
+
+        socketRef.current.onmessage = (event) => {
+          const data = JSON.parse(event.data);
+          if (Array.isArray(data)) {
+            // Nếu data là mảng, thêm vào danh sách cũ
+            setMessages((prevMessages) => [...prevMessages, ...data]);
+          } else if (typeof data === 'object') {
+            // Nếu data là object, chuyển thành mảng và thêm vào danh sách
+            setMessages((prevMessages) => [...prevMessages, data]);
+          } else {
+            console.error("Invalid data format received:", data);
+          }
+        };
       }
+      setTextChat("");
     }
   };
 
@@ -133,8 +162,11 @@ export const ChatManageV2 = () => {
     if (displayName) {
       interval = window.setInterval(() => {
         callData(displayName); // Gọi API sau mỗi 2 giây
+        setUsername(displayName);
       }, 1500);
     }
+
+    openWebSocket();
 
     // Cleanup interval khi component unmount
     return () => {
@@ -142,35 +174,11 @@ export const ChatManageV2 = () => {
         window.clearInterval(interval); // Dọn dẹp interval
       }
     };
+
+    
   }, [displayName]); // Đưa displayName vào mảng phụ thuộc
 
-  const deleteRoom = async (userName: string) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "Are you sure you want to delete this room?!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-      allowOutsideClick: false,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        try {
-          const response = apiClient.delete(`/api/chat/room/${userName}`);
-          callData(userName); // Gọi API sau khi xóa phòng chat
-          handleFirstChatLoad();
-        } catch (error) {
-          console.error("Error deleting room:", error);
-        }
-        Swal.fire({
-          title: "Deleted!",
-          text: "Your file has been deleted.",
-          icon: "success",
-        });
-      }
-    });
-  };
+  
 
   return (
     <>
@@ -259,25 +267,32 @@ export const ChatManageV2 = () => {
             </div>
 
             <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-6">
-              {messages.map((message, index) =>
-                message.staff ? (
-                  <SentMessage
-                    key={index}
-                    avatar={message.avatar || "/cat.jpeg"}
-                    name={message.sender}
-                    message={message.content}
-                    date={""}
-                  />
+            {messages.length === 0 ? (
+                  <p>No messages yet. Start the conversation!</p>
                 ) : (
-                  <ReceivedMessage
-                    key={index}
-                    avatar={message.avatar || "/cat.jpeg"}
-                    name={message.sender}
-                    message={message.content}
-                    date={""}
-                  />
-                ),
-              )}
+                  messages.map((msg, index) => {
+                    return msg.senderName === username ? (
+                      
+                      <ReceivedMessage
+                        key={index}
+                        avatar={"/cat.jpeg"}
+                        channel={null}
+                        senderName={msg.senderName || "Admin"}
+                        senderRole={null}
+                        content={msg.content}
+                      />
+                    ) : (
+                      <SentMessage
+                        key={index}
+                        avatar={"/cat.jpeg"}
+                        channel={null}
+                        senderName={msg.senderName || "You"}
+                        senderRole={null}
+                        content={msg.content}
+                      />
+                    );
+                  })
+                )}
             </div>
 
             <div className="flex items-center gap-4 px-6 py-2">
@@ -300,18 +315,18 @@ export const ChatManageV2 = () => {
                 />
 
                 <div>
-                  <Button
+                  {/* <Button
                     className="rounded-lg p-2 hover:bg-gray-100"
                     icon="pi pi-paperclip"
                     onClick={handleFileClick}
-                  />
-                  <input
+                  /> */}
+                  {/* <input
                     ref={fileInputRef}
                     type="file"
                     style={{ display: "none" }}
                     accept="image/*" // Chỉ chấp nhận hình ảnh
                     onChange={handleFileChange}
-                  />
+                  /> */}
                 </div>
               </div>
             </div>
