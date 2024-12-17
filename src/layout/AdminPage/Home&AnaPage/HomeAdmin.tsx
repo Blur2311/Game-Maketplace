@@ -273,24 +273,8 @@ export const HomeAdmin = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-12 gap-8">
-          <div className="col-span-12 lg:col-span-8">
-            <div className="rounded-[20px] shadow-adminBoxshadow">
-              <div className="flex items-center px-6 pt-8 pb-4">
-                <div className="flex items-center justify-center w-10 h-10 mr-4 rounded-full shadow-adminIconshadow">
-                  <PiGlobeHemisphereWest className="text-2xl" />
-                </div>
-                <p className="flex-1 text-lg font-medium">Sales by country</p>
-              </div>
-
-              <div className="flex flex-col gap-6 px-6 pt-4 pb-8 md:flex-row">
-                <SalesByCountry />
-                <MapChart />
-              </div>
-            </div>
-          </div>
-
-          <div className="col-span-12 lg:col-span-4">
+        <div className="flex justify-center w-full">
+          <div className="w-full max-w-screen-lg">
             <div className="rounded-[20px] shadow-adminBoxshadow">
               <div className="flex items-center px-6 pt-8 pb-4">
                 <div className="flex items-center justify-center w-10 h-10 mr-4 rounded-full shadow-adminIconshadow">
