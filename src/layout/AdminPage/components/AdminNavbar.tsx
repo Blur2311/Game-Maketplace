@@ -60,7 +60,7 @@ export const AdminNavBar = () => {
         <div className="flex items-center h-10 gap-2 cursor-pointer">
           <div className="relative">
             {/* Nút chuông */}
-            <button
+            {/* <button
               onClick={(e) => {
                 setUnread(false); // Đặt trạng thái unread về false
                 opNotifications.current?.toggle(e); // Bật/tắt OverlayPanel
@@ -71,7 +71,7 @@ export const AdminNavBar = () => {
               {unread && (
                 <span className="absolute top-0 right-0 w-3 h-3 text-xs text-white bg-red-500 rounded-full"></span>
               )}
-            </button>
+            </button> */}
 
             {/* Overlay Panel */}
             <OverlayPanel
@@ -102,7 +102,7 @@ export const AdminNavBar = () => {
             </OverlayPanel>
           </div>
 
-          <div className="h-full w-[1px] bg-[#dcdfe4]"></div>
+          {/* <div className="h-full w-[1px] bg-[#dcdfe4]"></div> */}
 
           <div
             className="flex items-center gap-3 hover:opacity-80"

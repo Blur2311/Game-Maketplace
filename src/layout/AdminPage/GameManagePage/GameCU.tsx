@@ -21,7 +21,7 @@ import {
 import { useAuthCheck } from "../../../utils/AuthUtils";
 
 export const GameCU = () => {
-  useAuthCheck(['ADMIN']);
+  useAuthCheck(["ADMIN"]);
   const { id } = useParams<{ id?: string }>(); // Nhận tham số id tùy chọn
   const isUpdateMode = Boolean(id); // Xác định chế độ cập nhật hay tạo mới
   const navigate = useNavigate();
@@ -104,6 +104,8 @@ export const GameCU = () => {
         } catch (error) {
           console.error("Invalid game data:", error);
         }
+      } else {
+        navigate("/admin/game/list");
       }
     }
   }, [id, isUpdateMode]);
@@ -209,10 +211,17 @@ export const GameCU = () => {
             : logoUrl
               ? [{ mediaName: "logo", mediaUrl: logoUrl }]
               : []),
-          ...base64Images.map((image, index) => ({
-            mediaName: `p${index + 1}`,
-            mediaUrl: image,
-          })),
+          ...(base64Images && base64Images.length > 0
+            ? base64Images.map((image, index) => ({
+                mediaName: `p${index + 1}`,
+                mediaUrl: image,
+              }))
+            : imageUrls
+              ? imageUrls.map((image, index) => ({
+                  mediaName: `p${index + 1}`,
+                  mediaUrl: image,
+                }))
+              : []),
         ],
         slug:
           gameName.toLowerCase().replace(/ /g, "-") +
@@ -243,7 +252,7 @@ export const GameCU = () => {
   return (
     <>
       <div className="px-6 py-16">
-        <div className="flex flex-col gap-6 mb-8">
+        <div className="mb-8 flex flex-col gap-6">
           <NavLink
             to={"/admin/game/list"}
             className="flex items-center gap-2 text-sm hover:underline"
@@ -256,7 +265,7 @@ export const GameCU = () => {
           </h3>
         </div>
 
-        <div className="grid items-start grid-cols-12 gap-8">
+        <div className="grid grid-cols-12 items-start gap-8">
           <div
             className={`${
               isUpdateMode ? "md:col-span-8" : "col-span-12"
@@ -329,7 +338,7 @@ export const GameCU = () => {
                     <Editor
                       value={description}
                       onTextChange={(e) => setDescription(e.htmlValue || "")}
-                      className="rounded-lg custom-editor shadow-adminInputShadow"
+                      className="custom-editor rounded-lg shadow-adminInputShadow"
                       style={{ height: 350 }}
                       placeholder="Description"
                     />

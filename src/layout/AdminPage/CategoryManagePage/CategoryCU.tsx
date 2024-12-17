@@ -34,6 +34,9 @@ export const CategoryCU = () => {
         setCategoryName(category.categoryName);
         setDescription(category.description);
       }
+      else {
+        navigate("/admin/category/list");
+      }
     }
   }, [id, isUpdateMode]);
 

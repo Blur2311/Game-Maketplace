@@ -172,7 +172,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onLinkClick }) => {
                     </NavLink>
                   </li>
 
-                  <li>
+                  {/* <li>
                     <NavLink
                       to={`/admin/settings`}
                       onClick={onLinkClick}
@@ -185,7 +185,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onLinkClick }) => {
                       <FiSettings className="text-xl" />
                       <p className="text-sm font-medium">Settings</p>
                     </NavLink>
-                  </li>
+                  </li> */}
                 </ul>
               </div>
             </li>
