@@ -7,6 +7,9 @@ export const getImage = (item: any, type: string) => {
     return image;
 };
 
+export const getGameURL = (slug: string) => {
+    return `/product?game=${slug}`;
+};
 
 export const fetchTop = async (field: string, size: number) => {
     let requestParams = {
@@ -31,7 +34,7 @@ export const fetchTop = async (field: string, size: number) => {
             price: item.price,
             sale: item.discountPercent,
             image: thumbnail ?? "/image1.2.jpg",
-            url: `/product?${item.slug}`
+            url: `/product?game=${item.slug}`
         };
     });
     return newItems;

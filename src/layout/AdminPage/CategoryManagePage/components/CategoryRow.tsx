@@ -1,10 +1,8 @@
 import { Link } from "react-router-dom";
+import { Category } from "../../../../model/CategoryModel"; // Import Category từ CategoryModel
 
-type CategoryRowProps = {
-  sysIdCategory: number;
-  categoryName: string;
-  description: string | null;
-};
+type CategoryRowProps = Omit<Category, 'categoryDetails'>;
+
 
 export const CategoryRow: React.FC<CategoryRowProps> = ({
   sysIdCategory,
@@ -28,7 +26,7 @@ export const CategoryRow: React.FC<CategoryRowProps> = ({
         <td className="px-5 py-[25px]">{description}</td>
         <td className={`px-5 py-[25px]`}>
           <Link
-            to={`/admin/category-list/update/${sysIdCategory}`}
+            to={`/admin/category/detail/${sysIdCategory}`}
             className="text-black underline"
             onClick={handleDetailClick}
           >

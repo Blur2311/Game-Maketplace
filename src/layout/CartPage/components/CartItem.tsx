@@ -1,8 +1,9 @@
 import { Button } from "primereact/button";
-import { Card } from "primereact/card";
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import type { CartItem, GameDTO } from "../../../utils/CartUtils";
 import { formatCurrency } from "../../../utils/OtherUtils";
+import { getGameURL } from "../../../utils/ProductUtils";
 
 interface CartItemProps {
   item: CartItem;
@@ -27,81 +28,93 @@ const CartItem: React.FC<CartItemProps> = ({
   };
 
   return (
-    <Card key={game.slug} className="mb-4">
-      <div className="flex flex-col items-center gap-4 md:flex-row">
-        <img
-          src={mediaUrl}
-          alt={game.gameName}
-          className="object-cover h-48 rounded w-36"
-        />
-        <div className="flex-grow">
-          <div className="flex flex-col justify-between md:flex-row">
-            <div>
-              {game.features && (
-                <div className="flex gap-2">
-                  {game.features.split("\n").map((feature, index) => {
-                    return index < 2 ? (
-                      <div className="mb-2 inline-block rounded bg-[#343437] px-2 py-1 text-sm text-white">
-                        {feature}
-                      </div>
-                    ) : index === 2 ? (
-                      <div className="mb-2 inline-block rounded bg-[#343437] px-2 py-1 text-sm text-white">
-                        ...more
-                      </div>
-                    ) : null;
-                  })}
-                </div>
-              )}
-              <h3 className="text-xl font-semibold">{game.gameName}</h3>
-            </div>
-            <div className="text-right">
-              {game.discountPercent > 0 && (
-                <div className="mb-2 inline-block rounded bg-[#1FBEC6] px-2 py-1 text-sm text-black">
-                  -{game.discountPercent}%
-                </div>
-              )}
-              <div className="flex flex-col">
-                {game.discountPercent > 0 && (
-                  <span className="text-gray-400 line-through">
-                    {formatCurrency(game.price)}
-                  </span>
+    <div
+      key={game.slug}
+      className="mb-4 rounded-xl bg-gray300 p-5 font-inter text-white"
+    >
+      <div className="flex flex-row items-stretch gap-4">
+        <Link to={getGameURL(game.slug)} className="w-16 sm:w-20 lg:w-32">
+          <img
+            src={mediaUrl}
+            alt={game.gameName}
+            className="w-full rounded object-cover"
+          />
+        </Link>
+        <div className="w-full flex-1 text-nowrap">
+          <div className="flex h-full flex-col justify-between">
+            <div className="mt-4 flex flex-col flex-wrap justify-between gap-4 md:flex-row">
+              <div>
+                {game.features && (
+                  <div className="flex gap-2">
+                    {game.features.split("\n").map((feature, index) => {
+                      return index < 2 ? (
+                        <div
+                          key={index}
+                          className="mb-2 inline-block rounded bg-[#343437] px-2 py-1 text-sm text-white"
+                        >
+                          {feature}
+                        </div>
+                      ) : index === 2 ? (
+                        <div
+                          key={index}
+                          className="mb-2 inline-block rounded bg-[#343437] px-2 py-1 text-sm text-white"
+                        >
+                          ...more
+                        </div>
+                      ) : null;
+                    })}
+                  </div>
                 )}
-                <span className="text-xl font-bold">
-                  {formatCurrency(discountedPrice)}
-                </span>
+                <h3 className="text-xl font-semibold">{game.gameName}</h3>
+              </div>
+              <div className="flex gap-2">
+                {game.discountPercent > 0 && (
+                  <>
+                    <div className="mb-2 inline-block rounded bg-[#1FBEC6] px-2 py-1 text-sm text-black">
+                      -{game.discountPercent}%
+                    </div>
+                    <p className="text-gray-400 line-through">
+                      {formatCurrency(game.price)}
+                    </p>
+                  </>
+                )}
+                <p className="font-bold">{formatCurrency(discountedPrice)}</p>
               </div>
             </div>
-          </div>
-          <div className="flex items-center justify-between mt-4">
-            <div className="flex items-center gap-2">
-              <Button
-                icon="pi pi-minus"
-                className="p-button-rounded p-button-text"
-                disabled={itemQuantity <= 1}
-                onClick={() => handleQuantityChange(game.slug, -1)}
-              />
-              <span className="px-4 py-2 border rounded">{itemQuantity}</span>
-              <Button
-                icon="pi pi-plus"
-                className="p-button-rounded p-button-text"
-                disabled={itemQuantity >= game.quantity}
-                onClick={() => handleQuantityChange(game.slug, 1)}
-              />
-            </div>
-            <div className="flex gap-12">
-              <Button
-                label="Remove"
-                className="p-button-danger p-button-text"
-                onClick={() => {
-                  onRemove(game.slug);
-                }}
-              />
-              <Button label="Move to wishlist" className="p-button-text" />
+            <div className="mt-4 flex flex-col gap-y-5 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-2">
+                <Button
+                  icon="pi pi-minus"
+                  className="p-button-rounded p-button-text text-sm text-textType hover:text-white"
+                  disabled={itemQuantity <= 1}
+                  onClick={() => handleQuantityChange(game.slug, -1)}
+                />
+                <span className="rounded border px-4 py-2">{itemQuantity}</span>
+                <Button
+                  icon="pi pi-plus"
+                  className="p-button-rounded p-button-text text-sm text-textType hover:text-white"
+                  disabled={itemQuantity >= game.quantity}
+                  onClick={() => handleQuantityChange(game.slug, 1)}
+                />
+              </div>
+              <div className="flex justify-end gap-12">
+                <Button
+                  label="Remove"
+                  className="p-button-danger p-button-text text-sm text-textType hover:text-white"
+                  onClick={() => {
+                    onRemove(game.slug);
+                  }}
+                />
+                <Button
+                  label="Move to wishlist"
+                  className="p-button-text text-sm text-textType hover:text-white"
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </Card>
+    </div>
   );
 };
 

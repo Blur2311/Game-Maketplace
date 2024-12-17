@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { formatCurrency } from "../../../utils/OtherUtils";
+import { formatCurrencyFlip } from "../../../utils/OtherUtils";
 
 type OrderHistoryRowProps = {
   date: string;
@@ -18,15 +18,17 @@ export const OrderHistoryRow: React.FC<OrderHistoryRowProps> = ({
 }) => {
   return (
     <>
-      <tr className="border-borderRow border-b bg-white text-xs font-light">
+      <tr className="border-b border-borderRow bg-white text-xs font-light">
         <td className="px-5 py-[25px]">{date}</td>
         <td className="px-5 py-[25px]">{id}</td>
         <td className="px-5 py-[25px]">{description}</td>
-        <td className="px-5 py-[25px]">{formatCurrency(price)}</td>
+        <td className="px-5 py-[25px] text-right">
+          {formatCurrencyFlip(price)}
+        </td>
         <td className="px-5 py-[25px]">{status}</td>
         <td className={`px-5 py-[25px]`}>
           <Link
-            to={`/setting/order-history/detail/${id}`}
+            to={`/setting/order-history/detail/${description}`}
             className="text-black underline"
           >
             Detail

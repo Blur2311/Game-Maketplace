@@ -1,36 +1,41 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import apiClient from '../../../config/apiClient';
+import { isTokenValid } from '../../../utils/AuthUtils';
 import { CartItem, GameDTO } from '../../../utils/CartUtils';
 
 export const useCart = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [length, setLength] = useState<number>(0);
   const [games, setGames] = useState<Map<string, GameDTO>>(new Map());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [changes, setChanges] = useState<number>(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedCart = localStorage.getItem('cart');
     if (storedCart) {
-      // console.log(JSON.parse(storedCart));
       const parsedCart: CartItem[] = JSON.parse(storedCart);
       setCartItems(parsedCart);
+      setLength(parsedCart.length);
       fetchGameDetails(parsedCart);
     } else {
       setLoading(false);
     }
   }, [changes]);
 
+
   const fetchGameDetails = async (items: CartItem[]) => {
     try {
       const gameDetails = new Map<string, GameDTO>();
       await Promise.all(
         items.map(async (item) => {
-          const response = await apiClient.get(`/api/games/${item.slug}`);
+          const response = await apiClient.get(`/api/games/p/${item.slug}`);
           gameDetails.set(item.slug, response.data.data);
         })
       );
-      // console.log(gameDetails);
       setGames(gameDetails);
     } catch (err) {
       setError('Failed to fetch game details');
@@ -75,7 +80,34 @@ export const useCart = () => {
 
     localStorage.setItem('cart', JSON.stringify(cartItems));
     setChanges((prev) => prev + 1);
+    toast.info(`${item.name} has been added to the cart successfully!`);
   };
 
-  return { cartItems, games, loading, error, addToCart, updateQuantity, removeItem, setChanges, fetchGameDetails };
+  const addGameToCart = (game: GameDTO, quantity: number): void => {
+    const cartItem: CartItem = {
+      slug: game.slug,
+      name: game.gameName,
+      price: Math.round(game.price * (1 - (game.discountPercent || 0) / 100)),
+      quantity,
+      mediaUrl: game.gameImage
+    };
+    addToCart(cartItem);
+  };
+
+  const handleBuyNow = (game: GameDTO) => {
+    if (!isTokenValid()) {
+      toast.error('Please login to continue');
+      return;
+    };
+    const cartItem: CartItem = {
+      slug: game.slug,
+      quantity: 1,
+      name: game.gameName,
+      price: Math.round(game.price * (1 - (game.discountPercent || 0) / 100)),
+      mediaUrl: game.gameImage
+    };
+    navigate("/checkout", { state: { cartItem: [{ ...cartItem }] } });
+  };
+
+  return { cartItems, games, loading, error, length, addToCart, updateQuantity, removeItem, setChanges, fetchGameDetails, addGameToCart, handleBuyNow };
 };

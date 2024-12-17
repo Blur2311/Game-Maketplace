@@ -69,6 +69,7 @@ export const Sale = () => {
           describe={item.describe}
           buttonName={item.buttonName}
           url={item.url}
+          codeVoucher={item.codeVoucher}
         />
       );
     });

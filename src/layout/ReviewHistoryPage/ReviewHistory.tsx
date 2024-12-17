@@ -2,104 +2,152 @@ import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";
 import { FloatLabel } from "primereact/floatlabel";
 import { InputText } from "primereact/inputtext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import apiClient from "../../config/apiClient";
+import { getUsernameFromToken } from "../../utils/AuthUtils";
+import { formatDateToDDMMYYYY, isDateValid } from "../../utils/OtherUtils";
+import { CommentDTO } from "../ProductDetailPage/hook/useGameDetails";
 import { ReviewHistoryRow } from "./components/ReviewHistoryRow";
 
 export const ReviewHistory = () => {
+  const [description, setDescription] = useState<string>("");
   const [dates, setDates] = useState<Date[] | null>(null);
+  const [selectedDates, setSelectedDates] = useState<Date[] | null>(null);
+  const [reviews, setReviews] = useState<CommentDTO[]>([]);
+  const [filteredReviews, setFilteredReviews] = useState<CommentDTO[]>([]);
+  const [length, setLength] = useState<number>(5);
 
   const handleDateChange = (e: any) => {
     setDates(e.value);
   };
+
+  const fetchReviews = async () => {
+    const username = getUsernameFromToken();
+    if (!username) return;
+    try {
+      const response = await apiClient.get(
+        `/api/comments/get-comment-by-username?username=${username}`,
+      );
+      setReviews(response.data.data);
+      setFilteredReviews(response.data.data);
+    } catch (error) {
+      console.error("Failed to fetch reviews", error);
+    }
+  };
+
+  const filterReviews = () => {
+    if (!dates) return setFilteredReviews(reviews);
+    const filtered = reviews.filter((review) => {
+      return (
+        isDateValid(review.commentDate, dates[0], dates[1]) &&
+        review.context.includes(description)
+      );
+    });
+    setSelectedDates(dates);
+    setFilteredReviews(filtered);
+  };
+
+  const handleDescriptionChange = (e: any) => {
+    setDescription(e.target.value);
+    const filtered = reviews.filter((review) => {
+      let isMatch = review.context.includes(e.target.value);
+      if (selectedDates) {
+        isMatch =
+          isMatch &&
+          isDateValid(review.commentDate, selectedDates[0], selectedDates[1]);
+      }
+      return isMatch;
+    });
+    setFilteredReviews(filtered);
+  };
+
+  useEffect(() => {
+    fetchReviews();
+  }, []);
+
   return (
     <>
-      <div className="pl-5">
-        <div className="rounded bg-white p-10">
-          <h1 className="text-3xl">My Review</h1>
-          <h6 className="mt-[15px] text-sm font-light">
-            Reviews you have written.
-          </h6>
-          <div className="mt-[30px]">
-            <div className="flex items-center justify-between">
+      <div className="rounded bg-white p-10">
+        <h1 className="text-3xl">My Review</h1>
+        <h6 className="mt-[15px] text-sm font-light">
+          Reviews you have written.
+        </h6>
+        <div className="mt-[30px]">
+          <div className="flex flex-col justify-between gap-2 sm:flex-row lg:items-center">
+            <FloatLabel className="text-sm">
+              <InputText
+                className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
+                onChange={(e) => handleDescriptionChange(e)}
+              />
+              <label>Description</label>
+            </FloatLabel>
+            <div className="flex flex-col gap-2 sm:flex-row lg:items-center">
               <FloatLabel className="text-sm">
-                <InputText className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]" />
-                <label>Description</label>
-              </FloatLabel>
-              <div className="flex items-center gap-2">
-                <FloatLabel className="text-sm">
-                  <Calendar
-                    value={dates}
-                    selectionMode="range"
-                    onChange={handleDateChange}
-                    className="h-[50px] min-w-52 rounded border border-grayBorder bg-transparent px-[10px]"
-                    readOnlyInput
-                  />
-                  <label>Date Range</label>
-                </FloatLabel>
-                <Button
-                  icon="pi pi-filter"
-                  size="large"
-                  className="h-[50px] w-[50px] bg-mainYellow text-base font-bold text-slate-900"
+                <Calendar
+                  value={dates}
+                  selectionMode="range"
+                  onChange={handleDateChange}
+                  className="h-[50px] w-full min-w-52 rounded border border-grayBorder bg-transparent px-[10px]"
+                  readOnlyInput
                 />
-              </div>
+                <label>Date Range</label>
+              </FloatLabel>
+              <Button
+                icon="pi pi-filter"
+                size="large"
+                className="h-[50px] w-[50px] bg-mainYellow text-base font-bold text-slate-900"
+                onClick={filterReviews}
+              />
             </div>
           </div>
-          <div className="mt-5">
-            <div className="">
-              <div className="mb-5 rounded bg-[#F2F2F2] px-5 pb-5 shadow-sm">
-                <table className="w-full rounded-xl">
+        </div>
+        <div className="mt-5">
+          <div className="">
+            <div className="mb-5 rounded bg-[#F2F2F2] px-5 pb-5 shadow-sm">
+              <div className="overflow-x-scroll">
+                <table className="w-full text-nowrap rounded-xl">
                   <thead>
                     <tr className="text-left">
                       <th className="p-5 text-xs font-light">Date</th>
                       <th className="p-5 text-xs font-light">Game</th>
                       <th className="p-5 text-xs font-light">Description</th>
-                      <th className="p-5 text-xs font-light">Rated</th>
+                      <th className="p-5 text-right text-xs font-light">
+                        Rated
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
-                    <ReviewHistoryRow
-                      date={"2/2/2024"}
-                      game={"Assassin's Creed II"}
-                      description={
-                        "An epic story of family, vengeance and conspiracy set in the pristine, yet brutal, backdrop of a Renaissance Italy."
-                      }
-                      rated={5}
-                    />
-                    <ReviewHistoryRow
-                      date={"2/2/2024"}
-                      game={"Assassin's Creed II"}
-                      description={
-                        "An epic story of family, vengeance and conspiracy set in the pristine, yet brutal, backdrop of a Renaissance Italy."
-                      }
-                      rated={5}
-                    />
-                    <ReviewHistoryRow
-                      date={"2/2/2024"}
-                      game={"Assassin's Creed II"}
-                      description={
-                        "An epic story of family, vengeance and conspiracy set in the pristine, yet brutal, backdrop of a Renaissance Italy."
-                      }
-                      rated={5}
-                    />
-                    <ReviewHistoryRow
-                      date={"2/2/2024"}
-                      game={"Assassin's Creed II"}
-                      description={
-                        "An epic story of family, vengeance and conspiracy set in the pristine, yet brutal, backdrop of a Renaissance Italy."
-                      }
-                      rated={5}
-                    />
+                    {filteredReviews.slice(0, length).map((review) => (
+                      <ReviewHistoryRow
+                        key={review.sysIdComment}
+                        date={formatDateToDDMMYYYY(review.commentDate)}
+                        game={review.gameDTO?.gameName ?? ""}
+                        description={review.context}
+                        rated={review.star}
+                        slug={review.gameDTO?.slug ?? ""}
+                      />
+                    ))}
                   </tbody>
                 </table>
-                <div className="mt-3 flex justify-center">
-                  <Button
-                    label="SHOW MORE"
-                    size="large"
-                    className="mt-5 h-[50px] w-[150px] bg-gray250 text-xs font-bold text-slate-900"
-                    // onClick={handleLogin}
-                    // disabled={isLockedOut}
-                  />
-                </div>
+              </div>
+              <div className="mt-3 flex justify-center gap-5">
+                <Button
+                  hidden={
+                    filteredReviews.length <= 5 ||
+                    length >= filteredReviews.length
+                  }
+                  label={"SHOW MORE"}
+                  size="large"
+                  className="mt-5 h-[50px] w-[150px] bg-gray250 text-xs font-bold text-slate-900"
+                  onClick={() => setLength(length + 5)}
+                />
+                <Button
+                  hidden={length <= 5}
+                  label={"SHOW LESS"}
+                  size="large"
+                  className="mt-5 h-[50px] w-[150px] bg-gray250 text-xs font-bold text-slate-900"
+                  onClick={() => setLength(length - 5)}
+                />
               </div>
             </div>
           </div>

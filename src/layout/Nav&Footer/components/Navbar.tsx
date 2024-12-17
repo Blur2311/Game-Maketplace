@@ -1,9 +1,14 @@
 import { Button } from "primereact/button";
 import { OverlayPanel } from "primereact/overlaypanel";
 import { useEffect, useRef, useState } from "react";
-import { FaRegBell, FaRegPlusSquare } from "react-icons/fa";
+import { FaRegPlusSquare } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-import { getCurrentUser, getUsernameFromToken, signOut, User } from "../../../utils/AuthUtils";
+import {
+  getCurrentUser,
+  getUsernameFromToken,
+  signOut,
+  User,
+} from "../../../utils/AuthUtils";
 import { Avatar } from "primereact/avatar";
 import { formatCurrency } from "../../../utils/OtherUtils";
 
@@ -12,7 +17,6 @@ export const Navbar = () => {
   const username = getUsernameFromToken();
   const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
-
 
   useEffect(() => {
     if (username) {
@@ -27,7 +31,7 @@ export const Navbar = () => {
   return (
     // Trang này nó responsive làm nhớ để ý kỹ ko rõ thì liên hệ Huy
     <>
-      <div className="mx-4 my-5 sm:mx-6">
+      <div className="px-4 py-5 sm:mx-6">
         <div className="flex items-end justify-between">
           <div className="flex items-center gap-3 sm:gap-7">
             <Link to={"/"}>
@@ -54,7 +58,6 @@ export const Navbar = () => {
             </div>
           ) : (
             <div className="flex items-center gap-6 cursor-pointer">
-              <FaRegBell className="text-xl text-white" />
               <div
                 className="flex items-center gap-3 hover:opacity-80"
                 onClick={(e) => op.current?.toggle(e)}
@@ -74,30 +77,43 @@ export const Navbar = () => {
                 className="border min-w-56 rounded-xl border-borderSubdued bg-gray300 bg-opacity-80 shadow-navBoxshadow backdrop-blur-lg"
               >
                 <ul className="text-white">
-                  <>
-                    <li className="px-4 py-2 rounded-lg cursor-pointer hover:bg-gray200 hover:bg-opacity-50">
-                      <p>Account Balance: </p>
-                      <div className="flex items-center gap-2">
-                        {formatCurrency(user?.balance || 0)}
-                        <FaRegPlusSquare className="text-lg" />
-                      </div>
-                    </li>
-                    <li className="px-4 py-2 rounded-lg cursor-pointer hover:bg-gray200 hover:bg-opacity-50">
-                      <Link to={"/setting/user-info"}>Account Info</Link>
-                    </li>
-                    <li className="px-4 py-2 rounded-lg cursor-pointer hover:bg-gray200 hover:bg-opacity-50">
-                      Transactions
-                    </li>
-                    <li className="px-4 py-2 rounded-lg cursor-pointer hover:bg-gray200 hover:bg-opacity-50">
-                      Wishlist
-                    </li>
-                    <li
-                      className="px-4 py-2 rounded-lg cursor-pointer hover:bg-gray200 hover:bg-opacity-50"
-                      onClick={signOut}
+                  <li className="px-4 py-2 rounded-lg cursor-pointer hover:bg-gray200 hover:bg-opacity-50">
+                    <p>Account Balance:</p>
+                    <div className="flex items-center gap-2">
+                      {formatCurrency(user?.balance || 0)}
+                      <FaRegPlusSquare className="text-lg" />
+                    </div>
+                  </li>
+                  <li>
+                    <Link
+                      to="/setting/user-info"
+                      className="block px-4 py-2 rounded-lg cursor-pointer hover:bg-gray200 hover:bg-opacity-50"
                     >
-                      Sign Out
-                    </li>
-                  </>
+                      Account Info
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/setting/transaction"
+                      className="block px-4 py-2 rounded-lg cursor-pointer hover:bg-gray200 hover:bg-opacity-50"
+                    >
+                      Transactions
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/wishlist"
+                      className="block px-4 py-2 rounded-lg cursor-pointer hover:bg-gray200 hover:bg-opacity-50"
+                    >
+                      Wishlist
+                    </Link>
+                  </li>
+                  <li
+                    className="px-4 py-2 rounded-lg cursor-pointer hover:bg-gray200 hover:bg-opacity-50"
+                    onClick={() => signOut()}
+                  >
+                    Sign Out
+                  </li>
                 </ul>
               </OverlayPanel>
             </div>

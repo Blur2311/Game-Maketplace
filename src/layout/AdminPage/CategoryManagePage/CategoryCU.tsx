@@ -6,8 +6,17 @@ import { FaAsterisk } from "react-icons/fa";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import apiClient from "../../../config/apiClient";
+import { NavLink } from "react-router-dom";
+import { TiArrowLeft } from "react-icons/ti";
+import {
+  fetchCategoryById,
+  saveCategory,
+  CategoryDTO,
+} from "./service/CategoryService"; // Import các hàm từ categoryService
+import { useAuthCheck } from "../../../utils/AuthUtils";
 
 export const CategoryCU = () => {
+  useAuthCheck(['ADMIN']);
   const { id } = useParams<{ id?: string }>(); // Nhận tham số id tùy chọn
   const isUpdateMode = Boolean(id); // Xác định chế độ cập nhật hay tạo mới
   const navigate = useNavigate();
@@ -35,17 +44,15 @@ export const CategoryCU = () => {
     }
 
     setLoading(true);
-    const categoryDTO = {
+    const categoryDTO: CategoryDTO = {
       sysIdCategory: isUpdateMode ? id : null,
       categoryName,
       description,
     };
 
     try {
-      const response = await apiClient.post("/api/categories", categoryDTO);
-      // console.log("Category saved:", response.data);
-      // điều hướng về trang danh sách sau khi lưu thành công
-      navigate("/admin/category-list");
+      await saveCategory(categoryDTO);
+      navigate("/admin/category/list");
     } catch (error) {
       console.error("Error saving category:", error);
     } finally {
@@ -55,63 +62,67 @@ export const CategoryCU = () => {
 
   return (
     <>
-      <div className="mr-6">
-        {/* Cập nhật hay thêm mới, hay xem chi tiết nhớ sửa lại cái tên  */}
-        <h3 className="text-[32px] font-semibold">Category Detail</h3>
-        <div className="my-5 rounded-md border-2 border-[#F2F2F2] p-5 pt-7">
-          {/* Cập nhật hay thêm mới, hay xem chi tiết nhớ sửa lại cái tên  */}
-          <div className="border-b-2 border-[#F2F2F2] pb-3">
-            <h6 className="text-lg text-gray100">
-              The information can be edited
-            </h6>
-            <p className="text-textGray300 mt-3 flex items-center gap-1 text-sm">
-              <FaAsterisk className="text-[6px] text-red-500" />
-              Is a mandatory information field
-            </p>
+      <div className="px-6 py-16">
+        <div className="flex flex-col gap-6 mb-8">
+          <NavLink
+            to={"/admin/category/list"}
+            className="flex items-center gap-2 text-sm hover:underline"
+          >
+            <TiArrowLeft className="text-xl" />
+            Categories
+          </NavLink>
+          <h3 className="text-[32px] font-medium">
+            {isUpdateMode ? "Detail" : "Create"} category
+          </h3>
+        </div>
+
+        <div className="rounded-[20px] shadow-adminBoxshadow">
+          <div className="px-6 pt-4">
+            <h6 className="mb-6 text-lg font-medium">Basic information</h6>
+
+            <div className="grid grid-cols-12 pb-8 gap-x-6 gap-y-8">
+              <FloatLabel className="col-span-12 text-sm">
+                <InputText
+                  className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black"
+                  value={categoryName}
+                  onChange={(e) => {
+                    setCategoryName(e.target.value);
+                    setError("");
+                  }}
+                />
+                <label>
+                  Category Name <span className="text-red-500">*</span>
+                </label>
+                {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
+              </FloatLabel>
+
+              <FloatLabel className="col-span-12 text-sm">
+                <InputTextarea
+                  rows={5}
+                  className="w-full rounded-lg border bg-transparent p-4 ps-[10px] shadow-adminInputShadow hover:border-black"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+                <label>
+                  Category Describe <span className="text-red-500">*</span>
+                </label>
+              </FloatLabel>
+            </div>
           </div>
 
-          <div className="mt-10 flex flex-col gap-[35px]">
-            <FloatLabel className="flex-1 text-sm">
-              <InputText
-                className="h-[50px] w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
-                value={categoryName}
-                onChange={(e) => {
-                  setCategoryName(e.target.value);
-                  setError("");
-                }}
-              />
-              <label>
-                Category Name <span className="text-red-500">*</span>
-              </label>
-              {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
-            </FloatLabel>
-            <FloatLabel className="flex-1 text-sm">
-              <InputTextarea
-                rows={5}
-                className="w-full border border-grayBorder bg-transparent p-5 ps-[10px]"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-              <label>
-                Category Describe <span className="text-red-500">*</span>
-              </label>
-            </FloatLabel>
-          </div>
-          <div className="mt-6 flex items-center justify-end gap-8 border-t-2 border-[#F2F2F2] pt-3">
+          <div className="flex items-center justify-end gap-2 p-4 pt-2">
             <Link
-              to={`/admin/category-list`}
-              className="rounded bg-gray250 px-5 py-3 text-xs font-bold uppercase hover:bg-gray350"
+              to={`/admin/category/list`}
+              className="rounded-lg px-2 py-[10px] text-sm font-medium hover:bg-black hover:bg-opacity-5"
             >
               Cancel
             </Link>
             <Button
               loading={loading}
-              size="large"
-              className="rounded bg-mainYellow px-5 py-3 text-xs font-bold uppercase text-white hover:brightness-110"
+              label={isUpdateMode ? "Update" : "Create"}
               onClick={handleSave}
-            >
-              {isUpdateMode ? "Update" : "Add"}
-            </Button>
+              className="rounded-lg bg-mainYellow px-4 py-[10px] text-sm font-medium text-white hover:brightness-105"
+            />
           </div>
         </div>
       </div>

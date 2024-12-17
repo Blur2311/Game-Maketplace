@@ -1,7 +1,36 @@
 import { jwtDecode } from 'jwt-decode';
-import apiClient from '../config/apiClient';
-import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import apiClient from '../config/apiClient';
+
+interface DecodedToken {
+  sub: string;
+  exp: number;
+};
+
+export type User = {
+  sysIdUser: number;
+  username: string;
+  email: string;
+  role: string;
+  hoVaTen: string;
+  balance: number;
+  avatar: string;
+  joinTime: string;
+};
+
+export const isTokenValid = (): boolean => {
+  try {
+    const decodedToken = getDecodeToken();
+    if (!decodedToken) return false;
+    const decoded: DecodedToken = decodedToken;
+    const currentTime = Math.floor(Date.now() / 1000);
+    return !!decoded.sub && decoded.exp > currentTime;
+  } catch (error) {
+    console.error('Failed to decode token:', error);
+    return false;
+  }
+};
 
 export const useAuthCheck = (
   requireRoles: string[] = [],
@@ -22,18 +51,20 @@ export const useAuthCheck = (
           throw new Error('Token is null');
         }
       } catch (error) {
-        console.error('Failed to check login status:', error);      
+        console.error('Failed to check login status:', error);
       }
     };
     checkLoginStatus();
   }, []);
 };
 
-export const signOut = async () => {
+export const signOut = async (role?: string) => {
   try {
     await apiClient.post('/api/auth/logout');
     localStorage.removeItem('token');
-    window.location.reload();
+    if (role === '!CUSTOMER') {
+      window.location.href = '/admin/sign-in';
+    } else window.location.reload();
   } catch (error) {
     console.error('Failed to sign out:', error);
   }
@@ -70,7 +101,7 @@ export const getDecodeToken = (): DecodedToken | null => {
   }
 };
 
-export const getCurrentUser = async (): Promise< User | null> => {
+export const getCurrentUser = async (): Promise<User | null> => {
   try {
     const response = await apiClient.get('/api/auth/current-user');
     let user: User = response.data.data;
@@ -81,15 +112,4 @@ export const getCurrentUser = async (): Promise< User | null> => {
     console.error('Failed to get current user:', error);
     return null;
   }
-};
-
-export type User = {
-  sysIdUser: number;
-  username: string;
-  email: string;
-  role: string;
-  hoVaTen: string;
-  balance: number;
-  avatar: string;
-  joinTime: string;
 };

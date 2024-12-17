@@ -2,6 +2,15 @@ import React, { useState } from "react";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { InputTextarea } from "primereact/inputtextarea";
+import apiClient from "../../../config/apiClient";
+
+
+interface JWTPayload {
+  userId?: number;
+  name?: string;
+  exp?: number; // Thời gian hết hạn (epoch time)
+  [key: string]: any; // Cho phép các thuộc tính khác
+}
 
 export const ChatSupport: React.FC = () => {
   const [isDialogVisible, setIsDialogVisible] = useState(false);
@@ -12,12 +21,43 @@ export const ChatSupport: React.FC = () => {
     setIsDialogVisible((prevState) => !prevState);
   };
 
+  function decodeJWT(token: string): JWTPayload | null {
+    try {
+      // Tách phần PAYLOAD (phần thứ hai) của token
+      const payload = token.split(".")[1];
+
+      // Giải mã Base64Url sang chuỗi JSON
+      const decodedPayload = atob(
+        payload.replace(/-/g, "+").replace(/_/g, "/"),
+      );
+
+      // Chuyển chuỗi JSON thành đối tượng JavaScript
+      const obj = JSON.parse(decodedPayload) as JWTPayload;
+      return obj.sub;
+    } catch (error) {
+      console.error("Failed to decode JWT:", error);
+      return null;
+    }
+  }
+
   // Hàm để gửi tin nhắn
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (message.trim()) {
-      // Gửi tin nhắn (bạn có thể thêm API hoặc chức năng khác tại đây)
-      console.log("Sent message:", message);
-      setMessage(""); // Reset message sau khi gửi
+      try {
+        const token = localStorage.getItem("token");
+        
+        let userName = null;
+        if (token) {
+          userName = decodeJWT(token);
+        }
+        const response = await apiClient.post(`/api/chat/send/false?userName=${userName}`, message, {
+          headers: {
+            'Content-Type': 'text/plain',
+          },
+        });
+      } catch (error) {
+        console.error('Error sending message:', error);
+      }
     }
   };
 
@@ -34,14 +74,14 @@ export const ChatSupport: React.FC = () => {
       <Dialog
         visible={isDialogVisible}
         onHide={toggleDialog}
-        header="Hỗ Trợ Trực Tuyến"
+        header="Chat Support"
         className="fixed bottom-0 right-0 p-0 m-0 font-inter"
         style={{ width: "300px" }}
       >
         <div className="flex flex-col gap-4">
           {/* Tin nhắn trả lời từ hỗ trợ */}
           <div className="max-w-full p-3 text-xs bg-gray-200 rounded-lg">
-            Xin chào! Tôi có thể giúp gì cho bạn?
+            Hello there! How can I help you today? 😊
           </div>
 
           {/* Ô nhập tin nhắn */}
@@ -50,7 +90,7 @@ export const ChatSupport: React.FC = () => {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={3}
-              placeholder="Nhập tin nhắn của bạn..."
+              placeholder="Type your message here..."
               className="w-full p-2 border border-gray-300 rounded-lg"
             />
             <button
@@ -59,7 +99,7 @@ export const ChatSupport: React.FC = () => {
               className="flex w-full items-center justify-center gap-2 rounded-[4px] bg-mainYellow p-2 font-bold text-black"
             >
               <i className="pi pi-send"></i>
-              Gửi
+              Send
             </button>
           </div>
         </div>
