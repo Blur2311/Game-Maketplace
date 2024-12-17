@@ -39,7 +39,7 @@ export const SearchBar = () => {
     <>
       <div className="sticky top-0 z-50 h-[100px] bg-bgMainColor pt-3 sm:pt-0">
         <div className="mx-auto flex h-full w-11/12 flex-col justify-between sm:flex-row sm:items-center lg:w-3/4">
-          <div className="w-full sm:w-[230px]">
+          {/* <div className="w-full sm:w-[230px]">
             <div className="relative rounded-full bg-gray300">
               <i className="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 transform text-gray100"></i>
               <InputText
@@ -47,9 +47,9 @@ export const SearchBar = () => {
                 className="bg-transparent p-3 pl-10 text-xs text-white focus:ring-0"
               />
             </div>
-          </div>
+          </div> */}
           <div className="flex flex-1 items-center justify-between">
-            <div className="hidden sm:ml-5 lg:block">
+            <div className="hidden lg:block">
               <ul className="flex items-center gap-8 text-sm font-normal text-gray150">
                 <li className="">
                   <NavLink
