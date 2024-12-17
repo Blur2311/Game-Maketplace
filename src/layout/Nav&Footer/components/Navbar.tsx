@@ -64,12 +64,22 @@ export const Navbar = () => {
               >
                 {/* <img src="/cat.jpeg" alt="" className="w-8 h-8 rounded-full" /> */}
                 {/* Không có hình ảnh thì hiển thị cái này */}
-                <Avatar
-                  icon="pi pi-user"
-                  // style={{ backgroundColor: "#9c27b0", color: "#ffffff" }}
-                  className="text-white bg-grayBorder"
-                  shape="circle"
-                />
+                {user?.avatar ? (
+                  <div className="h-8 w-8">
+                    <img
+                      src={user?.avatar}
+                      alt=""
+                      className="h-full w-full rounded-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <Avatar
+                    icon="pi pi-user"
+                    // style={{ backgroundColor: "#9c27b0", color: "#ffffff" }}
+                    className="bg-grayBorder text-white"
+                    shape="circle"
+                  />
+                )}
                 <p className="text-sm text-gray250">{username || "Guest"}</p>
               </div>
               <OverlayPanel
